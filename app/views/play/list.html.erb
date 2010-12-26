@@ -1,0 +1,7 @@
+Hi here are the games you can join.
+
+<ul class="game-list">
+<% @games.each do |game| %>
+  <li><%= link_to game.name, play_url(game.id) %></li>
+<% end %>
+</ul>

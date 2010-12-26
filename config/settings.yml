@@ -1,0 +1,11 @@
+development:
+  facebook:
+    app_id: 168728976502042
+    app_secret: fb1ed0a7bca5572803f7fc48889beb50
+    canvas_url: http://apps.facebook.com/anagramthief/
+
+production:
+  facebook:
+    app_id: 168728976502042
+    app_secret: fb1ed0a7bca5572803f7fc48889beb50
+    canvas_url: http://apps.facebook.com/anagramthief/
