@@ -5,6 +5,10 @@ class User < ActiveRecord::Base
     #@graph ||= MiniFB::OAuthSession.new(access_token)
     #@graph.me.friends['data'].map { |x| {:label => x.name, :id => x.id} } + [{:label => self.name, :id => self.uid}]
   #end
+
+  def id_s
+    id.to_s
+  end
   
   def update_from_graph(access_token, me=nil)
     @graph ||= MiniFB::OAuthSession.new(access_token)

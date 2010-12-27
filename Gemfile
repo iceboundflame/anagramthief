@@ -37,3 +37,5 @@ end
 
 gem 'mini_fb'
 gem 'json'
+gem 'redis'
+gem 'juggernaut'
