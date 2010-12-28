@@ -1,0 +1,20 @@
+<div id="player-info-<%= player_info['id'] %>"
+  class="left player-info <%= 'in' if !player_info['active'] %>active-player">
+<% user = @player_users[player_info['id']] %>
+<div class="clearfix">
+  <%= image_tag user.profile_pic, width: 40, height: 40, class: 'left' %>
+  <span class="username"><%= user.name %></span>
+  <span class="score"><%= player_info['score'] %></span>
+  <% if player_info['voted_restart'] %>
+    <span class="voted-restart">Voted to restart</span>
+  <% end %>
+</div>
+<ul class="player-words">
+  <% player_info['words'].each do |word| %>
+    <li><%= render :partial => 'tiles', :object => word.chars.to_a %></li>
+  <% end %>
+  <% if player_info['words'].size == 0 %>
+    <li>No words :(</li>
+  <% end %>
+</ul>
+</div>

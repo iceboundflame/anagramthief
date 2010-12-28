@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  helper_method :current_user, :user_signed_in?
+  helper_method :current_user, :user_signed_in?, :oauth_url
   before_filter :process_signed_request
   before_filter :send_fucking_p3p
 
@@ -52,5 +52,9 @@ class ApplicationController < ActionController::Base
     signed_in = user_signed_in?
     redirect_to oauth_url unless signed_in
     signed_in
+  end
+
+  def oauth_url
+    MiniFB.oauth_url(Facebook::APP_ID, sessions_create_url, :scope => '')
   end
 end

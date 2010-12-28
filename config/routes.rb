@@ -1,9 +1,10 @@
 Anathief::Application.routes.draw do
   root :to => 'welcome#index'
   match '/play', :to => 'play#list', :as => 'play_list'
-  match '/play/:id/post', :to => 'play#post', :as => 'play_post'
+  match '/play/chat', :to => 'play#chat', :as => 'play_chat'
   match '/play/flip_char', :to => 'play#flip_char', :as => 'play_flip_char'
   match '/play/claim', :to => 'play#claim', :as => 'play_claim'
+  match '/play/vote_restart', :to => 'play#vote_restart', :as => 'play_vote_restart'
   match '/play/:id', :to => 'play#play', :as => 'play'
   match '/auth/callback', :to => 'sessions#create', :as => 'sessions_create'
 

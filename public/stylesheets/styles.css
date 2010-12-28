@@ -1,10 +1,73 @@
+#left-col{
+  width: 500px;
+  float: left;
+}
+#right-col {
+  width: 250px;
+  float: left;
+}
+ul.tiles {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
 ul.tiles li {
   display: inline-block;
-  width: 30px; height: 30px;
-  margin: 2px;
+  width: 25px; height: 25px;
+  margin: 1px;
   background-color: #ffe; border: 1px solid black;
   text-align: center;
   font-size: 1.5em;
+}
+ul.tiles li.unseen {
+  background-color: #eed;
+}
+#message-area {
+  overflow: auto;
+  height: 300px;
+  width: 100%;
+  border: 1px solid black;
+}
+#messages {
+  list-style-type: none;
+  margin: 3px;
+  padding: 0;
+}
+#messages li {
+  padding-left: 20px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-indent: -15px;
+}
+ul.player-words {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+ul.player-words>li {
+  display: inline-block;
+  margin: 2px 5px;
+  border: 1px dashed #999;
+}
+.player-info {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+}
+.active-player {
+  background-color: #e0ffcc;
+}
+.inactive-player {
+  background-color: #ccc;
+}
+#me .player-info {
+  background-color: #cef;
+}
+#talk {
+  width: 100%;
+  height: 3em;
+  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 /*.scores-col {
   float: left; width: 370px;

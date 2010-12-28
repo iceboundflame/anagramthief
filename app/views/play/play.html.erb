@@ -1,85 +1,56 @@
-<pre style="overflow: scroll">@player_profiles: <%= @player_profiles.inspect %>
-
-@other_players: <%= @other_players.inspect %>
-
-@me_player: <%= @me_player.inspect %>
-
-@me_player['id']: <%= @me_player['id'].inspect %>
-</pre>
-
 We're playing in Game '<%= @game.name %>'.
-
-<div id="pool-info">
-  <%= render :partial => 'pool_info' %>
-</div>
-
-<div id="my-info">
-  <%= render :partial => 'players_info', :collection => @other_players %>
-
-  <%= render :partial => 'players_info', :object => @me_player %>
-</div>
-
-<input type="button" value="Flip a char" onclick="flipChar();" />
-
-<form id="claimword-form">
-  Claim a word: <input id="claimword-field" />
-</form>
-
 <hr />
 
-<ul id="chats">
-  <li>Chat!</li>
-</ul>
+<div class="clearfix">
+  <div id="left-col">
+    <div id="pool-info">
+      <%= render :partial => 'pool_info' %>
+    </div>
 
-<form action="<%= play_post_url %>" method="post" id="talk">
-  <input value="Say something..." id="what" />
-</form>
+    <hr />
+
+    <div id="player-info-area">
+      <%= render :partial => 'player_info', :collection => @players %>
+    </div>
+  </div>
+  <div id="right-col">
+    <input type="button" value="Flip a letter!" onclick="flipChar();" class="flip-btn" />
+    <br />
+    <label for="claimword">Claim a word:</label>
+    <input type="text" id="claimword" />
+
+    <hr />
+
+    <div id="message-area">
+      <ul id="messages">
+        <li>Chat!</li>
+      </ul>
+    </div>
+
+    <textarea id="talk">Say something...</textarea>
+
+    <input type="button" id="vote-restart" value="Vote to Restart" />
+  </div>
+</div>
+
+<a href="javascript:$('#debug').toggle()">Toggle debug</a>
+<pre style="overflow: scroll; display: none" id="debug">
+@state: <%= @state.inspect %>
+
+@player_profiles: <%= @player_profiles.inspect %>
+
+@players: <%= @players.inspect %>
+</pre>
 
 <script type="text/javascript" charset="utf-8">
-  var jug = new Juggernaut;
-  jug.subscribe('<%= escape_javascript jchan @game_id %>', function(data){
-      console.log(data);
-      switch (data.type) {
-        case 'chat':
-          var li = $('<li />');
-          li.text(data.body);
-          $('#chats').append(li);
-          break;
-        case 'pool_update':
-          $('#pool-info').html(data.body);
-          break;
-        case 'players_update':
-          for (var user_id in data.body) {
-            $('#player-info-'+user_id).html(data.body[user_id]);
-          }
-          break;
-      }
-  });
-  $('#talk').submit(function() {
-      var what = $('#what').val();
-      //alert("Sending "+what);
-      $.post('<%= escape_javascript play_post_url %>',
-        {what: what});
-      $('#what').val('');
-      return false;
-  });
+  var me_id = '<%= escape_javascript @me_id %>';
+  var jchan = '<%= escape_javascript jchan @game_id %>';
+  var playChatUrl = '<%= escape_javascript play_chat_url %>';
+  var playClaimUrl = '<%= escape_javascript play_claim_url %>';
+  var playFlipCharUrl = '<%= escape_javascript play_flip_char_url %>';
+  var playVoteRestartUrl = '<%= escape_javascript play_vote_restart_url %>';
 
-  $('#claimword-form').submit(function() {
-      var word = $('#claimword-field').val();
-      $.post('<%= escape_javascript play_claim_url %>',
-        {word: word},
-        function(data) {
-          var li = $('<li />');
-          li.text(data);
-          $('#chats').append(li);
-        });
-      return false;
+  $(document).ready(function() {
+    initGame();
   });
-
-  function flipChar() {
-    $.post('<%= escape_javascript play_flip_char_url %>',
-        function(data) {
-          //$('#pool-info').html(data);
-        });
-  }
 </script>
