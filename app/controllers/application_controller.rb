@@ -1,9 +1,6 @@
 class ApplicationController < ActionController::Base
   helper_method :current_user, :user_signed_in?, :oauth_url
-  before_filter :process_signed_request
   before_filter :send_fucking_p3p
-
-  attr_accessor :landed_on_canvas
 
   def send_fucking_p3p # Goddamn this bullshit.
     response.headers['P3P'] = 'CP="NON CURa ADMa DEVa TAIa OUR BUS IND PHY UNI COM NAV DEM"';
@@ -30,8 +27,9 @@ class ApplicationController < ActionController::Base
         session[:uid] = session[:tok] = nil
       end
 
-      @landed_on_canvas = true
+      return true
     end
+    return false
   end
 
   protected
