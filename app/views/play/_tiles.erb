@@ -1,6 +1,7 @@
-<ul class="tiles">
-<% tiles.each do |letter|%><li><%= letter %></li><% end -%>
-<% if local_assigns[:num_unseen] -%>
-<% num_unseen.times do %><li class="unseen">&nbsp;</li><% end -%>
-<% end -%>
-</ul>
+<ul class="tiles"><%
+  tiles.each do |letter| %><li><%= letter %></li><% end %><%
+  if local_assigns[:num_unseen] %><%
+    num_unseen.times do %><li class="unseen">&nbsp;</li><%
+  end %><%
+end
+%></ul>

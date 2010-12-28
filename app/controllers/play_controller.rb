@@ -14,36 +14,41 @@ class PlayController < ApplicationController
     @me = current_user
     @me_id = @me.id_s
 
-    @game_id = params[:id] || @me.game.id
-    @game = Game.where(:id => @game_id).limit(1).first
-    redirect_to play_list_url unless @game
+    if params[:id]
+      @game_id = params[:id]
+      if !@me.game_id or @me.game_id != @game_id
+        # update the old game
+        #jpublish_refresh_state @me.game.id
+        # FIXME can't have -all- clients asking for refresh to be published
 
-    if !@me.game or @me.game.id != @game.id
-      # update the old game
-      #jpublish_refresh_state @me.game.id
-      # FIXME can't have -all- clients asking for refresh to be published
+        @me.game_id = @game_id
+        @me.save
+      end
+    else
+      @game_id = @me.game_id
+    end
 
-      @me.game = @game
-      @me.save
+    begin
+      @game = Game.find(@game_id)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to play_list_url unless @game
+      return
     end
 
     @state = GameState.load @game_id
     unless @state
+      logger.info "Creating GameState #{@game_id}"
       @state = GameState.new @game_id
+      @state.restart
+    else
+      logger.debug "Loaded game: #{@state.to_json}"
     end
-    logger.debug 'Loaded game: '+@state.to_json
 
-    @game_users = @game.users.all
-    just_joined = !@state.players.has_key?(@me_id)
+    just_joined = !@state.players.include?(@me_id)
     @state.add_player(@me_id) if just_joined
 
-    @state.update_active_players @game_users.map{|u| u.id_s}
-
-    player_ids = @state.players.map {|id,p| id}
-    @player_users = {}
-    User.find(player_ids).each do |user|
-      @player_users[user.id_s] = user
-    end
+    @state.load_player_users
+    @state.update_active_players @game.users.map {|u| u.id_s}
 
     @players = @state.players_order.map{|id| @state.player(id)}
 
@@ -144,15 +149,14 @@ class PlayController < ApplicationController
   end
 
   def vote_quorum
-    (@game_users.size + 1) / 2
+    (@state.num_active_players + 1) / 2
   end
 
   def vote_restart
     vote = (params[:vote] != 'false');
-    logger.debug "******************** #{vote}"
     @state.vote_restart(@me_id, vote)
 
-    num_voted = @state.num_voted_to_restart
+    num_voted = @state.num_voted_restart
     num_needed = vote_quorum
 
     message = (vote ? 'voted to restart' : 'canceled vote')
@@ -168,8 +172,7 @@ class PlayController < ApplicationController
       jpublish_players_update
     end
 
-    jpublish 'action', @me,
-      :body => message
+    jpublish 'action', @me, :body => message
     render :text => 'OK'
   end
 
@@ -188,7 +191,7 @@ class PlayController < ApplicationController
     rendered_players = {}
     @state.players.each do |user_id, player| 
       rendered_players[user_id] =
-          render_to_string(:partial => 'player_info', :object => player)
+          render_to_string(:partial => 'player', :object => player)
     end
     jpublish 'players_update', nil, {
       :body => rendered_players,
