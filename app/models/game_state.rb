@@ -4,7 +4,7 @@ class GameState
   attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
 
   def self.redis_key(game_id)
-    "anathief/game_state/#{game_id}"
+    "#{Anathief::REDIS_KPREFIX}/game_state/#{game_id}"
   end
   def redis_key
     self.class.redis_key(@game_id)

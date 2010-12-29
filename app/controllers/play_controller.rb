@@ -241,6 +241,6 @@ class PlayController < ApplicationController
   end
 
   def jchan(id)
-    "/anathief/game/#{id}"
+    "/#{Anathief::JUGGERNAUT_PREFIX}/game/#{id}"
   end
 end
