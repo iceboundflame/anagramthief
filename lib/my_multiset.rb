@@ -16,9 +16,11 @@ class MyMultiset
   def self.from_hash(x); new.from_hash(x); end
 
   def from_letters(word)
+    raise ArgumentError, 'need a String' unless word.kind_of?(String)
     from_array word.chars.to_a
   end
   def from_array(array)
+    raise ArgumentError, 'need an Array' unless array.kind_of?(Array)
     @hash = {}
     array.each do |letter|
       @hash[letter] = @hash.fetch(letter, 0) + 1
@@ -26,6 +28,7 @@ class MyMultiset
     self
   end
   def from_hash(hash)
+    raise ArgumentError, 'need a hash' unless hash.kind_of?(Hash)
     @hash = hash.dup
     self
   end
@@ -55,6 +58,8 @@ class MyMultiset
   end
 
   def ^(second)
+    raise ArgumentError, 'need 2 of me' unless second.kind_of?(self.class)
+
     a = @hash.dup
     b = second.hash.dup
     (a.keys | b.keys).each do |k|

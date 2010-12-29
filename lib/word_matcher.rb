@@ -50,7 +50,13 @@ module WordMatcher
   def self.word_match(pool, stealable, target,
                       need_ms=nil, stolen=[],
                       depth=1, dbg=false)
+    dbg=true
+
     need_ms = MyMultiset.from_letters(target) unless need_ms
+    raise ArgumentError, 'pool should be Array' unless pool.kind_of?(Array)
+    raise ArgumentError, 'stealable should be Array' unless stealable.kind_of?(Array)
+    raise ArgumentError, 'target should be String' unless target.kind_of?(String)
+    raise ArgumentError, 'need_ms should be MyMultiset' unless need_ms.kind_of?(MyMultiset)
 
     ind = '  '*depth
     if dbg
@@ -86,6 +92,9 @@ module WordMatcher
     ## Check the pool
 
     leftover_ms, deficit_ms = MyMultiset.from_array(pool) ^ need_ms
+    puts "#{ind}=> pool = #{MyMultiset.from_array(pool)}"
+    puts "#{ind}=> need = #{need_ms}"
+    puts "#{ind}=> pool - need = #{leftover_ms}, #{deficit_ms}"
 
     if deficit_ms.size == 0
       pool_used_ms = need_ms

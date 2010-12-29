@@ -100,49 +100,6 @@ class PlayController < ApplicationController
     end
   end
 
-  def get_nice_defs(word)
-    pos_map = {
-      'verb-intransitive' => 'verb (used without object)',
-      'verb-transitive' => 'verb (used with object)',
-    }
-
-    result = Hash.new do |hash, key|
-      hash[key] = Hash.new { |hash2, key2| hash2[key2] = [] }
-    end
-    raw = Wordnik::Word.find(word).definitions
-    raw.each do |d|
-      next unless d.text
-      pos = d.part_of_speech
-      pos = pos_map[pos] if pos_map.include? pos
-      result[d.headword][pos] << d.text
-    end
-
-    result
-  end
-
-  def lookup_and_publish_definitions(word)
-    definitions = get_nice_defs word
-    #logger.debug green PP.pp definitions, ''
-    jpublish 'definitions', @me, :body => render_to_string(
-      :partial => 'definitions',
-      :object => definitions,
-    )
-  end
-
-  def describe_move(words_stolen, pool_used)
-    pool_used_letters = pool_used.to_a
-
-    msg = ''
-    msg += 'stealing '+words_stolen.join(', ') unless words_stolen.empty?
-    if !pool_used_letters.empty?
-      msg += words_stolen.empty? ? 'taking' : ' +'
-      msg += ' '+pool_used_letters.join(', ') unless pool_used_letters.empty?
-    end
-
-    msg = 'doing nothing?!' if msg.empty?
-    msg
-  end
-
   def claim
     word = params[:word].upcase
 
@@ -284,5 +241,51 @@ class PlayController < ApplicationController
 
   def jchan(id)
     "/#{Anathief::JUGGERNAUT_PREFIX}/game/#{id}"
+  end
+
+
+  ### below code could be moved out
+
+  def get_nice_defs(word)
+    pos_map = {
+      'verb-intransitive' => 'verb (used without object)',
+      'verb-transitive' => 'verb (used with object)',
+    }
+
+    result = Hash.new do |hash, key|
+      hash[key] = Hash.new { |hash2, key2| hash2[key2] = [] }
+    end
+    raw = Wordnik::Word.find(word).definitions
+    raw.each do |d|
+      next unless d.text
+      pos = d.part_of_speech
+      pos = pos_map[pos] if pos_map.include? pos
+      result[d.headword][pos] << d.text
+    end
+
+    result
+  end
+
+  def lookup_and_publish_definitions(word)
+    definitions = get_nice_defs word
+    #logger.debug green PP.pp definitions, ''
+    jpublish 'definitions', @me, :body => render_to_string(
+      :partial => 'definitions',
+      :object => definitions,
+    )
+  end
+
+  def describe_move(words_stolen, pool_used)
+    pool_used_letters = pool_used.to_a
+
+    msg = ''
+    msg += 'stealing '+words_stolen.join(', ') unless words_stolen.empty?
+    if !pool_used_letters.empty?
+      msg += words_stolen.empty? ? 'taking' : ' +'
+      msg += ' '+pool_used_letters.join(', ') unless pool_used_letters.empty?
+    end
+
+    msg = 'doing nothing?!' if msg.empty?
+    msg
   end
 end

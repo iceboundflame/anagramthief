@@ -147,7 +147,7 @@ class GameState
     return :word_too_short unless word.length >= 3
 
     match_result = WordMatcher.word_match(
-      MyMultiset.from_array(@pool_seen),
+      @pool_seen,
       @players.map {|id,p| p.words.values}.flatten.map {|w| w.word},
       word,
     )
