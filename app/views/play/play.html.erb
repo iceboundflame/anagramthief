@@ -1,8 +1,17 @@
-We're playing in Game '<%= @game.name %>'.
+<div class="clearfix">
+  <div class="left-col">
+    <h3>Anagram Thief!
+    <span class="tagline">A David Liu Production</span></h3>
+  </div>
+  <div class="right-col">
+    <h4>Game Room: <%= @game.name %></h4>
+  </div>
+</div>
+
 <hr />
 
 <div class="clearfix">
-  <div id="left-col">
+  <div class="left-col">
     <div id="pool-info">
       <%= render :partial => 'pool_info' %>
     </div>
@@ -13,7 +22,7 @@ We're playing in Game '<%= @game.name %>'.
       <%= render :partial => 'player', :collection => @players %>
     </div>
   </div>
-  <div id="right-col">
+  <div class="right-col">
     <input type="button" value="Flip a letter!" onclick="flipChar();" class="flip-btn" />
     <br />
     <label for="claimword">Claim a word:</label>

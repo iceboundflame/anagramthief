@@ -1,3 +1,6 @@
+require 'word_matcher'
+require 'my_multiset'
+
 class GameState
   attr_accessor :game_id
   attr_accessor :players, :players_order, :pool_unseen, :pool_seen
@@ -142,40 +145,21 @@ class GameState
     word = word_raw.upcase
 
     return :word_too_short unless word.length >= 3
-    return :word_not_in_dict unless word_in_dict? word
 
-    words_stolen, pool_used = word_match(
+    match_result = WordMatcher.word_match(
       MyMultiset.from_array(@pool_seen),
       @players.map {|id,p| p.words.values}.flatten.map {|w| w.word},
       word,
     )
+    return :word_not_available unless match_result
 
-    return :word_not_available unless words_stolen
+    return :word_not_in_dict unless ::WordMatcher.word_in_dict? word
 
-    return :word_not_extended if
-      words_stolen.size == 1 and pool_used.size == 0
-    #FIXME: check other possiblities: pool, or combine two other words
-
-    if words_stolen.size == 1
-      #puts "******************************FML"
-      roots = redis.hmget('2+2lemma', word.downcase, words_stolen[0].downcase)
-      #puts "#{w1} vs #{w2}--"
-      #puts "#{roots}"
-      if roots and roots[0] and roots[1]
-        roots0 = Set.new(roots[0].split ',')
-        roots1 = Set.new(roots[1].split ',')
-        roots_shared = roots0 & roots1
-
-        #puts "#{roots0.to_a.inspect}, #{roots1.to_a.inspect}, #{roots_shared.to_a.inspect}"
-        if roots_shared.size > 0
-          return :word_shares_root,
-            roots_shared.to_a.map{|w| w.upcase},
-            words_stolen[0], pool_used 
-        end
-      end
-    end
+    # [[validity, *validity_data], words_stolen, pool_used]
+    return match_result[0][0], *match_result if match_result[0][0] != :ok
 
     ## Claim is okay, execute it.
+    ok, words_stolen, pool_used = match_result
 
     # FIXME: Fairness: start looking for steals from player after you.
     words_stolen.each do |word|
@@ -264,27 +248,5 @@ class GameState
       'Q' => 1,
       'Z' => 1,
     }
-  end
-
-  def word_in_dict?(word_raw)
-    word = word_raw.upcase
-    redis.sismember('twl06', word)
-  end
-
-  def word_match(pool_ms, words, target)
-    words_used = []
-    target_ms = MyMultiset.from_letters(target)
-    words.each_index do |word_idx|
-      word = words[word_idx]
-      leftover_ms, deficit_ms = MyMultiset.from_letters(word) ^ target_ms
-      if leftover_ms.size == 0
-        words_used << word
-        target_ms = deficit_ms
-      end
-    end
-
-    leftover_ms, deficit_ms = pool_ms ^ target_ms
-    return words_used, target_ms if deficit_ms.size == 0
-    return nil
   end
 end

@@ -120,6 +120,29 @@ class PlayController < ApplicationController
     result
   end
 
+  def lookup_and_publish_definitions(word)
+    definitions = get_nice_defs word
+    #logger.debug green PP.pp definitions, ''
+    jpublish 'definitions', @me, :body => render_to_string(
+      :partial => 'definitions',
+      :object => definitions,
+    )
+  end
+
+  def describe_move(words_stolen, pool_used)
+    pool_used_letters = pool_used.to_a
+
+    msg = ''
+    msg += 'stealing '+words_stolen.join(', ') unless words_stolen.empty?
+    if !pool_used_letters.empty?
+      msg += words_stolen.empty? ? 'taking' : ' +'
+      msg += ' '+pool_used_letters.join(', ') unless pool_used_letters.empty?
+    end
+
+    msg = 'doing nothing?!' if msg.empty?
+    msg
+  end
+
   def claim
     word = params[:word].upcase
 
@@ -130,67 +153,53 @@ class PlayController < ApplicationController
       new_word, words_stolen, pool_used = resultdata
       jpublish_players_update :new_word_id => [@me_id, new_word.id]
       jpublish_pool_update
-
-      pool_used_letters = pool_used.to_a
       
-      msg = "claimed #{word} by"
-      msg += " stealing #{words_stolen.join ', '}" unless words_stolen.empty?
-      unless pool_used_letters.empty?
-        msg += words_stolen.empty? ? ' taking' : ' +'
-        msg += " #{pool_used_letters.join(', ')}" unless pool_used_letters.empty?
-      end
-
+      msg = "claimed #{word} by #{describe_move words_stolen, pool_used}."
       jpublish 'action', @me, :body => msg
 
-      # lookup def
       # do this as late as possible so it doesn't matter if this API
       # hangs/takes a long time
-      definitions = get_nice_defs word.downcase
-      logger.debug green PP.pp definitions, ''
-      jpublish 'definitions', @me, :body => render_to_string(
-        :partial => 'definitions',
-        :object => definitions,
-      )
+      lookup_and_publish_definitions(word.downcase)
 
       render :json => {:status => true}
 
-    when :word_shares_root then
-      shared_roots, word_stolen, pool_used = resultdata
+    when :word_steal_shares_root then
+      validity_info, words_stolen, pool_used = resultdata
+      validity, roots_shared = validity_info
 
-      pool_used_letters = pool_used.to_a
-
-      msg = "tried to claim #{word} by stealing #{word_stolen}"
-      msg += " + #{pool_used_letters.join ', '}" unless
-        pool_used_letters.empty?
-      msg += ". But they share the root #{shared_roots.join ', '}."
-
+      msg = "tried to claim #{word} by "
+      msg += describe_move words_stolen, pool_used
+      msg += ". But they share the root #{roots_shared.join ', '}."
       jpublish 'action', @me, :body => msg, :msgclass => 'failed'
+      render :json => {:status => false}
+
+    when :word_steal_not_extended then
+      validity_info, words_stolen, pool_used = resultdata
+
+      jpublish 'action', @me,
+        :body => "tried to claim #{word} by stealing #{words_stolen[0]},"+
+                 " but it would be stealing without extending.",
+        :msgclass => 'failed'
+
       render :json => {:status => false}
 
     when :word_too_short then
       jpublish 'action', @me,
-        :body => "tried to claim #{word}, but it's too short",
+        :body => "tried to claim #{word}, but it's too short.",
         :msgclass => 'failed'
 
       render :json => {:status => false}
 
     when :word_not_in_dict then
       jpublish 'action', @me,
-        :body => "tried to claim #{word}, but it's not in the dictionary",
-        :msgclass => 'failed'
-
-      render :json => {:status => false}
-
-    when :word_not_extended then
-      jpublish 'action', @me,
-        :body => "tried to claim #{word}, but it would be stealing without extending",
+        :body => "tried to claim #{word}, but it's not in the dictionary.",
         :msgclass => 'failed'
 
       render :json => {:status => false}
 
     when :word_not_available then
       jpublish 'action', @me,
-        :body => "tried to claim #{word}, but it's not on the board",
+        :body => "tried to claim #{word}, but it's not on the board.",
         :msgclass => 'failed'
 
       render :json => {:status => false}

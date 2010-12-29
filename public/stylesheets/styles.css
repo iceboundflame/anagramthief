@@ -1,15 +1,17 @@
-.failed {
-  color: #444;
-  font-style: italic;
-}
-#left-col {
+.left-col {
   width: 500px;
   float: left;
 }
-#right-col {
+.right-col {
   width: 250px;
   float: left;
 }
+
+.tagline {
+  font-size: 0.75em;
+}
+
+/* TILES */
 ul.tiles {
   margin: 0;
   padding: 0;
@@ -27,6 +29,8 @@ ul.tiles li {
 ul.tiles li.unseen {
   background-color: #eed;
 }
+
+/* MESSAGES */
 #message-area {
   overflow: auto;
   height: 300px;
@@ -45,6 +49,12 @@ ul.tiles li.unseen {
   padding-bottom: 2px;
   text-indent: -15px;
 }
+.failed {
+  color: #444;
+  font-style: italic;
+}
+
+/* PLAYERS */
 ul.player-words {
   padding: 0;
   margin: 0;
@@ -77,7 +87,7 @@ ul.player-words>li {
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
-
+/* DEFINITIONS */
 #definition {
   overflow: auto;
   height: 200px;

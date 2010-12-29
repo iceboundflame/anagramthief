@@ -1,4 +1,4 @@
-class GameState::MyMultiset
+class MyMultiset
   def initialize(args={})
     @hash = {}
     if args.include? :word
@@ -38,6 +38,14 @@ class GameState::MyMultiset
     res
   end
 
+  def to_hash
+    @hash.dup
+  end
+
+  def to_s
+    "#Multiset"+@hash.to_s
+  end
+
   def size
     @hash.values.inject(0) {|sum, ct| sum + ct}
   end
@@ -60,7 +68,8 @@ class GameState::MyMultiset
       b.delete(k) if acount >= 0
     end
 
-    return GameState::MyMultiset.from_hash(a), GameState::MyMultiset.from_hash(b)
+    #return MyMultiset.from_hash(a), MyMultiset.from_hash(b)
+    return self.class.from_hash(a), self.class.from_hash(b)
   end
 
   def each
