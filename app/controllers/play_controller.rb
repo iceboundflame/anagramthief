@@ -115,8 +115,10 @@ class PlayController < ApplicationController
       
       msg = "claimed #{word} by"
       msg += " stealing #{words_stolen.join ', '}" unless words_stolen.empty?
-      msg += " + " unless words_stolen.empty? or pool_used_letters.empty?
-      msg += pool_used_letters.join(', ') unless pool_used_letters.empty?
+      unless pool_used_letters.empty?
+        msg += words_stolen.empty? ? ' taking' : ' +'
+        msg += " #{pool_used_letters.join(', ')}" unless pool_used_letters.empty?
+      end
 
       jpublish 'action', @me, :body => msg
       render :json => {:status => true}
