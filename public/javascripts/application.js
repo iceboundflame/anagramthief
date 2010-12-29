@@ -122,7 +122,8 @@ function initGame() {
     updateRestartButton();
   });
 
-  /*setInterval("heartbeat()", 5000);*/
+  if (gd.heartRate > 0)
+    setInterval("heartbeat()", gd.heartRate);
 }
 
 function heartbeat() {

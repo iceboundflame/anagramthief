@@ -60,6 +60,7 @@ We're playing in Game '<%= @game.name %>'.
       voteRestart: '<%= escape_javascript play_vote_restart_url %>',
       heartbeat: '<%= escape_javascript play_heartbeat_url %>'
     },
+    heartRate: <%= Rails.env == 'development' ? '0' : '10000' %>,
     voteRestart: false
   };
 
