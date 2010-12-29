@@ -66,8 +66,8 @@ function initGame() {
       next.addClass('active-defn');
     }
   }
-  $('#prev-defn').click(function () { switchDefn('prev'); });
-  $('#next-defn').click(function () { switchDefn('next'); });
+  $('#prev-defn').click(function () { switchDefn('prev'); return false; });
+  $('#next-defn').click(function () { switchDefn('next'); return false; });
 
 	var talkFiller = 'Say something...';
 	$('#talk').focus(function() {
