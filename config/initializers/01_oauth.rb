@@ -7,6 +7,7 @@ module Facebook
 end
 
 Anathief::REDIS_KPREFIX = Anathief::SETTINGS['redis']['kprefix']
+Anathief::JUGGERNAUT_PREFIX = Anathief::SETTINGS['juggernaut']['prefix']
 
 unless MiniFB.method_defined?(:signed_request_params)
   puts "Monkey patching MiniFB"

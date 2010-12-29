@@ -5,6 +5,8 @@ development:
     canvas_url: http://apps.facebook.com/anathief-dev/
   redis:
     kprefix: anathief-dev
+  juggernaut:
+    prefix: anathief-dev
 
 production:
   facebook:
@@ -13,3 +15,5 @@ production:
     canvas_url: http://apps.facebook.com/anagramthief/
   redis:
     kprefix: anagramthief
+  juggernaut:
+    prefix: anagramthief
