@@ -29,7 +29,14 @@ We're playing in Game '<%= @game.name %>'.
 
     <textarea id="talk">Say something...</textarea>
 
-    <input type="button" id="vote-restart" value="Vote to Restart" />
+    <div><input type="button" id="vote-restart" value="Vote to Restart" /></div>
+
+    <div id="defn-nav">
+    <strong class="left">Definitions</strong>
+    <a href="#" id="prev-defn">&laquo; Prev</a> |
+    <a href="#" id="next-defn">Next &raquo;</a>
+    </div>
+    <div id="definition"></div>
   </div>
 </div>
 

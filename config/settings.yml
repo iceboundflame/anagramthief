@@ -7,6 +7,8 @@ development:
     kprefix: anathief-dev
   juggernaut:
     prefix: anathief-dev
+  wordnik:
+    api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07
 
 production:
   facebook:
@@ -17,3 +19,5 @@ production:
     kprefix: anagramthief
   juggernaut:
     prefix: anagramthief
+  wordnik:
+    api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07

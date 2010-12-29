@@ -48,8 +48,26 @@ function initGame() {
         }
 
 				break;
+
+			case 'definitions':
+        newdef = $('<div class="active-defn" />').html(data.body);
+        $('#definition').children().removeClass('active-defn');
+        $('#definition').append(newdef);
+
+				break;
 		}
 	});
+
+  function switchDefn(whichWay) { // whichWay = 'prev' or 'next'
+    cur = $('.active-defn');
+    next = cur[whichWay]();
+    if (next.size()) {
+      cur.removeClass('active-defn');
+      next.addClass('active-defn');
+    }
+  }
+  $('#prev-defn').click(function () { switchDefn('prev'); });
+  $('#next-defn').click(function () { switchDefn('next'); });
 
 	var talkFiller = 'Say something...';
 	$('#talk').focus(function() {

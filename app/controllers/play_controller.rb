@@ -100,6 +100,26 @@ class PlayController < ApplicationController
     end
   end
 
+  def get_nice_defs(word)
+    pos_map = {
+      'verb-intransitive' => 'verb (used without object)',
+      'verb-transitive' => 'verb (used with object)',
+    }
+
+    result = Hash.new do |hash, key|
+      hash[key] = Hash.new { |hash2, key2| hash2[key2] = [] }
+    end
+    raw = Wordnik::Word.find(word).definitions
+    raw.each do |d|
+      next unless d.text
+      pos = d.part_of_speech
+      pos = pos_map[pos] if pos_map.include? pos
+      result[d.headword][pos] << d.text
+    end
+
+    result
+  end
+
   def claim
     word = params[:word].upcase
 
@@ -121,6 +141,17 @@ class PlayController < ApplicationController
       end
 
       jpublish 'action', @me, :body => msg
+
+      # lookup def
+      # do this as late as possible so it doesn't matter if this API
+      # hangs/takes a long time
+      definitions = get_nice_defs word.downcase
+      logger.debug green PP.pp definitions, ''
+      jpublish 'definitions', @me, :body => render_to_string(
+        :partial => 'definitions',
+        :object => definitions,
+      )
+
       render :json => {:status => true}
 
     when :word_shares_root then

@@ -17,11 +17,12 @@ ul.tiles {
 }
 ul.tiles li {
   display: inline-block;
-  width: 25px; height: 25px;
+  width: 15px; height: 15px;
   margin: 1px;
-  background-color: #ffe; border: 1px solid black;
+  background-color: #ffe;
+  /*border: 1px solid black;*/
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1em;
 }
 ul.tiles li.unseen {
   background-color: #eed;
@@ -75,6 +76,34 @@ ul.player-words>li {
   height: 3em;
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
+
+
+#definition {
+  overflow: auto;
+  height: 200px;
+  width: 100%;
+  border: 1px solid black;
+}
+#definition>div {
+  margin: 3px;
+  display: none;
+}
+#definition .active-defn {
+  display: block;
+}
+.defn-headword {
+  font-weight: bold;
+}
+.defn-pos {
+  font-style: italic;
+}
+.defn-list {
+  margin-bottom: 0.5em;
+}
+#next-defn, #prev-defn {
+  font-size: 1.5em;
+}
+
 /*.scores-col {
   float: left; width: 370px;
 }

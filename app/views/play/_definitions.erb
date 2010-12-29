@@ -1,0 +1,11 @@
+<% definitions.each do |headword, pos_to_defs| %>
+  <div class="defn-headword"><%= headword %></div>
+  <% pos_to_defs.each do |pos, defs| %>
+    <div class="defn-pos">&ndash;<%= pos %></div>
+    <ol class="defn-list">
+    <% defs.each do |dtext| %>
+      <li><%= dtext %></li>
+    <% end %>
+    </ol>
+  <% end %>
+<% end %>
