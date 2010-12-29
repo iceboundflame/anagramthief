@@ -13,7 +13,7 @@ function initGame() {
 				addMessage(data.from, data.body, false);
 				break;
 			case 'action':
-				addMessage(data.from, data.body, true);
+				addMessage(data.from, data.body, true, data.msgclass);
 				break;
 			case 'pool_update':
 				$('#pool-info').html(data.body);
@@ -104,7 +104,7 @@ function initGame() {
     updateRestartButton();
   });
 
-  setInterval("heartbeat()", 5000);
+  /*setInterval("heartbeat()", 5000);*/
 }
 
 function heartbeat() {
@@ -126,11 +126,12 @@ function flipChar() {
 	$('#claimword').focus();
 }
 
-function addMessage(from, message, isAction) {
+function addMessage(from, message, isAction, msgclass) {
   var msgId = 'message-' + Math.floor(Math.random()*2147483647);
 	var li = $('<li id="'+msgId+'" />');
 	if (from)
 		li.append($('<strong />').text(from.name)).append(' ');
+  if (msgclass) li.addClass(msgclass);
 	li.append(message);
 	$('#messages').append(li);
 	messageArea = $('#message-area');

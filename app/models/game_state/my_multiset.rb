@@ -30,6 +30,14 @@ class GameState::MyMultiset
     self
   end
 
+  def to_a
+    res = []
+    @hash.each do |ltr, ct|
+      res += [ltr] * ct
+    end
+    res
+  end
+
   def size
     @hash.values.inject(0) {|sum, ct| sum + ct}
   end

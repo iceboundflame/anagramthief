@@ -141,7 +141,6 @@ class GameState
   def claim_word(user_id, word_raw)
     word = word_raw.upcase
 
-    # TODO: word cannot have same root
     return :word_too_short unless word.length >= 3
     return :word_not_in_dict unless word_in_dict? word
 
@@ -156,6 +155,27 @@ class GameState
     return :word_not_extended if
       words_stolen.size == 1 and pool_used.size == 0
     #FIXME: check other possiblities: pool, or combine two other words
+
+    if words_stolen.size == 1
+      #puts "******************************FML"
+      roots = redis.hmget('2+2lemma', word.downcase, words_stolen[0].downcase)
+      #puts "#{w1} vs #{w2}--"
+      #puts "#{roots}"
+      if roots and roots[0] and roots[1]
+        roots0 = Set.new(roots[0].split ',')
+        roots1 = Set.new(roots[1].split ',')
+        roots_shared = roots0 & roots1
+
+        #puts "#{roots0.to_a.inspect}, #{roots1.to_a.inspect}, #{roots_shared.to_a.inspect}"
+        if roots_shared.size > 0
+          return :word_shares_root,
+            roots_shared.to_a.map{|w| w.upcase},
+            words_stolen[0], pool_used 
+        end
+      end
+    end
+
+    ## Claim is okay, execute it.
 
     # FIXME: Fairness: start looking for steals from player after you.
     words_stolen.each do |word|

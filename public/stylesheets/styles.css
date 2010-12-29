@@ -1,4 +1,8 @@
-#left-col{
+.failed {
+  color: #444;
+  font-style: italic;
+}
+#left-col {
   width: 500px;
   float: left;
 }

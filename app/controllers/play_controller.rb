@@ -103,54 +103,64 @@ class PlayController < ApplicationController
   def claim
     word = params[:word].upcase
 
-    result, new_word, words_stolen, pool_used =
-      @state.claim_word(@me_id, word)
+    result, *resultdata = @state.claim_word(@me_id, word)
 
     case result
     when :ok then
+      new_word, words_stolen, pool_used = resultdata
       jpublish_players_update :new_word_id => [@me_id, new_word.id]
       jpublish_pool_update
 
-      pool_used_letters = []
-      pool_used.each do |ltr, ct|
-        pool_used_letters += [ltr] * ct
-      end
+      pool_used_letters = pool_used.to_a
       
       msg = "claimed #{word} by"
       msg += " stealing #{words_stolen.join ', '}" unless words_stolen.empty?
-      msg += " and" unless words_stolen.empty? or pool_used_letters.empty?
-      msg += " taking #{pool_used_letters.join ', '}"
+      msg += " + " unless words_stolen.empty? or pool_used_letters.empty?
+      msg += " taking #{pool_used_letters.join ', '}" unless pool_used_letters.empty?
 
       jpublish 'action', @me, :body => msg
       render :json => {:status => true}
 
+    when :word_shares_root then
+      shared_roots, word_stolen, pool_used = resultdata
+
+      pool_used_letters = pool_used.to_a
+
+      msg = "tried to claim #{word} by stealing #{word_stolen}"
+      msg += " + #{pool_used_letters.join ', '}" unless
+        pool_used_letters.empty?
+      msg += ". But they share the root #{shared_roots.join ', '}."
+
+      jpublish 'action', @me, :body => msg, :msgclass => 'failed'
+      render :json => {:status => false}
+
     when :word_too_short then
-      jpublish 'action', @me, :body => "tried to claim #{word}, but it's too short"
+      jpublish 'action', @me,
+        :body => "tried to claim #{word}, but it's too short",
+        :msgclass => 'failed'
 
       render :json => {:status => false}
-      #render :json => {:status => false,
-        #:message => "#{word} is too short"}
 
     when :word_not_in_dict then
-      jpublish 'action', @me, :body => "tried to claim #{word}, but it's not in the dictionary"
+      jpublish 'action', @me,
+        :body => "tried to claim #{word}, but it's not in the dictionary",
+        :msgclass => 'failed'
 
       render :json => {:status => false}
-      #render :json => {:status => false,
-        #:message => "#{word} is not in the dictionary"}
 
     when :word_not_extended then
-      jpublish 'action', @me, :body => "tried to claim #{word}, but it would be stealing without extending"
+      jpublish 'action', @me,
+        :body => "tried to claim #{word}, but it would be stealing without extending",
+        :msgclass => 'failed'
 
       render :json => {:status => false}
-      #render :json => {:status => false,
-        #:message => "Claiming #{word} would be stealing without extending"}
 
     when :word_not_available then
-      jpublish 'action', @me, :body => "tried to claim #{word}, but it's not on the board"
+      jpublish 'action', @me,
+        :body => "tried to claim #{word}, but it's not on the board",
+        :msgclass => 'failed'
 
       render :json => {:status => false}
-      #render :json => {:status => false,
-        #:message => "#{word} can't be made with the letters on the board"}
 
     end
   end
@@ -226,7 +236,7 @@ class PlayController < ApplicationController
     }} if from_user
 
     out = {:type => type}.merge(from).merge(data)
-    logger.debug green "**PUBLISH** #{PP.pp out,''}"
+    #logger.debug green "**PUBLISH** #{PP.pp out,''}"
     Juggernaut.publish jchan(@game_id), out
   end
 
