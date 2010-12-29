@@ -47,7 +47,9 @@ ul.player-words {
 }
 ul.player-words>li {
   display: inline-block;
-  margin: 2px 5px;
+  /*margin: 2px 5px;*/
+  margin: 0;
+  padding: 10px;
   border: 1px dashed #999;
 }
 .player-info {

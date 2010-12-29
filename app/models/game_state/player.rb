@@ -1,5 +1,6 @@
 class GameState::Player
-  attr_accessor :id, :words, :voted_restart, :next_word_id, :is_active
+  attr_accessor :id, :words, :voted_restart, :next_word_id,
+    :is_active, :last_heartbeat
   attr_accessor :user
 
   def initialize(id=nil)
@@ -8,6 +9,7 @@ class GameState::Player
     @voted_restart = false
     @next_word_id = 1
     @is_active = false
+    @last_heartbeat = nil
     @user = nil
   end
 
@@ -21,13 +23,19 @@ class GameState::Player
     @voted_restart
   end
 
+  def beat_heart
+    @last_heartbeat = Time.now
+  end
+
   def num_letters
     @words.inject(0) {|sum, (id,w)| sum + w.word.length}
   end
 
   def add_word(word)
-    @words[@next_word_id] = GameState::Word.new(@next_word_id, word)
+    w = GameState::Word.new(@next_word_id, word)
+    @words[@next_word_id] = w
     @next_word_id += 1
+    w
   end
 
   def remove_word_id(id)
@@ -41,8 +49,9 @@ class GameState::Player
   end
   def find_word(word)
     @words.each do |id, w|
-      return w if (w.word == word)
+      return w if w.word == word
     end
+    nil
   end
 
   def to_data
@@ -51,6 +60,7 @@ class GameState::Player
       'voted_restart' => @voted_restart,
       'next_word_id' => @next_word_id,
       'is_active' => @is_active,
+      'last_heartbeat' => @last_heartbeat,
     }
   end
   def self.from_data(x); new.from_data(x); end
@@ -63,6 +73,9 @@ class GameState::Player
     }
     @voted_restart = data['voted_restart']
     @next_word_id = data['next_word_id']
+    @is_active = data['is_active']
+    @last_heartbeat = data['last_heartbeat']
+    @last_heartbeat &&= Time.parse @last_heartbeat
     self
   end
 end

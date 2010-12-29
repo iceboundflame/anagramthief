@@ -43,12 +43,18 @@ We're playing in Game '<%= @game.name %>'.
 </pre>
 
 <script type="text/javascript" charset="utf-8">
-  var me_id = '<%= escape_javascript @me_id %>';
-  var jchan = '<%= escape_javascript jchan @game_id %>';
-  var playChatUrl = '<%= escape_javascript play_chat_url %>';
-  var playClaimUrl = '<%= escape_javascript play_claim_url %>';
-  var playFlipCharUrl = '<%= escape_javascript play_flip_char_url %>';
-  var playVoteRestartUrl = '<%= escape_javascript play_vote_restart_url %>';
+  var gd = {
+    me_id: '<%= escape_javascript @me_id %>',
+    jchan: '<%= escape_javascript jchan @game_id %>',
+    urls: {
+      chat: '<%= escape_javascript play_chat_url %>',
+      claim: '<%= escape_javascript play_claim_url %>',
+      flipChar: '<%= escape_javascript play_flip_char_url %>',
+      voteRestart: '<%= escape_javascript play_vote_restart_url %>',
+      heartbeat: '<%= escape_javascript play_heartbeat_url %>'
+    },
+    voteRestart: false
+  };
 
   $(document).ready(function() {
     initGame();

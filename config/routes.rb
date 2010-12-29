@@ -5,6 +5,7 @@ Anathief::Application.routes.draw do
   match '/play/flip_char', :to => 'play#flip_char', :as => 'play_flip_char'
   match '/play/claim', :to => 'play#claim', :as => 'play_claim'
   match '/play/vote_restart', :to => 'play#vote_restart', :as => 'play_vote_restart'
+  match '/play/heartbeat', :to => 'play#heartbeat', :as => 'play_heartbeat'
   match '/play/:id', :to => 'play#play', :as => 'play'
   match '/auth/callback', :to => 'sessions#create', :as => 'sessions_create'
 

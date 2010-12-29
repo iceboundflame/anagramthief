@@ -1,7 +1,7 @@
 class GameState
   attr_accessor :game_id
   attr_accessor :players, :players_order, :pool_unseen, :pool_seen
-  attr_accessor :is_saved
+  attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
 
   def self.redis_key(game_id)
     "anathief/game_state/#{game_id}"
@@ -30,7 +30,7 @@ class GameState
     key = redis_key game_id
     game_json = redis[key]
     return nil unless game_json
-    puts "**** gamestate.load: #{game_json}"
+    puts "DBG**** gamestate.load: #{game_json}"
     g = GameState.new.from_json game_json
     g.is_saved = true
     g
@@ -81,8 +81,30 @@ class GameState
     # TODO put back in pool_unseen?
   end
 
+  PLAYER_TIMEOUT = 15.seconds
+
   def update_active_players(active_user_ids)
-    @players.each {|id,p| p.is_active = active_user_ids.include? id}
+    now = Time.now
+    became_active, became_inactive = [], []
+    @players.each {|id,p|
+      in_game = active_user_ids.include?(id)
+      heart_beatedness =
+        p.last_heartbeat && (now - p.last_heartbeat < PLAYER_TIMEOUT)
+      is_active = in_game && heart_beatedness
+      puts "Player #{id} was active #{p.is_active} in_game #{in_game} heart #{heart_beatedness}"
+      if p.is_active ^ is_active
+        puts "Player #{id} becoming #{is_active}"
+        p.is_active = is_active
+        if is_active
+          became_active << id
+        else
+          became_inactive << id
+        end
+      end
+    }
+
+    @is_saved = false unless became_active.empty? and became_inactive.empty?
+    return became_active, became_inactive
   end
 
   def purge_inactive_players
@@ -143,9 +165,9 @@ class GameState
       count.times { @pool_seen.delete_at(@pool_seen.index letter) }
     end
 
-    @players[user_id].add_word word
+    new_word = @players[user_id].add_word word
 
-    return :ok, words_stolen, pool_used
+    return :ok, new_word, words_stolen, pool_used
   end
 
 

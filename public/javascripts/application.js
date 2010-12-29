@@ -3,12 +3,10 @@ function log(x) {
 		console.log(x);
 }
 
-var voteRestart = false;
-
 function initGame() {
 	window.WEB_SOCKET_SWF_LOCATION = "http://iceboundflame.com:8080/WebSocketMain.swf";
 	var jug = new Juggernaut;
-	jug.subscribe(jchan, function(data){
+	jug.subscribe(gd.jchan, function(data){
 		log(data);
 		switch (data.type) {
 			case 'chat':
@@ -21,11 +19,11 @@ function initGame() {
 				$('#pool-info').html(data.body);
 				break;
         /*case 'refresh_state':*/
-        /*$.post(playRefreshStateUrl);*/
+        /*$.post(gd.urls.refreshState);*/
         /*break;*/
 			case 'players_update':
         if (data.restarted) {
-          voteRestart = false;
+          gd.voteRestart = false;
           updateRestartButton();
         }
 
@@ -44,8 +42,9 @@ function initGame() {
 					// TODO
 				}
 
-        if (data.new_word) {
-
+        if (data.new_word_id) {
+          $('#word-'+data.new_word_id.join('-')).effect(
+              'highlight', {}, 5000);
         }
 
 				break;
@@ -68,7 +67,7 @@ function initGame() {
 
 		if (!msg) return;
 
-		$.post(playChatUrl,
+		$.post(gd.urls.chat,
 			{message: msg});
 
 		$('#talk').val('');
@@ -79,8 +78,12 @@ function initGame() {
 		if (e.keyCode != 13) return;
 
 		var word = $('#claimword').val();
-		if (!word) return;
-		$.post(playClaimUrl,
+		if (!word) {
+      flipChar();
+      return;
+    }
+
+		$.post(gd.urls.claim,
 			{word: word},
 			function(data) {
 				if (data.message) {
@@ -93,19 +96,28 @@ function initGame() {
 	});
 
   $('#vote-restart').click(function() {
-    voteRestart = !voteRestart;
-    $.post(playVoteRestartUrl,
-      {vote: voteRestart});
+    if (!gd.voteRestart && !confirm("Are you sure you want to vote to restart?"))
+      return;
+    gd.voteRestart = !gd.voteRestart;
+    $.post(gd.urls.voteRestart,
+      {vote: gd.voteRestart});
     updateRestartButton();
   });
+
+  setInterval("heartbeat()", 5000);
+}
+
+function heartbeat() {
+  $.post(gd.urls.heartbeat);
+  log("Heartbeat");
 }
 
 function updateRestartButton() {
-  $('#vote-restart').val(voteRestart ? 'Cancel restart' : 'Vote to restart');
+  $('#vote-restart').val(gd.voteRestart ? 'Cancel restart' : 'Vote to restart');
 }
 
 function flipChar() {
-	$.post(playFlipCharUrl,
+	$.post(gd.urls.flipChar,
 		function(data) {
 			if (data.message) {
 				addMessage(null, data.message, true);
@@ -122,7 +134,7 @@ function addMessage(from, message, isAction) {
 	li.append(message);
 	$('#messages').append(li);
 	messageArea = $('#message-area');
-	/*console.log(messageArea[0].scrollHeight);*/
+	/*log(messageArea[0].scrollHeight);*/
 	messageArea.scrollTop(messageArea[0].scrollHeight);
   $('#'+msgId).effect('highlight', {}, 3000);
 }

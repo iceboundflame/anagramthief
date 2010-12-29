@@ -10,7 +10,7 @@
 </div>
 <ul class="player-words">
   <% player.words.each do |id,word| %>
-    <li><%= render :partial => 'tiles', :object => word.letters %></li>
+    <li id="<%= "word-#{player.id}-#{id}" %>"><%= render :partial => 'tiles', :object => word.letters %></li>
   <% end %>
   <% if player.words.size == 0 %>
     <li>No words.</li>

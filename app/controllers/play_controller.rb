@@ -1,4 +1,8 @@
 class PlayController < ApplicationController
+  require 'term/ansicolor'
+  require 'pp'
+  include Term::ANSIColor
+
   before_filter :load_game, :except => [:list]
   after_filter :save_game, :except => [:list]
   helper_method :jchan
@@ -47,12 +51,17 @@ class PlayController < ApplicationController
     just_joined = !@state.players.include?(@me_id)
     @state.add_player(@me_id) if just_joined
 
+    @state.player(@me_id).beat_heart
+
     @state.load_player_users
-    @state.update_active_players @game.users.map {|u| u.id_s}
+    became_active, became_inactive =
+      @state.update_active_players @game.users.map {|u| u.id_s}
 
     @players = @state.players_order.map{|id| @state.player(id)}
 
-    jpublish_players_update :added => [@me_id] if just_joined
+    became_active << @me_id if just_joined
+    jpublish_players_update :added => became_active unless
+      became_active.empty? and became_inactive.empty?
   end
 
   def save_game
@@ -62,12 +71,18 @@ class PlayController < ApplicationController
       jpublish_players_update :removed => purged
     end
 
-    @state.save
-    logger.debug 'Saved game: '+@state.to_json
+    #unless @state.is_saved
+      @state.save
+      logger.debug 'Saved game: '+@state.to_json
+    #end
   end
 
   def play
     # Render template, show state
+  end
+
+  def heartbeat
+    render :text => 'OK'
   end
 
   def flip_char
@@ -88,11 +103,12 @@ class PlayController < ApplicationController
   def claim
     word = params[:word].upcase
 
-    result, words_stolen, pool_used = @state.claim_word(@me_id, word)
+    result, new_word, words_stolen, pool_used =
+      @state.claim_word(@me_id, word)
 
     case result
     when :ok then
-      jpublish_players_update
+      jpublish_players_update :new_word_id => [@me_id, new_word.id]
       jpublish_pool_update
 
       pool_used_letters = []
@@ -209,8 +225,9 @@ class PlayController < ApplicationController
       :profile_pic => from_user.profile_pic,
     }} if from_user
 
-    Juggernaut.publish(jchan(@game_id),
-                       {:type => type}.merge(from).merge(data))
+    out = {:type => type}.merge(from).merge(data)
+    logger.debug green "**PUBLISH** #{PP.pp out,''}"
+    Juggernaut.publish jchan(@game_id), out
   end
 
   def jchan(id)

@@ -1,3 +1,8 @@
+[dcl] NOTE: Must be hosted at the root / of a domain! Juggernaut hardcodes "/WebSocketMain.swf"
+
+
+
+
 == Welcome to Rails
 
 Rails is a web-application framework that includes everything needed to create
