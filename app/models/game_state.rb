@@ -30,7 +30,7 @@ class GameState
     key = redis_key game_id
     game_json = redis[key]
     return nil unless game_json
-    puts "DBG**** gamestate.load: #{game_json}"
+    #puts "DBG**** gamestate.load: #{game_json}"
     g = GameState.new.from_json game_json
     g.is_saved = true
     g
@@ -91,9 +91,9 @@ class GameState
       heart_beatedness =
         p.last_heartbeat && (now - p.last_heartbeat < PLAYER_TIMEOUT)
       is_active = in_game && heart_beatedness
-      puts "Player #{id} was active #{p.is_active} in_game #{in_game} heart #{heart_beatedness}"
+      #puts "Player #{id} was active #{p.is_active} in_game #{in_game} heart #{heart_beatedness}"
       if p.is_active ^ is_active
-        puts "Player #{id} becoming #{is_active}"
+        #puts "Player #{id} becoming #{is_active}"
         p.is_active = is_active
         if is_active
           became_active << id

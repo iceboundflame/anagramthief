@@ -1,9 +1,12 @@
+Anathief::SETTINGS = YAML.load(File.read("#{Rails.root}/config/settings.yml"))["#{Rails.env}"]
+
 module Facebook
-  CONFIG = YAML.load(File.read("#{Rails.root}/config/settings.yml"))["#{Rails.env}"]['facebook']
-  APP_ID = CONFIG['app_id']
-  SECRET = CONFIG['app_secret']
-  CANVAS_URL = CONFIG['canvas_url']
+  APP_ID = Anathief::SETTINGS['facebook']['app_id']
+  SECRET = Anathief::SETTINGS['facebook']['app_secret']
+  CANVAS_URL = Anathief::SETTINGS['facebook']['canvas_url']
 end
+
+Anathief::REDIS_KPREFIX = Anathief::SETTINGS['redis']['kprefix']
 
 unless MiniFB.method_defined?(:signed_request_params)
   puts "Monkey patching MiniFB"

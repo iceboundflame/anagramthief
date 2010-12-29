@@ -1,11 +1,15 @@
 development:
   facebook:
-    app_id: 168728976502042
-    app_secret: fb1ed0a7bca5572803f7fc48889beb50
-    canvas_url: http://apps.facebook.com/anagramthief/
+    app_id: 169525139755906
+    app_secret: a39e69a3a05c4faece4d67b2132e38b2
+    canvas_url: http://apps.facebook.com/anathief-dev/
+  redis:
+    kprefix: anathief-dev
 
 production:
   facebook:
     app_id: 168728976502042
     app_secret: fb1ed0a7bca5572803f7fc48889beb50
     canvas_url: http://apps.facebook.com/anagramthief/
+  redis:
+    kprefix: anagramthief
