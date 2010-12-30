@@ -1,10 +1,10 @@
 function log(x) {
-	if (typeof console == "object")
-		console.log(x);
+  /*if (typeof console == "object")*/
+  /*console.log(x);*/
 }
 
 function initGame() {
-	window.WEB_SOCKET_SWF_LOCATION = "http://iceboundflame.com:8080/WebSocketMain.swf";
+  /*window.WEB_SOCKET_SWF_LOCATION = "http://iceboundflame.com:8080/WebSocketMain.swf";*/
 	var jug = new Juggernaut;
 	jug.subscribe(gd.jchan, function(data){
 		log(data);
@@ -12,15 +12,15 @@ function initGame() {
 			case 'chat':
 				addMessage(data.from, data.body, false);
 				break;
+
 			case 'action':
 				addMessage(data.from, data.body, true, data.msgclass);
 				break;
+
 			case 'pool_update':
 				$('#pool-info').html(data.body);
 				break;
-        /*case 'refresh_state':*/
-        /*$.post(gd.urls.refreshState);*/
-        /*break;*/
+
 			case 'players_update':
         if (data.restarted) {
           gd.voteRestart = false;
@@ -43,8 +43,10 @@ function initGame() {
 				}
 
         if (data.new_word_id) {
-          $('#word-'+data.new_word_id.join('-')).effect(
-              'highlight', {}, 5000);
+          wordItem = $('#word-'+data.new_word_id.join('-'));
+
+          wordItem.addClass('highlighted');
+          wordItem.effect('highlight', {}, 5000);
         }
 
 				break;

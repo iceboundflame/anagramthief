@@ -8,14 +8,10 @@
   Guest mode
   
   Flood protection for chat and claim field
-  Match Algorithm needs to be reworked
-    Round table simulation
-    Score different possibilities
-    Backtracking
+Round table simulation for matching fairness
   
   All Firefoxes - websockets don't work
   
-  Highlight words that are taken
   
   Josh
   Safari 5.0.2 Mac
@@ -28,3 +24,7 @@
 / Players gone or idle - heartbeat.
 X   Need async timer?
 
+/ Match Algorithm needs to be reworked
+x   Score different possibilities
+/   Backtracking
+/ Highlight words that are taken
