@@ -261,9 +261,14 @@ class PlayController < ApplicationController
     raw.each do |d|
       next unless d.text
       pos = d.part_of_speech
-      pos = pos_map[pos] if pos_map.include? pos
+      if pos_map.include? pos
+        pos = pos_map[pos]
+      else
+        pos.gsub! /-/, ' '
+      end
       result[d.headword][pos] << d.text
     end
+    result[word] = [] if result.empty?
 
     result
   end

@@ -88,7 +88,7 @@ ul.player-words>li {
 #me .player-info {
   background-color: #cef;
 }
-#talk {
+#chat {
   width: 100%;
   height: 3em;
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -102,7 +102,7 @@ ul.player-words>li {
   border: 1px solid black;
 }
 #definition>div {
-  margin: 3px;
+  margin: 5px;
   display: none;
 }
 #definition .active-defn {
@@ -110,6 +110,7 @@ ul.player-words>li {
 }
 .defn-headword {
   font-weight: bold;
+  margin-right: 10px;
 }
 .defn-pos {
   font-style: italic;
@@ -118,7 +119,11 @@ ul.player-words>li {
   margin-bottom: 0.5em;
 }
 #next-defn, #prev-defn {
-  font-size: 1.5em;
+  /*font-size: 1.5em;*/
+}
+.sectionhead {
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 /*.scores-col {

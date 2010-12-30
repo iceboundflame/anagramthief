@@ -23,27 +23,33 @@
     </div>
   </div>
   <div class="right-col">
-    <input type="button" value="Flip a letter!" onclick="flipChar();" class="flip-btn" />
-    <br />
-    <label for="claimword">Claim a word:</label>
-    <input type="text" id="claimword" />
+    <div>
+      <input type="button" value="Flip a letter!" id="flip-btn" />
+      <input type="button" id="vote-restart-btn" value="Vote to Restart" />
+    </div>
+    <div>
+      <label for="claimword">Claim a word:</label>
+      <input type="text" id="claimword" />
+    </div>
 
     <hr />
 
+    <div class="sectionhead">Messages</div>
     <div id="message-area">
       <ul id="messages">
-        <li>Chat!</li>
+        <li>Welcome to Anagram Thief.</li>
       </ul>
     </div>
 
-    <textarea id="talk">Say something...</textarea>
-
-    <div><input type="button" id="vote-restart" value="Vote to Restart" /></div>
+    <% chat_filler = "Type here and press enter to chat\u2026" %>
+    <textarea id="chat"><%= chat_filler %></textarea>
 
     <div id="defn-nav">
-    <strong class="left">Definitions</strong>
-    <a href="#" id="prev-defn">&laquo; Prev</a> |
-    <a href="#" id="next-defn">Next &raquo;</a>
+      <span class="sectionhead">Definitions</span>
+      <div class="right">
+        <a href="#" id="prev-defn">&laquo; Prev</a> |
+        <a href="#" id="next-defn">Next &raquo;</a>
+      </div>
     </div>
     <div id="definition"></div>
   </div>
@@ -58,22 +64,22 @@
 @players: <%= @players.inspect %>
 </pre>
 
-<script type="text/javascript" charset="utf-8">
-  var gd = {
-    me_id: '<%= escape_javascript @me_id %>',
-    jchan: '<%= escape_javascript jchan @game_id %>',
-    urls: {
-      chat: '<%= escape_javascript play_chat_url %>',
-      claim: '<%= escape_javascript play_claim_url %>',
-      flipChar: '<%= escape_javascript play_flip_char_url %>',
-      voteRestart: '<%= escape_javascript play_vote_restart_url %>',
-      heartbeat: '<%= escape_javascript play_heartbeat_url %>'
-    },
-    heartRate: <%= Rails.env == 'development' ? '0' : '10000' %>,
-    voteRestart: false
-  };
-
+<% content_for :after_scripts do %>
+<script type="text/javascript">
   $(document).ready(function() {
-    initGame();
+    Anathief.init({
+      me_id: '<%= escape_javascript @me_id %>',
+      jchan: '<%= escape_javascript jchan @game_id %>',
+      urls: {
+        chat: '<%= escape_javascript play_chat_url %>',
+        claim: '<%= escape_javascript play_claim_url %>',
+        flipChar: '<%= escape_javascript play_flip_char_url %>',
+        voteRestart: '<%= escape_javascript play_vote_restart_url %>',
+        heartbeat: '<%= escape_javascript play_heartbeat_url %>'
+      },
+      heartRate: <%= Rails.env == 'development' ? '0' : '10000' %>,
+      chatFiller: '<%= escape_javascript chat_filler %>'
+    });
   });
 </script>
+<% end %>

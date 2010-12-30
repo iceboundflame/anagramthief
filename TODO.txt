@@ -1,20 +1,19 @@
   Turn taking 5x at a time - with vote to skip turn
-/ Root detect
-    Crowdsource
 
   Dictionary : No def found, "try dictionary.com" link
   Heartbeats on separate redis keys
-  Fixed GameState.saved?, only save if needed
+  Fixe GameState.saved?, only save if needed
   GameState locking
 
-/ Dictionary - auto define
-    Bookmark word for study!
+  Bookmark word for study!
+
   In-room score
   Score keeping
   Guest mode
   
   Flood protection for chat and claim field
-Round table simulation for matching fairness
+
+  Round table simulation for matching fairness
   
   All Firefoxes - websockets don't work
   
@@ -23,6 +22,10 @@ Round table simulation for matching fairness
   Safari 5.0.2 Mac
   Firefox
   Chrome 8 Mac - press enter in text fields doesn't work
+
+/ Dictionary - auto define
+/ Root detect
+    Crowdsource
 
 / Refactor GameState to be OO
 / - Needs Serialize / load!
