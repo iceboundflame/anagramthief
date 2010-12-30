@@ -1,6 +1,12 @@
   Turn taking 5x at a time - with vote to skip turn
 / Root detect
     Crowdsource
+
+  Dictionary : No def found, "try dictionary.com" link
+  Heartbeats on separate redis keys
+  Fixed GameState.saved?, only save if needed
+  GameState locking
+
 / Dictionary - auto define
     Bookmark word for study!
   In-room score

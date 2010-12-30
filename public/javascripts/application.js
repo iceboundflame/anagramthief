@@ -156,7 +156,6 @@ function addMessage(from, message, isAction, msgclass) {
 	li.append(message);
 	$('#messages').append(li);
 	messageArea = $('#message-area');
-	/*log(messageArea[0].scrollHeight);*/
 	messageArea.scrollTop(messageArea[0].scrollHeight);
   $('#'+msgId).effect('highlight', {}, 3000);
 }

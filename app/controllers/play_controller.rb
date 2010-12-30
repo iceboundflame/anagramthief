@@ -126,7 +126,9 @@ class PlayController < ApplicationController
 
       msg = "tried to claim #{word} by "
       msg += describe_move words_stolen, pool_used
-      msg += ". But they share the root #{roots_shared.join ', '}."
+      msg += '. But they share the root '
+      msg += roots_shared.map{|w|w.upcase}.join ', '
+      msg += '.'
       jpublish 'action', @me, :body => msg, :msgclass => 'failed'
       render :json => {:status => false}
 
