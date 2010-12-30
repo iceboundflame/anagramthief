@@ -38,5 +38,8 @@ module Anathief
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    # [dcl]
+    config.autoload_paths << File.join(config.root, 'lib')
   end
 end

@@ -24,7 +24,6 @@ Anathief::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 
   # [dcl]
-  config.autoload_paths << File.join(config.root, 'lib')
   ActiveSupport::Dependencies.explicitly_unloadable_constants <<
     'WordMatcher' << 'MyMultiset' << 'RedisLockQueue'
 end
