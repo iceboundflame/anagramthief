@@ -99,8 +99,8 @@ var Anathief = function() {
   }
 
   function heartbeat() {
-    $.post(gd.urls.heartbeat);
-    log("Heartbeat");
+    /*$.post(gd.urls.heartbeat);*/
+    /*log("Heartbeat");*/
   }
 
   /** Definitions **/
