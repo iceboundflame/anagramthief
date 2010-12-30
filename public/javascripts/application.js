@@ -31,7 +31,7 @@ var Anathief = function() {
     jug.subscribe(gd.jchan, onDataReceived);
 
     if (gd.heartRate > 0)
-      setInterval("heartbeat()", gd.heartRate);
+      setInterval("Anathief.heartbeat()", gd.heartRate);
   }
 
   function onConnect() {
@@ -216,6 +216,7 @@ var Anathief = function() {
   }
 
   return {
-    init: init
+    init: init,
+    heartbeat: heartbeat
   }
 }();
