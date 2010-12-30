@@ -44,7 +44,7 @@ class PlayController < ApplicationController
     @locked = true
   end
   def unlock_game
-    sleep 1 # pretend we take a long time
+    #sleep 1 # pretend we take a long time
     RedisLockQueue.release_lock @game_id if @locked
     @locked = false
   end
@@ -311,7 +311,7 @@ class PlayController < ApplicationController
       if pos_map.include? pos
         pos = pos_map[pos]
       else
-        pos.gsub! /-/, ' '
+        pos.gsub! /-/, ' ' if pos
       end
       result[d.headword][pos] << d.text
     end
