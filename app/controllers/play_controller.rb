@@ -3,18 +3,17 @@ class PlayController < ApplicationController
   require 'pp'
   include Term::ANSIColor
 
-  before_filter :load_game, :except => [:list]
-  after_filter :save_game, :except => [:list]
+  before_filter :get_ids, :except => [:list]
   helper_method :jchan
 
   def list
-    require_user or return
+    require_user or return false
 
     @games = Game.all
   end
 
-  def load_game
-    require_user or return
+  def get_ids
+    require_user or return false
     @me = current_user
     @me_id = @me.id_s
 
@@ -33,12 +32,24 @@ class PlayController < ApplicationController
     end
 
     begin
-      @game = Game.find(@game_id)
+      @game = Game.find(@game_id, :include => [:users])
     rescue ActiveRecord::RecordNotFound
       redirect_to play_list_url unless @game
-      return
+      return false
     end
+  end
 
+  def lock_game
+    RedisLockQueue.get_lock @game_id, 5, 5
+    @locked = true
+  end
+  def unlock_game
+    sleep 1 # pretend we take a long time
+    RedisLockQueue.release_lock @game_id if @locked
+    @locked = false
+  end
+
+  def load_game
     @state = GameState.load @game_id
     unless @state
       logger.info "Creating GameState #{@game_id}"
@@ -78,15 +89,33 @@ class PlayController < ApplicationController
   end
 
   def play
+    load_game
     # Render template, show state
   end
 
   def heartbeat
+    lock_game
+    begin
+      load_game
+      save_game
+    ensure
+      unlock_game
+    end
+
     render :text => 'OK'
   end
 
   def flip_char
-    char = @state.flip_char
+    lock_game
+    begin
+      load_game
+
+      char = @state.flip_char
+      save_game
+    ensure
+      unlock_game
+    end
+
     if char
       jpublish 'pool_update', @me, :body => render_to_string(:partial => 'pool_info')
 
@@ -103,7 +132,15 @@ class PlayController < ApplicationController
   def claim
     word = params[:word].upcase
 
-    result, *resultdata = @state.claim_word(@me_id, word)
+    lock_game
+    begin
+      load_game
+
+      result, *resultdata = @state.claim_word(@me_id, word)
+      save_game
+    ensure
+      unlock_game
+    end
 
     case result
     when :ok then
@@ -180,19 +217,29 @@ class PlayController < ApplicationController
   end
 
   def vote_restart
-    vote = (params[:vote] != 'false');
-    @state.vote_restart(@me_id, vote)
-
-    num_voted = @state.num_voted_restart
-    num_needed = vote_quorum
-
+    vote = (params[:vote] != 'false')
     message = (vote ? 'voted to restart' : 'canceled vote')
-    message += "<br />#{num_voted} votes/#{num_needed} needed"
+    do_restart = false
 
-    if num_voted >= num_needed
-      message += "<br /><strong>Game Restarted!</strong>"
-      @state.restart
+    load_game
+    begin
+      @state.vote_restart(@me_id, vote)
 
+      num_voted = @state.num_voted_restart
+      num_needed = vote_quorum
+      message += "<br />#{num_voted} votes/#{num_needed} needed"
+
+      do_restart = num_voted >= num_needed
+      if do_restart
+        message += "<br /><strong>Game Restarted!</strong>"
+        @state.restart
+      end
+      save_game
+    ensure
+      unlock_game
+    end
+
+    if do_restart
       jpublish_pool_update
       jpublish_players_update :restarted => true
     else

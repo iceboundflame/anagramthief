@@ -26,6 +26,6 @@ Anathief::Application.configure do
   # [dcl]
   config.autoload_paths << File.join(config.root, 'lib')
   ActiveSupport::Dependencies.explicitly_unloadable_constants <<
-    'WordMatcher' << 'MyMultiset'
+    'WordMatcher' << 'MyMultiset' << 'RedisLockQueue'
 end
 

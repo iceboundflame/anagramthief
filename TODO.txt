@@ -1,9 +1,12 @@
   Turn taking 5x at a time - with vote to skip turn
 
-  Dictionary : No def found, "try dictionary.com" link
   Heartbeats on separate redis keys
-  Fixe GameState.saved?, only save if needed
+
   GameState locking
+  Fixe GameState.saved?, only save if needed
+  What happens if crashed? Lock released?
+
+  Consolidate redis connections
 
   Bookmark word for study!
 
@@ -23,6 +26,7 @@
   Firefox
   Chrome 8 Mac - press enter in text fields doesn't work
 
+/ Dictionary : No def found, "try dictionary.com" link
 / Dictionary - auto define
 / Root detect
     Crowdsource
