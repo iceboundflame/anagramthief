@@ -11,6 +11,8 @@
 
 <div class="clearfix">
   <div class="left-col">
+    <h3>Rooms You Created</h3>
+    <%= render :partial => 'game_list', :object => @my_games %>
 
     <h3>Rooms Your Friends are Playing In</h3>
     <%= render :partial => 'game_list', :object => @friend_games %>

@@ -4,6 +4,7 @@ class PlayController < ApplicationController
   include Term::ANSIColor
 
   before_filter :get_ids
+  after_filter :update_users_not_in_game
   helper_method :jchan
 
   def get_ids
@@ -23,6 +24,9 @@ class PlayController < ApplicationController
     if !@me.game_id or @me.game_id != @game_id
       @me.game_id = @game_id
       @me.save
+
+      # need to reload this because now we're in the users too
+      @game = Game.find(@game_id, :include => [:users])
     end
   end
 
@@ -63,8 +67,8 @@ class PlayController < ApplicationController
   end
 
   def save_game
-    #purged = @state.purge_inactive_players
-    purged = nil
+    purged = @state.purge_inactive_players
+    #purged = nil
     if purged
       jpublish_players_update :removed => purged
     end
@@ -75,8 +79,24 @@ class PlayController < ApplicationController
     #end
   end
 
+  def update_users_not_in_game
+    remove = []
+    @game.users.each {|u|
+      remove << u.id unless @state.players.include? u.id_s
+    }
+    User.update_all({:game_id => nil}, {:id => remove})
+    logger.info "Removed game from users #{remove.join ', '}"
+  end
+
   def play
-    load_game
+    lock_game
+    begin
+      load_game
+      save_game
+    ensure
+      unlock_game
+    end
+
     # Render template, show state
   end
 

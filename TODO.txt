@@ -1,32 +1,47 @@
-  Make FB request invitations work - list on index page, link to game rooms
-
-  Turn taking 5x at a time - with vote to skip turn
-
-  Heartbeats on separate redis keys
-
-  Fix GameState.saved?, only save if needed
-
-  Consolidate redis connections
-
-  Bookmark word for study!
-
+LAUNCH BLOCKERS
+  Finish making FB request invitations work - list on index page, link to game rooms
+  Private rooms - implement or remove
+  Detect game finish
   In-room score
-  Score keeping
-  Guest mode
-  
+  Per-person score: number of games won
   Flood protection for chat and claim field
+  Publish game results
+  Flip rate limiting
+  Landing page for non-signed-in users
+  Instructions / How Do I Play? in top leftcol
+  Fix race condition on purging empty games
+/ Remove game_id from inactive users
+/ Purge empty rooms
 
+ENHANCEMENTS
+  Game stats: # letters stolen, # words made, longest steal
+  Turn taking 5x at a time - with vote to skip turn
+  Bookmark words for study
+  Guest mode
   Round table simulation for matching fairness
-  
+  Sound effects
+  Show unmatched words at endgame
+
+COSMETIC
+  Tagline. e.g. "Grand Theft Alpha"
+  Move "A David Liu Production"
+
+PERFORMANCE/CLEANUP
+  Heartbeats on separate redis keys
+  Fix GameState.saved?, only save if needed
+  Consolidate redis connections
   All Firefoxes - websockets don't work
   
-  
+TESTING
   Test Many Browsers
 
   Josh
   Safari 5.0.2 Mac
   Firefox
   Chrome 8 Mac - press enter in text fields doesn't work
+
+
+OLD/DONE
 
 / GameState locking
 / What happens if crashed? Lock released?

@@ -13,6 +13,11 @@ class GameState
     self.class.redis_key(@game_id)
   end
 
+  def self.delete_ids(game_ids)
+    redis_keys = game_ids.map{|id| redis_key id}
+    redis.del *redis_keys
+  end
+
   def initialize(game_id=nil)
     @game_id = game_id
     @players = {}
@@ -79,8 +84,8 @@ class GameState
   def remove_player(user_id)
     return unless @players.include? user_id
 
-    @players.delete id
-    @players_order.delete(id)
+    @players.delete user_id
+    @players_order.delete(user_id)
     # TODO put back in pool_unseen?
   end
 
