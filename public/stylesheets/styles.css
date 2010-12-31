@@ -37,13 +37,6 @@ ul.game-list>li a:hover {
   margin: 0 10px;
 }
 
-ul.game-list-player-list {
-  list-style-type: none;
-  display: inline;
-}
-ul.game-list-player-list li {
-  display: inline;
-}
 .game-name {
   font-weight: bold;
 }
@@ -52,6 +45,12 @@ ul.game-list-player-list li {
 }
 .creator-name {
   font-weight: bold;
+}
+.game-player {
+  font-weight: bold;
+}
+.friend-name {
+  color: #22227c;
 }
 
 /* TILES */
@@ -132,7 +131,7 @@ ul.player-words>li {
   background-color: #cef;
 }
 #chat {
-  width: 100%;
+  width: 240px;
   height: 3em;
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
@@ -168,6 +167,10 @@ ul.player-words>li {
   font-weight: bold;
   font-size: 1.2em;
 }
+
+/* INVITE */
+#invite-url { width: 500px; }
+
 
 /*.scores-col {
   float: left; width: 370px;

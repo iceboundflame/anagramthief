@@ -15,34 +15,35 @@
     <h3>Rooms Your Friends are Playing In</h3>
     <%= render :partial => 'game_list', :object => @friend_games %>
 
-    <h3>All Public Rooms</h3>
+    <h3>More Rooms</h3>
     <%= render :partial => 'game_list', :object => @public_games %>
 
   </div>
   <div class="right-col">
 
-    <form id="create-game" action="<%= games_create_url %>" method="post">
-    <fieldset>
+    <%= form_tag games_create_url do %>
+    <%= field_set_tag do %>
       <legend>Create a new room</legend>
 
       <% if flash[:create_errors] %>
-        <p class="error"><%= flash[:create_errors] %></p>
+        <p class="error"><strong>Error:</strong><br />
+        <% flash[:create_errors].each do |error| %><%= error %><br /><% end %>
+        </p>
       <% end %>
 
       <div>
-        <label for="create-game-name">Room name</label><br />
-        <input type="text" name="game[name]" id="create-game-name" value="" />
+        <%= label_tag 'game-name', 'Room name' %><br />
+        <%= text_field_tag 'game-name' %>
       </div>
       <div>
-        <input type="checkbox" name="game[is_private]" id="create-game-is-private" value="1" />
-        <label for="create-game-is-private">Private room (only allow friends)</label>
+        <%= check_box_tag 'game-private' %>
+        <%= label_tag 'game-private', 'Private (only allow friends)' %>
       </div>
       <div>
-        <input type="submit" value="Create room" />
-        <!--input type="hidden" name="csrf..." value="?" /-->
+        <%= submit_tag 'Create room' %>
       </div>
-    </fieldset>
-    </form>
+    <% end %>
+    <% end %>
 
   </div>
   <div class="right-col">

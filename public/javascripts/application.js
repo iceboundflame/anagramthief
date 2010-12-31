@@ -17,12 +17,17 @@ var Anathief = function() {
     initChat();
 
     initGameInterface();
+
+    initInviteInterface();
   }
 
   /** Connectivity **/
 
   function initConn() {
     /*window.WEB_SOCKET_SWF_LOCATION = "http://iceboundflame.com:8080/WebSocketMain.swf";*/
+
+    disableGameUi();
+    addMessage(null, 'Connecting...');
 
     jug = new Juggernaut();
     jug.on('connect', onConnect);
@@ -31,17 +36,30 @@ var Anathief = function() {
     jug.subscribe(gd.jchan, onDataReceived);
 
     if (gd.heartRate > 0)
-      setInterval("Anathief.heartbeat()", gd.heartRate);
+      setInterval('Anathief.heartbeat()', gd.heartRate);
+  }
+
+  function disableGameUi() {
+    $('.game-ui').attr('disabled', 'disabled');
+  }
+  function enableGameUi() {
+    $('.game-ui').removeAttr('disabled');
   }
 
   function onConnect() {
-    log("Connected");
+    refreshState();
+    addMessage(null, 'Connected!');
+    enableGameUi();
+    log('Connected');
   }
   function onDisconnect() {
-    log("Disconnected");
+    addMessage(null, 'Disconnected.');
+    disableGameUi();
+    log('Disconnected');
   }
   function onReconnect() {
-    log("Reconnecting");
+    addMessage(null, 'Reconnecting...');
+    log('Reconnecting');
   }
 
   function onDataReceived(data) {
@@ -56,7 +74,7 @@ var Anathief = function() {
         break;
 
       case 'pool_update':
-        $('#pool-info').html(data.body);
+        updatePool(data.body);
         break;
 
       case 'players_update':
@@ -65,28 +83,7 @@ var Anathief = function() {
           updateRestartButton();
         }
 
-        $('#player-info-area').empty();
-        for (var i in data.order) {
-          var id = data.order[i];
-          $('#player-info-area').append(data.body[id]);
-        }
-        if (data.added) {
-          for (var i in data.added) {
-            var id = data.added[i];
-            $('#player-info-'+id).effect('highlight', {}, 3000);
-          }
-        }
-        if (data.removed) {
-          // TODO
-        }
-
-        if (data.new_word_id) {
-          wordItem = $('#word-'+data.new_word_id.join('-'));
-
-          wordItem.addClass('highlighted');
-          wordItem.effect('highlight', {}, 5000);
-        }
-
+        updatePlayersInfo(data.order, data.body, data.added, data.removed, data.new_word_id);
         break;
 
       case 'definitions':
@@ -184,6 +181,21 @@ var Anathief = function() {
         {vote: votedRestart});
       updateRestartButton();
     });
+
+    $('#refresh-btn').click(function() { refreshState(); return false; });
+  }
+
+  function refreshState() {
+    $.post(gd.urls.refresh, {},
+      function(data) {
+        if (data.players_info) {
+          updatePlayersInfo(data.players_info.order, data.players_info.body);
+        }
+        if (data.pool_info) {
+          updatePool(data.pool_info.body);
+        }
+      },
+      'json');
   }
 
   function flipChar() {
@@ -201,6 +213,34 @@ var Anathief = function() {
         votedRestart ? 'Cancel restart' : 'Vote to restart');
   }
 
+  function updatePool(body) {
+    $('#pool-info').html(body);
+  }
+
+  function updatePlayersInfo(order, body, added, removed, new_word_id) {
+    $('#player-info-area').empty();
+    for (var i in order) {
+      var id = order[i];
+      $('#player-info-area').append(body[id]);
+    }
+    if (added) {
+      for (var i in added) {
+        var id = added[i];
+        $('#player-info-'+id).effect('highlight', {}, 3000);
+      }
+    }
+    if (removed) {
+      // TODO
+    }
+
+    if (new_word_id) {
+      wordItem = $('#word-'+new_word_id.join('-'));
+
+      wordItem.addClass('highlighted');
+      wordItem.effect('highlight', {}, 5000);
+    }
+  }
+
   // Messages area
   function addMessage(from, message, isAction, msgclass) {
     var msgId = 'message-' + Math.floor(Math.random()*2147483647);
@@ -215,8 +255,35 @@ var Anathief = function() {
     $('#'+msgId).effect('highlight', {}, 3000);
   }
 
+  function initInviteInterface() {
+    $('#show-invites-link').click(function() {
+      showInvites();
+      return false;
+    });
+    $('#hide-invites-link').click(function() {
+      hideInvites();
+      return false;
+    });
+    $('#invite-url').focus(function() { this.select(); });
+    $('#invite-url').select(function() { this.select(); });
+    $('#invite-url').mouseover(function() { this.focus(); this.select(); });
+  }
+
+  function hideInvites() {
+    $('#hide-invites-link').hide();
+    $('#show-invites-link').show();
+    $('#invites-section').slideUp(); //null, FB.Canvas.setSize);
+  }
+  function showInvites() {
+    $('#show-invites-link').hide();
+    $('#hide-invites-link').show();
+    $('#invites-section').slideDown(); //null, FB.Canvas.setSize);
+  }
+
   return {
     init: init,
-    heartbeat: heartbeat
-  }
+    heartbeat: heartbeat,
+    hideInvites: hideInvites,
+    showInvites: showInvites
+  };
 }();

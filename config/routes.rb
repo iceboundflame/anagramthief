@@ -12,6 +12,9 @@ Anathief::Application.routes.draw do
   match '/play/:id/claim', :to => 'play#claim', :as => 'play_claim'
   match '/play/:id/vote_restart', :to => 'play#vote_restart', :as => 'play_vote_restart'
   match '/play/:id/heartbeat', :to => 'play#heartbeat', :as => 'play_heartbeat'
+  match '/play/:id/refresh', :to => 'play#refresh', :as => 'play_refresh'
+
+  match '/play/:id/invite_form', :to => 'play#invite_form', :as => 'play_invite_form'
 
   #resources :games, :module => 'admin', :path => '/admin/games'
   #namespace 'admin' do

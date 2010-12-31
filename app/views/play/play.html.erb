@@ -5,10 +5,41 @@
   </div>
   <div class="right-col">
     <h4>Game Room: <%= @game.name %>. <%= link_to 'Back to List', games_list_url %></h4>
+    <a href="#" id="show-invites-link">Invite Your Friends!</a>
+    <a href="#" id="hide-invites-link" style="display:none">Hide Invitations</a>
   </div>
 </div>
 
 <hr />
+
+<div class="clearfix" style="display:none" id="invites-section">
+<h4>Option 1: Direct Link</h4>
+<p>Paste this link to your friends in IM or email:<br />
+<input type="text" value="<%= play_in_canvas_url @game_id %>" id="invite-url" readonly="readonly" />
+</p>
+
+<h4>Option 2: Facebook Invite</h4>
+<p>You should see the invite box in a few moments below. Or <a href="javascript:parent.Anathief.hideInvites();">cancel and close.</a></p>
+
+<fb:serverFbml style="width:500px">
+<script type="text/fbml">
+  <fb:request-form
+      action="<%= play_in_canvas_url @game_id %>"
+      method="post"
+      type="Anagram Thief"
+      content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
+
+    <fb:multi-friend-selector condensed="true"
+        actiontext="Invite your friends to play here!"
+        style="width:500px" />
+    <fb:request-form-submit />
+  </fb:request-form>
+</script>
+</fb:serverFbml>
+
+<a href="#" id="close-invites-link" style="display:none"></a>
+<hr />
+</div>
 
 <div class="clearfix">
   <div class="left-col">
@@ -24,12 +55,13 @@
   </div>
   <div class="right-col">
     <div>
-      <input type="button" value="Flip a letter!" id="flip-btn" />
-      <input type="button" id="vote-restart-btn" value="Vote to Restart" />
-    </div>
-    <div>
+      <input type="button" value="Flip a letter!" id="flip-btn" class="game-ui" /><br />
+
       <label for="claimword">Claim a word:</label>
-      <input type="text" id="claimword" />
+      <input type="text" id="claimword" class="game-ui" />
+
+      <input type="button" id="vote-restart-btn" value="Vote to Restart" class="game-ui" />
+      <input type="button" id="refresh-btn" value="Refresh" class="game-ui" /><br />
     </div>
 
     <hr />
@@ -42,7 +74,7 @@
     </div>
 
     <% chat_filler = "Type here and press enter to chat\u2026" %>
-    <textarea id="chat"><%= chat_filler %></textarea>
+    <textarea id="chat" class="game-ui"><%= chat_filler %></textarea>
 
     <div id="defn-nav">
       <span class="sectionhead">Definitions</span>
@@ -75,7 +107,8 @@
         claim: '<%= escape_javascript play_claim_url %>',
         flipChar: '<%= escape_javascript play_flip_char_url %>',
         voteRestart: '<%= escape_javascript play_vote_restart_url %>',
-        heartbeat: '<%= escape_javascript play_heartbeat_url %>'
+        heartbeat: '<%= escape_javascript play_heartbeat_url %>',
+        refresh: '<%= escape_javascript play_refresh_url %>'
       },
       heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>,
       chatFiller: '<%= escape_javascript chat_filler %>'

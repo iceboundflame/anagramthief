@@ -237,11 +237,27 @@ class PlayController < ApplicationController
     render :text => 'OK'
   end
 
+  def refresh
+    load_game
+    render :json => {
+      :players_info => players_update_json,
+      :pool_info => pool_update_json,
+    }
+  end
+
+  def invite_form
+    # just render
+    #render :layout => nil
+  end
+
 
   protected
 
   def jpublish_pool_update
-    jpublish 'pool_update', nil, :body => render_to_string(:partial => 'pool_info')
+    jpublish 'pool_update', nil, pool_update_json
+  end
+  def pool_update_json
+    { :body => render_to_string(:partial => 'pool_info') }
   end
 
   #def jpublish_refresh_state(game_id)
@@ -249,13 +265,15 @@ class PlayController < ApplicationController
   #end
 
   def jpublish_players_update(addl={})
+    jpublish 'players_update', nil, players_update_json(addl)
+  end
+  def players_update_json(addl={})
     rendered_players = {}
     @state.players.each do |user_id, player| 
       rendered_players[user_id] =
           render_to_string(:partial => 'player', :object => player)
     end
-    jpublish 'players_update', nil, {
-      :body => rendered_players,
+    { :body => rendered_players,
       :order => @state.players_order,
     }.merge(addl)
   end

@@ -1,10 +1,10 @@
+  Make FB request invitations work - list on index page, link to game rooms
+
   Turn taking 5x at a time - with vote to skip turn
 
   Heartbeats on separate redis keys
 
-  GameState locking
-  Fixe GameState.saved?, only save if needed
-  What happens if crashed? Lock released?
+  Fix GameState.saved?, only save if needed
 
   Consolidate redis connections
 
@@ -21,10 +21,15 @@
   All Firefoxes - websockets don't work
   
   
+  Test Many Browsers
+
   Josh
   Safari 5.0.2 Mac
   Firefox
   Chrome 8 Mac - press enter in text fields doesn't work
+
+/ GameState locking
+/ What happens if crashed? Lock released?
 
 / Dictionary : No def found, "try dictionary.com" link
 / Dictionary - auto define
