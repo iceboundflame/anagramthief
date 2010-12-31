@@ -3,39 +3,26 @@ class PlayController < ApplicationController
   require 'pp'
   include Term::ANSIColor
 
-  before_filter :get_ids, :except => [:list]
+  before_filter :get_ids
   helper_method :jchan
-
-  def list
-    require_user or return false
-
-    @games = Game.all
-  end
 
   def get_ids
     require_user or return false
     @me = current_user
     @me_id = @me.id_s
 
-    if params[:id]
-      @game_id = params[:id]
-      if !@me.game_id or @me.game_id != @game_id
-        # update the old game
-        #jpublish_refresh_state @me.game.id
-        # FIXME can't have -all- clients asking for refresh to be published
-
-        @me.game_id = @game_id
-        @me.save
-      end
-    else
-      @game_id = @me.game_id
-    end
+    @game_id = params[:id]
 
     begin
       @game = Game.find(@game_id, :include => [:users])
     rescue ActiveRecord::RecordNotFound
-      redirect_to play_list_url unless @game
+      redirect_to games_list_url unless @game
       return false
+    end
+
+    if !@me.game_id or @me.game_id != @game_id
+      @me.game_id = @game_id
+      @me.save
     end
   end
 

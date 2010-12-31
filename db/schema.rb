@@ -10,13 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101226000020) do
+ActiveRecord::Schema.define(:version => 20101231002845) do
 
   create_table "games", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data"
+    t.integer  "creator_id"
+    t.boolean  "is_private", :default => false
   end
 
   create_table "users", :force => true do |t|

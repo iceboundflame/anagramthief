@@ -1,0 +1,22 @@
+<ul class="game-list">
+<% game_list.each do |game| %>
+  <li id="game-<%= game.id %>">
+  <a href="<%= play_url(game.id) %>" class="clearfix">
+    <%= image_tag game.creator.profile_pic,
+      :width => 40, :height => 40, :class => 'game-list-pfpic' %>
+    <span class="game-name"><%= game.name %></span><% if game.is_private %>
+      <span class="game-private-label">(Private)</span>
+    <% end %>,
+    created by <span class="creator-name"><%= game.creator.name %></span>
+    <div>People playing here:
+      <ul class="game-list-player-list">
+        <% game.users.each do |user|%>
+          <li><%= user.name %></li>
+        <% end %>
+        <% if game.users.count == 0 %><li>(Nobody)</li><% end %>
+      </ul>
+    </div>
+  </a>
+  </li>
+<% end %>
+</ul>

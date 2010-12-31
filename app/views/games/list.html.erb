@@ -1,0 +1,50 @@
+<div class="clearfix">
+  <div class="left-col">
+    <h3>Welcome to Anagram Thief!
+    <span class="tagline">A David Liu Production</span></h3>
+  </div>
+  <div class="right-col">
+  </div>
+</div>
+
+<hr />
+
+<div class="clearfix">
+  <div class="left-col">
+
+    <h3>Rooms Your Friends are Playing In</h3>
+    <%= render :partial => 'game_list', :object => @friend_games %>
+
+    <h3>All Public Rooms</h3>
+    <%= render :partial => 'game_list', :object => @public_games %>
+
+  </div>
+  <div class="right-col">
+
+    <form id="create-game" action="<%= games_create_url %>" method="post">
+    <fieldset>
+      <legend>Create a new room</legend>
+
+      <% if flash[:create_errors] %>
+        <p class="error"><%= flash[:create_errors] %></p>
+      <% end %>
+
+      <div>
+        <label for="create-game-name">Room name</label><br />
+        <input type="text" name="game[name]" id="create-game-name" value="" />
+      </div>
+      <div>
+        <input type="checkbox" name="game[is_private]" id="create-game-is-private" value="1" />
+        <label for="create-game-is-private">Private room (only allow friends)</label>
+      </div>
+      <div>
+        <input type="submit" value="Create room" />
+        <!--input type="hidden" name="csrf..." value="?" /-->
+      </div>
+    </fieldset>
+    </form>
+
+  </div>
+  <div class="right-col">
+  </div>
+</div>

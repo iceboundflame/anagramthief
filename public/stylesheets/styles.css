@@ -11,6 +11,49 @@
   font-size: 0.75em;
 }
 
+/* GAME LIST */
+ul.game-list {
+  list-style-type: none;
+}
+ul.game-list>li {
+  width: 100%;
+  margin: 10px 0;
+}
+ul.game-list>li a {
+  border: 1px solid black;
+  padding: 5px;
+  text-decoration: none;
+  color: #333;
+  background-color: #def;
+}
+ul.game-list>li a:hover {
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+}
+.game-list-pfpic {
+  float: left;
+  margin: 0 10px;
+}
+
+ul.game-list-player-list {
+  list-style-type: none;
+  display: inline;
+}
+ul.game-list-player-list li {
+  display: inline;
+}
+.game-name {
+  font-weight: bold;
+}
+.game-private-label {
+  font-style: italic;
+}
+.creator-name {
+  font-weight: bold;
+}
+
 /* TILES */
 ul.tiles {
   margin: 0;
