@@ -3,16 +3,51 @@
 <div class="clearfix">
   <div class="left-col">
     <h3>Anagram Thief!
-    <span class="tagline">A David Liu Production</span></h3>
+    <span class="tagline">a David Liu production</span></h3>
+
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D<%=Facebook::APP_ID%>&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
   </div>
   <div class="right-col">
-    <h4>Game Room: <%= @game.name %>. <%= link_to 'Back to List', games_list_url %></h4>
+    <span class="sectionhead">Game Room: <%= @game.name %>.</span><br />
+      <%= link_to 'Back to Lobby', games_list_url %><br />
+
+    <a href="#" id="show-instructions-link" class="large">How Do I Play? (Instructions)</a>
+    <a href="#" id="hide-instructions-link" class="large" style="display:none">Hide Instructions</a> <br />
+
     <a href="#" id="show-invites-link" class="large">Invite your friends to join this game!</a>
     <a href="#" id="hide-invites-link" class="large" style="display:none">Hide invitations</a>
   </div>
 </div>
 
+<div class="clearfix">
+  <div class="left-col">
+
+  </div>
+  <div class="right-col">
+  </div>
+</div>
+
 <hr />
+
+<div class="clearfix" style="display:none" id="instructions-section">
+  <div id="instructions-text">
+    <h4>Instructions</h4>
+<ul>
+<li><strong>Goal:</strong> Gather letters by making words from anagrams.</li>
+
+<li>We start with letter tiles face down. Flip the tiles together with the other players.</li>
+
+<li>If you see a word you can make with these letters, claim it by typing it in the "Claim a word" text box.</li>
+
+<li>Steal existing words by making them longer and changing the root. You could steal <strong>AGO</strong> and add an <strong>L</strong> to make <strong>GOAL</strong>. But you can't steal <strong>GOAL</strong> and make it <strong>GOALS</strong>.</li>
+
+<li>Chat with your opponents in the right-side column. You can also invite your friends to join this game room directly, with the "Invite" link in the top-right.</li>
+
+<li><strong>Tip:</strong> When your claim textbox is empty, just press Enter to flip a tile.</li>
+</ul>
+  </div>
+  <hr />
+</div>
 
 <div class="clearfix" style="display:none" id="invites-section">
 <h4>Option 1: Direct Link</h4>

@@ -1,23 +1,24 @@
 LAUNCH BLOCKERS
-  Finish making FB request invitations work - list on index page, link to game rooms
-  Private rooms - implement or remove
-  Detect game finish
-    Vote that you're "done"
+/ Detect game finish
+/   Vote that you're "done"
+/     Per-person score: number of games won
       In-room score
-      Per-person score: number of games won
       Publish game results
-    Detect "old" rooms
+    Detect "old" rooms with people who left
+      Count their scores
   Flood protection for chat and claim field
-  Flip rate limiting
   Landing page for non-signed-in users
   Instructions / How Do I Play? in top leftcol
   Fix race condition on purging empty games
   Remove people from the last game after they close out
-  Last activity in a game
 / Remove game_id from inactive users
 / Purge empty rooms
 
 ENHANCEMENTS
+  Last activity in a game - in lobby
+  See people in lobby
+  Flip rate limiting
+  Finish making FB request invitations work - list on index page, link to game rooms
   Game stats: # letters stolen, # words made, longest steal
   Sound effects
   Achievements
@@ -34,6 +35,7 @@ ENHANCEMENTS
       Burglar
       Grand Theft Alphabet
       Heist Master
+  Private rooms
   Guest mode
   Show unmatched words at endgame
   Bookmark words for study

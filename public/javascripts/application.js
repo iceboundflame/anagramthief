@@ -19,6 +19,7 @@ var Anathief = function() {
 
     initGameInterface();
 
+    initInstructionsInterface();
     initInviteInterface();
   }
 
@@ -311,6 +312,28 @@ var Anathief = function() {
     $('#'+msgId).effect('highlight', {}, 3000);
   }
 
+  function initInstructionsInterface() {
+    $('#show-instructions-link').click(function() {
+      showInstructions();
+      return false;
+    });
+    $('#hide-instructions-link').click(function() {
+      hideInstructions();
+      return false;
+    });
+  }
+  function hideInstructions() {
+    $('#hide-instructions-link').hide();
+    $('#show-instructions-link').show();
+    $('#instructions-section').slideUp(null, FB.Canvas.setSize);
+  }
+  function showInstructions() {
+    $('#show-instructions-link').hide();
+    $('#hide-instructions-link').show();
+    $('#instructions-section').slideDown();
+    FB.Canvas.setSize({height: 1500});
+  }
+
   function initInviteInterface() {
     $('#show-invites-link').click(function() {
       showInvites();
@@ -324,7 +347,6 @@ var Anathief = function() {
     $('#invite-url').select(function() { this.select(); });
     $('#invite-url').mouseover(function() { this.focus(); this.select(); });
   }
-
   function hideInvites() {
     $('#hide-invites-link').hide();
     $('#show-invites-link').show();

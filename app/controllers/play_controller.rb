@@ -59,7 +59,7 @@ class PlayController < ApplicationController
   end
 
   def claim
-    word = params[:word].upcase
+    word = params[:word].upcase.gsub(/[^A-Z]/, '')[0..50] # limit length
 
     lock_game
     begin
@@ -137,10 +137,11 @@ class PlayController < ApplicationController
   end
 
   def chat
+    message = params[:message][0..250] # limit length
     jpublish 'chat', @me,
       :body => render_to_string(
         :inline => 'says: <%= message %>',
-        :locals => {:message => params[:message]},
+        :locals => {:message => message},
       )
     render :json => {:status => true}
   end

@@ -1,24 +1,24 @@
+<% unless @state.completed? %>
+  <p>This game was not completed, so it didn't count towards your total wins/games played. (To complete a game, flip all the tiles and leave no more than 15 tiles in the letter pool.)</p>
+<% end %>
 <% if @state.started? %>
-  <% unless @state.completed? %>
-    <p>This game was not completed, so it didn't count towards your total wins/games played. (To complete a game, flip all the tiles and leave no more than 10 tiles in the letter pool.)</p>
-  <% end %>
   <ul class="scorelist">
   <% @state.compute_ranks.each do |p| %>
     <% player = @state.player(p[:id]) %>
     <li class="<%= 'winner' if p[:rank] == 1 %>">
       <%= image_tag player.user.profile_pic, :width => 40, :height => 40, :class => 'score-pfpic' %>
-      <% if p[:rank] == 1 %>
-        Winner!
-      <% else %>
-        <%= ordinalize p[:rank] %> Place:
-      <% end %>
-      <%= player.user.name %><br />
-      <%= inflect_noun player.user.wins, 'game', 'games' %> won,
-      <%= player.user.games_completed %> completed
+      <strong>
+        <% if p[:rank] == 1 %>
+          Winner!
+        <% else %>
+          <%= ordinalize p[:rank] %> Place:
+        <% end %>
+      <%= player.user.name %>
+      </strong>
+      <!--(<%= inflect_noun player.user.wins, 'game', 'games' %> won,
+      <%= player.user.games_completed %> completed)--><br />
+      <%= player.num_letters %> letters
     </li>
   <% end %>
   </ul>
-<% else %>
-  <%# blank line needed to force data.body to be truthy %>
-
 <% end %>

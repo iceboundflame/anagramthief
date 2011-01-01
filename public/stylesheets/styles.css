@@ -10,6 +10,7 @@
 
 .tagline {
   font-size: 0.75em;
+  margin-left: 4em;
 }
 
 /* GAME LIST */
@@ -189,8 +190,9 @@ ul.player-words>li {
   font-size: 1.2em;
 }
 
-/* INVITE */
-#invite-url { width: 500px; }
+/* INSTRUCTIONS, INVITE */
+/*#instructions-text { width: 490px; }*/
+#invite-url { width: 490px; }
 
 
 .score-pfpic {

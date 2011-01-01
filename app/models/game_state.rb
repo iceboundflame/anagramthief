@@ -215,7 +215,7 @@ class GameState
   def completed?
     return false unless started?
 #return true ## FIXME remove this - testing only
-    pool_unseen.empty? and pool_seen.size < 10
+    pool_unseen.empty? and pool_seen.size < 15
   end
 
   def started?
