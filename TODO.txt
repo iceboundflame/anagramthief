@@ -19,12 +19,26 @@ LAUNCH BLOCKERS
 
 ENHANCEMENTS
   Game stats: # letters stolen, # words made, longest steal
-  Turn taking 5x at a time - with vote to skip turn
-  Bookmark words for study
-  Guest mode
-  Round table simulation for matching fairness
   Sound effects
+  Achievements
+    Games Completed
+      Lone Wolf - complete game entirely on own
+    Making Long Words
+    Making Words
+      Wordsmith
+      Word Lord
+    Stealing
+      Petty Thief
+      Pickpocket
+      Shoplifter
+      Burglar
+      Grand Theft Alphabet
+      Heist Master
+  Guest mode
   Show unmatched words at endgame
+  Bookmark words for study
+  Turn taking 5x at a time - with vote to skip turn
+  Round table simulation for matching fairness
 
 COSMETIC
   Allow Vscrollbar

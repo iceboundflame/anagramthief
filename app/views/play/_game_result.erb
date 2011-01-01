@@ -1,6 +1,6 @@
 <% if @state.started? %>
   <% unless @state.completed? %>
-    <p>This game was not completed (too many pieces left on the board), so it didn't count towards your total wins/games played.</p>
+    <p>This game was not completed, so it didn't count towards your total wins/games played. (To complete a game, flip all the tiles and leave no more than 10 tiles in the letter pool.)</p>
   <% end %>
   <ul class="scorelist">
   <% @state.compute_ranks.each do |p| %>
