@@ -26,7 +26,7 @@ var Anathief = function() {
   function initConn() {
     /*window.WEB_SOCKET_SWF_LOCATION = "http://iceboundflame.com:8080/WebSocketMain.swf";*/
 
-    disableGameUi();
+    disableConnUi();
     addMessage(null, 'Connecting...');
 
     jug = new Juggernaut();
@@ -39,22 +39,32 @@ var Anathief = function() {
       setInterval('Anathief.heartbeat()', gd.heartRate);
   }
 
-  function disableGameUi() {
-    $('.game-ui').attr('disabled', 'disabled');
+  function disableConnUi() {
+    $('.conn-ui').attr('disabled', 'disabled');
   }
-  function enableGameUi() {
-    $('.game-ui').removeAttr('disabled');
+  function enableConnUi() {
+    $('.conn-ui').removeAttr('disabled');
+  }
+  function disablePlayUi() {
+    $('.play-ui').attr('disabled', 'disabled');
+    /*$(document.body).addClass('game-over').removeClass('game-on');*/
+    $(document.body).addClass('game-over');
+  }
+  function enablePlayUi() {
+    $('.play-ui').removeAttr('disabled');
+    /*$(document.body).addClass('game-on').removeClass('game-over');*/
+    $(document.body).removeClass('game-over');
   }
 
   function onConnect() {
     refreshState();
     addMessage(null, 'Connected!');
-    enableGameUi();
+    enableConnUi();
     log('Connected');
   }
   function onDisconnect() {
     addMessage(null, 'Disconnected.');
-    disableGameUi();
+    disableConnUi();
     log('Disconnected');
   }
   function onReconnect() {
@@ -73,17 +83,8 @@ var Anathief = function() {
         addMessage(data.from, data.body, true, data.msgclass);
         break;
 
-      case 'pool_update':
-        updatePool(data.body);
-        break;
-
-      case 'players_update':
-        if (data.restarted) {
-          gd.voteRestart = false;
-          updateRestartButton();
-        }
-
-        updatePlayersInfo(data.order, data.body, data.added, data.removed, data.new_word_id);
+      case 'update':
+        processUpdate(data);
         break;
 
       case 'definitions':
@@ -139,6 +140,10 @@ var Anathief = function() {
       $('#chat').val('');
       return false;
     });
+
+    $('#message-area').click(function() {
+      $('#chat').focus();
+    });
   }
 
   /** Game Interface: Flip, Claim, Vote Restart **/
@@ -172,14 +177,15 @@ var Anathief = function() {
       $('#claimword').val('');
     });
 
-    $('#vote-restart-btn').click(function() {
-      confMsg = "Are you sure you want to vote to restart the game?";
-      if (!votedRestart && !confirm(confMsg))
-        return;
-      votedRestart = !votedRestart;
-      $.post(gd.urls.voteRestart,
-        {vote: votedRestart});
-      updateRestartButton();
+    function voteBtn(vote) {
+      votedDone = vote;
+      $.post(gd.urls.voteDone, {vote: votedDone});
+      updateDoneButton();
+    }
+    $('#vote-done-btn').click(function() { voteBtn(true); });
+    $('#cancel-vote-btn').click(function() { voteBtn(false); });
+    $('#restart-btn').click(function() {
+      $.post(gd.urls.restart);
     });
 
     $('#refresh-btn').click(function() { refreshState(); return false; });
@@ -188,12 +194,8 @@ var Anathief = function() {
   function refreshState() {
     $.post(gd.urls.refresh, {},
       function(data) {
-        if (data.players_info) {
-          updatePlayersInfo(data.players_info.order, data.players_info.body);
-        }
-        if (data.pool_info) {
-          updatePool(data.pool_info.body);
-        }
+        log(data);
+        processUpdate(data);
       },
       'json');
   }
@@ -208,37 +210,92 @@ var Anathief = function() {
     $('#claimword').focus();
   }
 
-  function updateRestartButton() {
-    $('#vote-restart-btn').val(
-        votedRestart ? 'Cancel restart' : 'Vote to restart');
-  }
-
-  function updatePool(body) {
-    $('#pool-info').html(body);
-  }
-
-  function updatePlayersInfo(order, body, added, removed, new_word_id) {
-    $('#player-info-area').empty();
-    for (var i in order) {
-      var id = order[i];
-      $('#player-info-area').append(body[id]);
+  function updateDoneButton() {
+    if (gameOver) {
+      $('#vote-done-btn').hide();
+      $('#cancel-vote-btn').hide();
+      $('#restart-btn').show();
+    } else if (votedDone) {
+      $('#vote-done-btn').hide();
+      $('#cancel-vote-btn').show();
+      $('#restart-btn').hide();
+    } else {
+      $('#vote-done-btn').show();
+      $('#cancel-vote-btn').hide();
+      $('#restart-btn').hide();
     }
-    if (added) {
-      for (var i in added) {
-        var id = added[i];
+  }
+
+
+  function processUpdate(data) {
+    if (data.pool_info)
+      updatePool(data.pool_info);
+
+    if (data.players_info)
+      updatePlayersInfo(data.players_info);
+
+    if (data.game_over_info)
+      updateGameOverInfo(data.game_over_info);
+
+    FB.Canvas.setSize();
+  }
+
+  function updateGameOverInfo(data) {
+    gameOver = data.game_over;
+    if (gameOver) {
+      disablePlayUi();
+    } else {
+      enablePlayUi();
+    }
+
+    votedDone = ($.inArray(gd.me_id, data.users_voted_done) != -1);
+
+    if (data.just_finished) {
+      publishGame();
+    }
+
+    updateDoneButton();
+  }
+
+  function updatePool(data) {
+    $('#pool-info').html(data.body);
+  }
+
+  function updatePlayersInfo(data) {
+    $('#player-info-area').empty();
+    for (var i in data.order) {
+      var id = data.order[i];
+      $('#player-info-area').append(data.body[id]);
+    }
+    if (data.added) {
+      for (var i in data.added) {
+        var id = data.added[i];
         $('#player-info-'+id).effect('highlight', {}, 3000);
       }
     }
-    if (removed) {
+    if (data.removed) {
       // TODO
     }
 
-    if (new_word_id) {
-      wordItem = $('#word-'+new_word_id.join('-'));
-
-      wordItem.addClass('highlighted');
-      wordItem.effect('highlight', {}, 5000);
+    if (data.new_word_id) {
+      $('#word-'+data.new_word_id.join('-'))
+        .addClass('highlighted')
+        .effect('highlight', {}, 5000);
     }
+  }
+
+  function publishGame() {
+    FB.ui({
+        method: 'feed',
+        /*display: 'popup',*/
+        name: 'I just played a game of Anagram Thief',
+        link: gd.urls.canvas,
+        picture: gd.urls.fbPostImg,
+        description: 'You should too!',
+        message: ''
+      },
+      function(response) {
+      });
   }
 
   // Messages area
@@ -272,12 +329,13 @@ var Anathief = function() {
   function hideInvites() {
     $('#hide-invites-link').hide();
     $('#show-invites-link').show();
-    $('#invites-section').slideUp(); //null, FB.Canvas.setSize);
+    $('#invites-section').slideUp(null, FB.Canvas.setSize);
   }
   function showInvites() {
     $('#show-invites-link').hide();
     $('#hide-invites-link').show();
-    $('#invites-section').slideDown(); //null, FB.Canvas.setSize);
+    $('#invites-section').slideDown();
+    FB.Canvas.setSize({height: 1500});
   }
 
   return {

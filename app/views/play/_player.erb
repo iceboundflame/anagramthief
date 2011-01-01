@@ -1,11 +1,11 @@
 <div id="player-info-<%= player.id %>"
-  class="left player-info <%= 'in' unless player.is_active %>active-player">
+  class="player-info <%= 'in' unless player.is_active %>active-player">
 <div class="clearfix">
   <%= image_tag player.user.profile_pic, width: 40, height: 40, class: 'left' %>
   <span class="username"><%= player.user.name %></span>
   <span class="score"><%= player.num_letters %></span>
-  <% if player.voted_restart %>
-    <span class="voted-restart">Voted to restart</span>
+  <% if player.voted_done %>
+    <span class="voted-done">Voted to end the game</span>
   <% end %>
 </div>
 <ul class="player-words">

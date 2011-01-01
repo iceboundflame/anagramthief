@@ -14,12 +14,13 @@
 
 <div class="clearfix" style="display:none" id="invites-section">
 <h4>Option 1: Direct Link</h4>
-<p>Paste this link to your friends in IM or email:<br />
+<p>Copy and paste this URL to your friends, and it will bring them directly to this game room:<br />
+(Mouse-over and hit CTRL-C / Command-C)<br />
 <input type="text" value="<%= play_in_canvas_url @game_id %>" id="invite-url" readonly="readonly" />
 </p>
 
 <h4>Option 2: Facebook Invite</h4>
-<p>You should see the invite box in a few moments below. Or <a href="javascript:parent.Anathief.hideInvites();">cancel and close.</a></p>
+<p>You should see the invite box in a few moments below.</p>
 
 <fb:serverFbml style="width:500px">
 <script type="text/fbml">
@@ -32,7 +33,7 @@
     <fb:multi-friend-selector condensed="true"
         actiontext="Invite your friends to play here!"
         style="width:500px" />
-    <fb:request-form-submit />
+    <fb:request-form-submit import_external_friends="false" />
   </fb:request-form>
 </script>
 </fb:serverFbml>
@@ -43,25 +44,44 @@
 
 <div class="clearfix">
   <div class="left-col">
-    <div id="pool-info">
-      <%= render :partial => 'pool_info' %>
+    <p class="when-game-over notice large">The game is over. 
+      <input type="button" id="restart-btn" value="Restart Game"
+        class="conn-ui fat-btn" style="display:none" />
+    </h2>
+
+    <div class="game">
+      <div class="clearfix">
+        <h3 class="left">Letter Pool
+        <input type="button" value="Flip a letter!" id="flip-btn"
+          class="conn-ui play-ui fat-btn" />
+        </h3>
+      </div>
+      <div id="pool-info">
+        <%= render :partial => 'pool_info' %>
+      </div>
+
+      <hr />
+
+      <div id="player-info-area">
+        <%= render :partial => 'player', :collection => @players %>
+      </div>
     </div>
 
     <hr />
 
-    <div id="player-info-area">
-      <%= render :partial => 'player', :collection => @players %>
+    <div>
+      <input type="button" id="vote-done-btn" value="Vote to End the Game?"
+        class="conn-ui fat-btn" />
+      <input type="button" id="cancel-vote-btn" value="Cancel Vote"
+        class="conn-ui fat-btn" style="display:none" />
+      <input type="button" id="refresh-btn" value="Refresh"
+          class="conn-ui fat-btn" />
     </div>
   </div>
   <div class="right-col">
-    <div>
-      <input type="button" value="Flip a letter!" id="flip-btn" class="game-ui" /><br />
-
-      <label for="claimword">Claim a word:</label>
-      <input type="text" id="claimword" class="game-ui" />
-
-      <input type="button" id="vote-restart-btn" value="Vote to Restart" class="game-ui" />
-      <input type="button" id="refresh-btn" value="Refresh" class="game-ui" /><br />
+    <div class="game">
+      <label for="claimword" class="sectionhead">Claim a word:</label>
+      <input type="text" id="claimword" class="conn-ui play-ui" />
     </div>
 
     <hr />
@@ -74,7 +94,7 @@
     </div>
 
     <% chat_filler = "Type here and press enter to chat\u2026" %>
-    <textarea id="chat" class="game-ui"><%= chat_filler %></textarea>
+    <textarea id="chat" class="conn-ui"><%= chat_filler %></textarea>
 
     <div id="defn-nav">
       <span class="sectionhead">Definitions</span>
@@ -103,10 +123,13 @@
       me_id: '<%= escape_javascript @me_id %>',
       jchan: '<%= escape_javascript jchan @game_id %>',
       urls: {
+        canvas: '<%= escape_javascript Facebook::CANVAS_URL %>',
+        fbPostImg: '<%= escape_javascript image_url "scrshot.jpg" %>',
         chat: '<%= escape_javascript play_chat_url %>',
         claim: '<%= escape_javascript play_claim_url %>',
         flipChar: '<%= escape_javascript play_flip_char_url %>',
-        voteRestart: '<%= escape_javascript play_vote_restart_url %>',
+        voteDone: '<%= escape_javascript play_vote_done_url %>',
+        restart: '<%= escape_javascript play_restart_url %>',
         heartbeat: '<%= escape_javascript play_heartbeat_url %>',
         refresh: '<%= escape_javascript play_refresh_url %>'
       },

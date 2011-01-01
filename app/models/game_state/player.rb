@@ -1,12 +1,12 @@
 class GameState::Player
-  attr_accessor :id, :words, :voted_restart, :next_word_id,
+  attr_accessor :id, :words, :voted_done, :next_word_id,
     :is_active, :last_heartbeat
   attr_accessor :user
 
   def initialize(id=nil)
     @id = id
     @words = {}
-    @voted_restart = false
+    @voted_done = false
     @next_word_id = 1
     @is_active = false
     @last_heartbeat = nil
@@ -15,12 +15,12 @@ class GameState::Player
 
   def restart
     @words = {}
-    @voted_restart = false
+    @voted_done = false
     @next_word_id = 1
   end
 
-  def voted_restart?
-    @voted_restart
+  def voted_done?
+    @voted_done
   end
 
   def beat_heart
@@ -57,7 +57,7 @@ class GameState::Player
   def to_data
     { 'id' => @id,
       'words' => @words.map {|id,w| w.to_data},
-      'voted_restart' => @voted_restart,
+      'voted_done' => @voted_done,
       'next_word_id' => @next_word_id,
       'is_active' => @is_active,
       'last_heartbeat' => @last_heartbeat,
@@ -71,7 +71,7 @@ class GameState::Player
       w = GameState::Word.from_data wdata
       @words[w.id] = w
     }
-    @voted_restart = data['voted_restart']
+    @voted_done = data['voted_done']
     @next_word_id = data['next_word_id']
     @is_active = data['is_active']
     @last_heartbeat = data['last_heartbeat']

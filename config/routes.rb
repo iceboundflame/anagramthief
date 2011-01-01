@@ -10,7 +10,8 @@ Anathief::Application.routes.draw do
   match '/play/:id/chat', :to => 'play#chat', :as => 'play_chat'
   match '/play/:id/flip_char', :to => 'play#flip_char', :as => 'play_flip_char'
   match '/play/:id/claim', :to => 'play#claim', :as => 'play_claim'
-  match '/play/:id/vote_restart', :to => 'play#vote_restart', :as => 'play_vote_restart'
+  match '/play/:id/vote_done', :to => 'play#vote_done', :as => 'play_vote_done'
+  match '/play/:id/restart', :to => 'play#restart', :as => 'play_restart'
   match '/play/:id/heartbeat', :to => 'play#heartbeat', :as => 'play_heartbeat'
   match '/play/:id/refresh', :to => 'play#refresh', :as => 'play_refresh'
 

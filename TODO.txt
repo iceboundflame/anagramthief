@@ -2,14 +2,18 @@ LAUNCH BLOCKERS
   Finish making FB request invitations work - list on index page, link to game rooms
   Private rooms - implement or remove
   Detect game finish
-  In-room score
-  Per-person score: number of games won
+    Vote that you're "done"
+      In-room score
+      Per-person score: number of games won
+      Publish game results
+    Detect "old" rooms
   Flood protection for chat and claim field
-  Publish game results
   Flip rate limiting
   Landing page for non-signed-in users
   Instructions / How Do I Play? in top leftcol
   Fix race condition on purging empty games
+  Remove people from the last game after they close out
+  Last activity in a game
 / Remove game_id from inactive users
 / Purge empty rooms
 
@@ -23,8 +27,12 @@ ENHANCEMENTS
   Show unmatched words at endgame
 
 COSMETIC
+  Allow Vscrollbar
   Tagline. e.g. "Grand Theft Alpha"
   Move "A David Liu Production"
+/ Make "Flip" bigger
+/ Clicking inside the message box should focus chat
+
 
 PERFORMANCE/CLEANUP
   Heartbeats on separate redis keys

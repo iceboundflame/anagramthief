@@ -2,7 +2,7 @@ require 'word_matcher'
 require 'my_multiset'
 
 class GameState
-  attr_accessor :game_id
+  attr_accessor :game_id, :is_game_over
   attr_accessor :players, :players_order, :pool_unseen, :pool_seen
   attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
 
@@ -20,6 +20,7 @@ class GameState
 
   def initialize(game_id=nil)
     @game_id = game_id
+    @is_game_over = false
     @players = {}
     @players_order = []
     @pool_unseen = MyMultiset.new
@@ -28,6 +29,7 @@ class GameState
   end
 
   def restart
+    @is_game_over = false
     @players.each {|id, p| p.restart}
     @pool_unseen = MyMultiset.from_hash self.class.default_letters
     @pool_seen = []
@@ -64,14 +66,18 @@ class GameState
     count
   end
 
-  def num_voted_restart
+  def num_voted_done
     count = 0
-    @players.each {|id, p| count += 1 if p.voted_restart}
+    @players.each {|id, p| count += 1 if p.voted_done}
     count
   end
 
-  def vote_restart(user_id, vote)
-    @players[user_id].voted_restart = vote
+  def vote_done(user_id, vote)
+    @players[user_id].voted_done = vote
+  end
+
+  def players_voted_done
+    @players.keys.select {|id| @players[id].voted_done}
   end
 
   def add_player(user_id)
@@ -191,6 +197,7 @@ class GameState
 
   def to_data
     { 'game_id' => @game_id,
+      'is_game_over' => @is_game_over,
       'players' => @players.map {|id,p| p.to_data},
       'players_order' => @players_order,
       'pool_unseen' => @pool_unseen.to_data,
@@ -200,6 +207,7 @@ class GameState
   def self.from_data(x); new.from_data(x); end
   def from_data(data)
     @game_id = data['game_id']
+    @is_game_over = data['is_game_over']
     @players = {}
     data['players'].each do |pdata|
       p = Player.from_data pdata

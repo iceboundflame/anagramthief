@@ -7,87 +7,6 @@ class PlayController < ApplicationController
   after_filter :update_users_not_in_game
   helper_method :jchan
 
-  def get_ids
-    require_user or return false
-    @me = current_user
-    @me_id = @me.id_s
-
-    @game_id = params[:id]
-
-    begin
-      @game = Game.find(@game_id, :include => [:users])
-    rescue ActiveRecord::RecordNotFound
-      redirect_to games_list_url unless @game
-      return false
-    end
-
-    if !@me.game_id or @me.game_id != @game_id
-      @me.game_id = @game_id
-      @me.save
-
-      # need to reload this because now we're in the users too
-      @game = Game.find(@game_id, :include => [:users])
-    end
-  end
-
-  def lock_game
-    RedisLockQueue.get_lock @game_id, 5, 5
-    @locked = true
-  end
-  def unlock_game
-    #sleep 1 # pretend we take a long time
-    RedisLockQueue.release_lock @game_id if @locked
-    @locked = false
-  end
-
-  def load_game
-    @state = GameState.load @game_id
-    unless @state
-      logger.info "Creating GameState #{@game_id}"
-      @state = GameState.new @game_id
-      @state.restart
-    else
-      logger.debug "Loaded game: #{@state.to_json}"
-    end
-
-    just_joined = !@state.players.include?(@me_id)
-    @state.add_player(@me_id) if just_joined
-
-    @state.player(@me_id).beat_heart
-
-    @state.load_player_users
-    became_active, became_inactive =
-      @state.update_active_players @game.users.map {|u| u.id_s}
-
-    @players = @state.players_order.map{|id| @state.player(id)}
-
-    became_active << @me_id if just_joined
-    jpublish_players_update :added => became_active unless
-      became_active.empty? and became_inactive.empty?
-  end
-
-  def save_game
-    purged = @state.purge_inactive_players
-    #purged = nil
-    if purged
-      jpublish_players_update :removed => purged
-    end
-
-    #unless @state.is_saved
-      @state.save
-      logger.debug 'Saved game: '+@state.to_json
-    #end
-  end
-
-  def update_users_not_in_game
-    remove = []
-    @game.users.each {|u|
-      remove << u.id unless @state.players.include? u.id_s
-    }
-    User.update_all({:game_id => nil}, {:id => remove})
-    logger.info "Removed game from users #{remove.join ', '}"
-  end
-
   def play
     lock_game
     begin
@@ -109,13 +28,17 @@ class PlayController < ApplicationController
       unlock_game
     end
 
-    render :text => 'OK'
+    render :json => {:status => true}
   end
 
   def flip_char
     lock_game
     begin
       load_game
+      if @state.is_game_over
+        render :json => {:status => false}
+        return # Note: ensure block is still executed
+      end
 
       char = @state.flip_char
       save_game
@@ -124,10 +47,9 @@ class PlayController < ApplicationController
     end
 
     if char
-      jpublish 'pool_update', @me, :body => render_to_string(:partial => 'pool_info')
+      jpublish_update pool_update_json
 
       msg = "flipped '#{char}'"
-
       jpublish 'action', @me, :body => msg
 
       render :json => {:status => true}
@@ -142,6 +64,10 @@ class PlayController < ApplicationController
     lock_game
     begin
       load_game
+      if @state.is_game_over
+        render :json => {:status => false}
+        return # Note: ensure block is still executed
+      end
 
       result, *resultdata = @state.claim_word(@me_id, word)
       save_game
@@ -152,8 +78,8 @@ class PlayController < ApplicationController
     case result
     when :ok then
       new_word, words_stolen, pool_used = resultdata
-      jpublish_players_update :new_word_id => [@me_id, new_word.id]
-      jpublish_pool_update
+      jpublish_update pool_update_json,
+        players_update_json(:new_word_id => [@me_id, new_word.id])
       
       msg = "claimed #{word} by #{describe_move words_stolen, pool_used}."
       jpublish 'action', @me, :body => msg
@@ -216,53 +142,75 @@ class PlayController < ApplicationController
         :inline => 'says: <%= message %>',
         :locals => {:message => params[:message]},
       )
-    render :text => 'OK'
+    render :json => {:status => true}
   end
 
   def vote_quorum
-    (@state.num_active_players + 1) / 2
+    @state.num_active_players / 2 + 1
   end
 
-  def vote_restart
+  def vote_done
     vote = (params[:vote] != 'false')
-    message = (vote ? 'voted to restart' : 'canceled vote')
-    do_restart = false
+    message = (vote ? 'voted to end the game' : 'canceled vote to end game')
+    game_ending = false
 
-    load_game
+    lock_game
     begin
-      @state.vote_restart(@me_id, vote)
+      load_game
+      if @state.is_game_over
+        render :json => {:status => false}
+        return # Note: ensure block is still executed
+      end
 
-      num_voted = @state.num_voted_restart
+      @state.vote_done(@me_id, vote)
+
+      num_voted = @state.num_voted_done
       num_needed = vote_quorum
       message += "<br />#{num_voted} votes/#{num_needed} needed"
 
-      do_restart = num_voted >= num_needed
-      if do_restart
-        message += "<br /><strong>Game Restarted!</strong>"
-        @state.restart
+      game_ending = num_voted >= num_needed
+      if game_ending
+        message += "<br /><strong>Game Over!</strong>"
+        @state.is_game_over = true
       end
       save_game
     ensure
       unlock_game
     end
 
-    if do_restart
-      jpublish_pool_update
-      jpublish_players_update :restarted => true
-    else
-      jpublish_players_update
-    end
+    jpublish_update players_update_json,
+      game_over_update_json(game_ending ? {:just_finished => true} : {})
 
     jpublish 'action', @me, :body => message
-    render :text => 'OK'
+    render :json => {:status => true}
+  end
+
+  def restart
+    lock_game
+    begin
+      load_game
+      if @state.is_game_over
+        @state.restart
+      else
+        render :json => {:status => false}
+        return # Note: ensure block is still executed
+      end
+      save_game
+    ensure
+      unlock_game
+    end
+
+    jpublish_update pool_update_json, players_update_json, game_over_update_json
+    jpublish 'action', @me, :body => 'restarted the game.'
+    render :json => {:status => true}
   end
 
   def refresh
     load_game
-    render :json => {
-      :players_info => players_update_json,
-      :pool_info => pool_update_json,
-    }
+    render :json =>
+      {}.merge(players_update_json)
+      .merge(pool_update_json)
+      .merge(game_over_update_json)
   end
 
   def invite_form
@@ -273,19 +221,14 @@ class PlayController < ApplicationController
 
   protected
 
-  def jpublish_pool_update
-    jpublish 'pool_update', nil, pool_update_json
+  def jpublish_update(*json_pieces)
+    jpublish 'update', nil, json_pieces.inject({}) {|r, j| r.merge j}
   end
-  def pool_update_json
-    { :body => render_to_string(:partial => 'pool_info') }
-  end
-
-  #def jpublish_refresh_state(game_id)
-    #jpublish 'refresh_state', nil, {}, game_id
-  #end
-
-  def jpublish_players_update(addl={})
-    jpublish 'players_update', nil, players_update_json(addl)
+  def pool_update_json(addl={})
+    { :pool_info => {
+        :body => render_to_string(:partial => 'pool_info'),
+      }.merge(addl),
+    }
   end
   def players_update_json(addl={})
     rendered_players = {}
@@ -293,9 +236,18 @@ class PlayController < ApplicationController
       rendered_players[user_id] =
           render_to_string(:partial => 'player', :object => player)
     end
-    { :body => rendered_players,
-      :order => @state.players_order,
-    }.merge(addl)
+    { :players_info =>
+      { :body => rendered_players,
+        :order => @state.players_order,
+      }.merge(addl),
+    }
+  end
+  def game_over_update_json(addl={})
+    { :game_over_info => {
+        :game_over => @state.is_game_over,
+        :users_voted_done => @state.players_voted_done,
+      }.merge(addl),
+    }
   end
 
   def jpublish(type, from_user, data, game_id=nil)
@@ -315,6 +267,88 @@ class PlayController < ApplicationController
 
   def jchan(id)
     "/#{Anathief::JUGGERNAUT_PREFIX}/game/#{id}"
+  end
+
+
+  def get_ids
+    require_user or return false
+    @me = current_user
+    @me_id = @me.id_s
+
+    @game_id = params[:id]
+
+    begin
+      @game = Game.find(@game_id, :include => [:users])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to games_list_url unless @game
+      return false
+    end
+
+    if !@me.game_id or @me.game_id != @game_id
+      @me.game_id = @game_id
+      @me.save
+
+      # need to reload this because now we're in the users too
+      @game = Game.find(@game_id, :include => [:users])
+    end
+  end
+
+  def lock_game
+    RedisLockQueue.get_lock @game_id, 5, 5
+    @locked = true
+  end
+  def unlock_game
+    #sleep 1 # pretend we take a long time
+    RedisLockQueue.release_lock @game_id if @locked
+    @locked = false
+  end
+
+  def load_game
+    @state = GameState.load @game_id
+    unless @state
+      logger.info "Creating GameState #{@game_id}"
+      @state = GameState.new @game_id
+      @state.restart
+    else
+      logger.debug "Loaded game: #{@state.to_json}"
+    end
+
+    just_joined = !@state.players.include?(@me_id)
+    @state.add_player(@me_id) if just_joined
+
+    @state.player(@me_id).beat_heart
+
+    @state.load_player_users
+    became_active, became_inactive =
+      @state.update_active_players @game.users.map {|u| u.id_s}
+
+    @players = @state.players_order.map{|id| @state.player(id)}
+
+    became_active << @me_id if just_joined
+    jpublish_update players_update_json(:added => became_active) unless
+      became_active.empty? and became_inactive.empty?
+  end
+
+  def save_game
+    purged = @state.purge_inactive_players
+    #purged = nil
+    if purged
+      jpublish_update players_update_json(:removed => purged)
+    end
+
+    #unless @state.is_saved
+      @state.save
+      logger.debug 'Saved game: '+@state.to_json
+    #end
+  end
+
+  def update_users_not_in_game
+    remove = []
+    @game.users.each {|u|
+      remove << u.id unless @state.players.include? u.id_s
+    }
+    User.update_all({:game_id => nil}, {:id => remove})
+    logger.info "Removed game from users #{remove.join ', '}"
   end
 
 

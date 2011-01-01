@@ -1,5 +1,6 @@
 .left-col {
-  width: 500px;
+  width: 490px;
+  margin-right: 10px;
   float: left;
 }
 .right-col {
@@ -51,6 +52,16 @@ ul.game-list>li a:hover {
 }
 .friend-name {
   color: #22227c;
+}
+
+body.game-over .game {
+  background-color: #ddd;
+}
+.when-game-over {
+  display: none;
+}
+body.game-over .when-game-over {
+  display: inherit;
 }
 
 /* TILES */
@@ -134,6 +145,16 @@ ul.player-words>li {
   width: 240px;
   height: 3em;
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+/* GAME UI */
+#flip-btn {
+  margin: 0 2em;
+}
+.fat-btn {
+  padding: 0.5em 4em;
+  /*width: 12em;*/
+  /*height: 2.2em;*/
 }
 
 /* DEFINITIONS */

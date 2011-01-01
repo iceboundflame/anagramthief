@@ -40,7 +40,7 @@ class GamesController < ApplicationController
   def create
     game = Game.new(
       :name => params['game-name'],
-      :is_private => params['game-private'],
+      #:is_private => params['game-private'],
       :creator => current_user,
     )
     if game.save
