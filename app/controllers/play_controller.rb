@@ -37,7 +37,7 @@ class PlayController < ApplicationController
       load_game
       if @state.is_game_over
         render :json => {:status => false}
-        return # Note: ensure block is still executed
+        return # Note: the ensure block is still executed
       end
 
       char = @state.flip_char
@@ -66,7 +66,7 @@ class PlayController < ApplicationController
       load_game
       if @state.is_game_over
         render :json => {:status => false}
-        return # Note: ensure block is still executed
+        return # Note: the ensure block is still executed
       end
 
       result, *resultdata = @state.claim_word(@me_id, word)
@@ -159,7 +159,7 @@ class PlayController < ApplicationController
       load_game
       if @state.is_game_over
         render :json => {:status => false}
-        return # Note: ensure block is still executed
+        return # Note: the ensure block is still executed
       end
 
       @state.vote_done(@me_id, vote)
@@ -172,7 +172,7 @@ class PlayController < ApplicationController
       if game_ending
         message += "<br /><strong>Game Over!</strong>"
 
-        do_end_game
+        @state.end_game # also updates user score records if game completed
       end
       save_game
     ensure
@@ -194,7 +194,7 @@ class PlayController < ApplicationController
         @state.restart
       else
         render :json => {:status => false}
-        return # Note: ensure block is still executed
+        return # Note: the ensure block is still executed
       end
       save_game
     ensure
@@ -353,23 +353,6 @@ class PlayController < ApplicationController
     }
     User.update_all({:game_id => nil}, {:id => remove})
     logger.info "Removed game from users #{remove.join ', '}"
-  end
-
-  def do_end_game
-    @state.is_game_over = true
-
-    if @state.completed?
-      @state.winner_ids.each do |id|
-        p = @state.player(id)
-        u = p.user
-        u.wins += 1
-      end
-      @state.players.values.each do |p|
-        u = p.user
-        u.games_completed += 1
-        u.save
-      end
-    end
   end
 
 

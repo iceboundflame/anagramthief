@@ -4,6 +4,7 @@ require 'my_multiset'
 class GameState
   attr_accessor :game_id, :is_game_over
   attr_accessor :players, :players_order, :pool_unseen, :pool_seen
+  attr_accessor :record
   attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
 
   def self.redis_key(game_id)
@@ -64,20 +65,6 @@ class GameState
     count = 0
     @players.each {|id, p| count += 1 if p.is_active}
     count
-  end
-
-  def num_voted_done
-    count = 0
-    @players.each {|id, p| count += 1 if p.voted_done}
-    count
-  end
-
-  def vote_done(user_id, vote)
-    @players[user_id].voted_done = vote
-  end
-
-  def players_voted_done
-    @players.keys.select {|id| @players[id].voted_done}
   end
 
   def add_player(user_id)
@@ -185,6 +172,23 @@ class GameState
     return :ok, new_word, words_stolen, pool_used
   end
 
+
+  ### ENDGAME ###
+
+  def num_voted_done
+    count = 0
+    @players.each {|id, p| count += 1 if p.voted_done}
+    count
+  end
+
+  def vote_done(user_id, vote)
+    @players[user_id].voted_done = vote
+  end
+
+  def players_voted_done
+    @players.keys.select {|id| @players[id].voted_done}
+  end
+
   def compute_ranks(force_recompute=false)
     return @ranks if !force_recompute and @ranks
 
@@ -210,7 +214,7 @@ class GameState
 
   def completed?
     return false unless started?
-return true
+return true ## FIXME remove this - testing only
     pool_unseen.size < 10
   end
 
@@ -218,6 +222,23 @@ return true
     pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
   end
 
+  def end_game(update_user_records = true)
+    @is_game_over = true
+
+    if update_user_records and completed?
+      winner_ids.each do |id|
+        @players[id].user.wins += 1
+      end
+      @players.values.each do |p|
+        u = p.user
+        u.games_completed += 1
+        u.save
+      end
+    end
+  end
+
+
+  ### SERIALIZATION ###
 
   def from_json(json)
     from_data(JSON.parse json)
