@@ -331,7 +331,7 @@ var Anathief = function() {
     $('#show-instructions-link').hide();
     $('#hide-instructions-link').show();
     $('#instructions-section').slideDown();
-    FB.Canvas.setSize({height: 1500});
+    FB.Canvas.setSize({height: 2000});
   }
 
   function initInviteInterface() {
@@ -356,7 +356,7 @@ var Anathief = function() {
     $('#show-invites-link').hide();
     $('#hide-invites-link').show();
     $('#invites-section').slideDown();
-    FB.Canvas.setSize({height: 1500});
+    FB.Canvas.setSize({height: 2000});
   }
 
   return {
