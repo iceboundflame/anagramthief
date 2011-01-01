@@ -185,6 +185,39 @@ class GameState
     return :ok, new_word, words_stolen, pool_used
   end
 
+  def compute_ranks(force_recompute=false)
+    return @ranks if !force_recompute and @ranks
+
+    sorted = @players.map do |id, p|
+      {:id => id, :score => p.num_letters}
+    end.sort {|p1,p2| p2[:score] <=> p1[:score]}
+    rank = 1
+    sorted.each_with_index do |p, idx|
+      if idx > 0 && sorted[idx-1][:score] != p[:score]
+        rank = idx + 1
+      end
+      p[:rank] = rank
+    end
+
+    return @ranks = sorted
+  end
+
+  def winner_ids
+    return nil unless is_game_over
+    return [] unless started?
+    compute_ranks.select{|p| p[:rank] == 1}.map{|p| p[:id]}
+  end
+
+  def completed?
+    return false unless started?
+return true
+    pool_unseen.size < 10
+  end
+
+  def started?
+    pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
+  end
+
 
   def from_json(json)
     from_data(JSON.parse json)

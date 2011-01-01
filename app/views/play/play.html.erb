@@ -1,3 +1,5 @@
+<% content_for :body_attr do %><% if @state.is_game_over %>class="game-over"<% end %><% end %>
+
 <div class="clearfix">
   <div class="left-col">
     <h3>Anagram Thief!
@@ -44,10 +46,12 @@
 
 <div class="clearfix">
   <div class="left-col">
-    <p class="when-game-over notice large">The game is over. 
+    <div class="when-game-over notice">
+      <p class="large">The game is over. 
       <input type="button" id="restart-btn" value="Restart Game"
-        class="conn-ui fat-btn" style="display:none" />
-    </p>
+        class="conn-ui fat-btn" /></p>
+      <div id="game-over-info"><%= render :partial => 'game_result' %></div>
+    </div>
 
     <div class="game">
       <div class="clearfix">

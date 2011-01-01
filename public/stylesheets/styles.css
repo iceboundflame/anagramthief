@@ -193,9 +193,6 @@ ul.player-words>li {
 #invite-url { width: 500px; }
 
 
-/*.scores-col {
-  float: left; width: 370px;
-}
 .score-pfpic {
   float: left;
   margin: 0 10px;
@@ -206,6 +203,10 @@ ul.scorelist {
 ul.scorelist li {
   list-style-type: none;
   margin: 5px;
+}
+
+/*.scores-col {
+  float: left; width: 370px;
 }
 #finalegame {
   margin: 20px 0px;

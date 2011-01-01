@@ -47,7 +47,12 @@
     <% end %>
     <% end %>
 
-  </div>
-  <div class="right-col">
+    <fieldset>
+      <legend>Your Statistics</legend>
+      <ul>
+        <li>Games Completed: <%= current_user.games_completed %></li>
+        <li>Games Won: <%= current_user.wins %></li>
+      </ul>
+    </fieldset>
   </div>
 </div>

@@ -171,7 +171,8 @@ class PlayController < ApplicationController
       game_ending = num_voted >= num_needed
       if game_ending
         message += "<br /><strong>Game Over!</strong>"
-        @state.is_game_over = true
+
+        do_end_game
       end
       save_game
     ensure
@@ -243,10 +244,13 @@ class PlayController < ApplicationController
     }
   end
   def game_over_update_json(addl={})
+    body = {}
+    body[:body] = render_to_string(:partial => 'game_result') if @state.is_game_over
+
     { :game_over_info => {
         :game_over => @state.is_game_over,
         :users_voted_done => @state.players_voted_done,
-      }.merge(addl),
+      }.merge(addl).merge(body),
     }
   end
 
@@ -349,6 +353,23 @@ class PlayController < ApplicationController
     }
     User.update_all({:game_id => nil}, {:id => remove})
     logger.info "Removed game from users #{remove.join ', '}"
+  end
+
+  def do_end_game
+    @state.is_game_over = true
+
+    if @state.completed?
+      @state.winner_ids.each do |id|
+        p = @state.player(id)
+        u = p.user
+        u.wins += 1
+      end
+      @state.players.values.each do |p|
+        u = p.user
+        u.games_completed += 1
+        u.save
+      end
+    end
   end
 
 

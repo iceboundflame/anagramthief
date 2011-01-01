@@ -9,7 +9,7 @@
 <%= csrf_meta_tag %>
 </head>
 <!--body onload="FB.Canvas.setSize({height: 1500});"-->
-<body onload="FB.Canvas.setSize();">
+<body onload="FB.Canvas.setSize();" <%= yield :body_attr %>>
 
 <div id="fb-root"></div>
 <script>

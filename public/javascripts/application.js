@@ -1,6 +1,7 @@
 var Anathief = function() {
   var gd;
   var jug;
+  var gameOver = false, votedDone = false;
 
   function log(x) {
     if (typeof console == "object")
@@ -148,8 +149,6 @@ var Anathief = function() {
 
   /** Game Interface: Flip, Claim, Vote Restart **/
 
-  var votedRestart = false;
-
   function initGameInterface() {
     $('#flip-btn').click(function() {
       flipChar();
@@ -214,15 +213,12 @@ var Anathief = function() {
     if (gameOver) {
       $('#vote-done-btn').hide();
       $('#cancel-vote-btn').hide();
-      $('#restart-btn').show();
     } else if (votedDone) {
       $('#vote-done-btn').hide();
       $('#cancel-vote-btn').show();
-      $('#restart-btn').hide();
     } else {
       $('#vote-done-btn').show();
       $('#cancel-vote-btn').hide();
-      $('#restart-btn').hide();
     }
   }
 
@@ -246,6 +242,9 @@ var Anathief = function() {
       disablePlayUi();
     } else {
       enablePlayUi();
+    }
+    if (data.body) {
+      $('#game-over-info').html(data.body);
     }
 
     votedDone = ($.inArray(gd.me_id, data.users_voted_done) != -1);
