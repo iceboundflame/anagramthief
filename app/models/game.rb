@@ -19,12 +19,12 @@ class Game < ActiveRecord::Base
     # To prevent people joining a game that's in the process of being
     # deleted, ensure that the purge_old timeout is much greater than
     # the time out here.
-    self.where('games.updated_at > ?', 3.hour.ago)
+    self.where('games.permanent = ? OR games.updated_at > ?', true, 3.hour.ago)
   end
 
   def self.purge_old
     purge_game_ids = self.includes(:users)
-      .where(:users => {:id => nil}, :permanent => false)
+      .where(:permanent => false)
       .where('games.updated_at < ?', 1.day.ago)
       .map {|g|g.id}
 
