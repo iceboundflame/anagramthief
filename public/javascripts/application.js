@@ -291,7 +291,8 @@ var Anathief = function() {
         name: data.title_line,
         link: gd.urls.canvas,
         picture: gd.urls.fbPostImg,
-        description: data.description,
+        description: 'Anagram Thief is an exciting multi-player game where you try to make words by stealing letters from your opponents.',
+        properties: data.properties,
         message: ''
       },
       function(response) {

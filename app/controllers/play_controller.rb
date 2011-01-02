@@ -182,22 +182,18 @@ class PlayController < ApplicationController
 
     extra_data = {}
     if game_ending
-      desc_lines = []
+      props = Hash.new {|hash, key| hash[key] = []}
       @state.compute_ranks.each do |p|
-        desc = ''
         player = @state.player(p[:id])
-        if p[:rank] == 1
-          desc += 'Winner:'
-        else
-          desc += "#{ordinalize p[:rank]} Place:"
-        end
-        desc += " #{player.user.name} -- #{player.num_letters} letters"
-        desc_lines << desc
+        props[ordinalize p[:rank]] << "#{player.user.name}, with #{player.num_letters} letters"
+      end
+      props.each do |k,v|
+        props[k] = v.join '; '
       end
       extra_data[:just_finished] = true
       extra_data[:publish_fb] = {
         :title_line => "I just played a game of Anagram Thief!",
-        :description => desc_lines.join("\n"),
+        :properties => props,
       }
     end
     jpublish_update players_update_json, game_over_update_json(extra_data)
