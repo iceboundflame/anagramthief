@@ -67,7 +67,8 @@ class GamesController < ApplicationController
   # Need some stale games first only hide for 2 min then timeout and purge?
   def purge_empty_games
     empty_game_ids = Game.includes(:users)
-      .where(:users => {:id => nil}).map {|g|g.id}
+      .where(:users => {:id => nil}, :permanent => false)
+      .map {|g|g.id}
 
     return if empty_game_ids.empty?
 

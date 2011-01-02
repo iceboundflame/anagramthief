@@ -363,6 +363,8 @@ class PlayController < ApplicationController
   end
 
   def update_users_not_in_game
+    return unless @state
+
     remove = []
     @game.users.each {|u|
       remove << u.id unless @state.players.include? u.id_s
