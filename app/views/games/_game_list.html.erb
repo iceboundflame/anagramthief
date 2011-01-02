@@ -3,7 +3,7 @@
   <li id="game-<%= game.id %>">
   <a href="<%= play_url(game.id) %>" class="clearfix">
     <%= image_tag game.creator.profile_pic,
-      :width => 40, :height => 40, :class => 'game-list-pfpic' %>
+      :width => 50, :height => 50, :class => 'game-list-pfpic' %>
     <span class="game-name"><%= game.name %></span><% if game.is_private %>
       <span class="game-private-label">(Private)</span><% end %>,
     created by <span class="creator-name <%= 'friend-name' if @friend_ids.include? game.creator.uid %>"><%= game.creator.name %></span>
@@ -14,6 +14,8 @@
     <% game_users.each do |u| %><%= ', ' unless first %>
     <span class="game-player <%= 'friend-name' if @friend_ids.include? u.uid %>"><%= u.name %></span><% first = false %><% end %>
     <% if game_users.count == 0 %>(Nobody)<% end %>
+    <br />
+    <span class="quiet small">Last activity: <%= time_ago_in_words game.updated_at, true %> ago</span>
   </a>
   </li>
 <% end %>

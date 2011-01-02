@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_filter :require_user
 
   def list
-    purge_empty_games
+    Game.process_inactive
 
     friend_game_ids = []
     begin
@@ -10,7 +10,7 @@ class GamesController < ApplicationController
       @friend_ids = @fb.get('me/friends')['data'].map { |x| x['id'] }
       @friend_ids << current_user.uid
 
-      @friend_games = Game.includes(:users)
+      @friend_games = Game.hide_old.includes(:users)
         .where(:users => {:uid => @friend_ids}).all
 
       @my_games = sort_games_by_user_ct Game.includes(:users)
@@ -31,10 +31,13 @@ class GamesController < ApplicationController
       return
     end
 
-    @public_games = Game.includes(:creator, :users)
+    @public_games = Game.hide_old.includes(:creator, :users)
       .delete_if {|g| friend_game_ids.include? g.id or
                       my_game_ids.include? g.id}
     @public_games = sort_games_by_user_ct @public_games
+
+
+    Game.purge_old
   end
 
   def create
@@ -60,23 +63,5 @@ class GamesController < ApplicationController
       (g2.users.select {|u| @friend_ids.include? u.uid}.size) <=>
       (g1.users.select {|u| @friend_ids.include? u.uid}.size)
     }
-  end
-
-  # FIXME: Race condition, people joining the game and this list getting
-  # updated at the same time?
-  # Need some stale games first only hide for 2 min then timeout and purge?
-  def purge_empty_games
-    empty_game_ids = Game.includes(:users)
-      .where(:users => {:id => nil}, :permanent => false)
-      .map {|g|g.id}
-
-    return if empty_game_ids.empty?
-
-    #Game.includes(:users)
-      #.where(:users => {:id => nil}).all.map {|g|g.id}
-      #.delete_all(:game_ids)
-    logger.info "Deleting empty games #{empty_game_ids}"
-    Game.delete_all(:id => empty_game_ids)
-    GameState.delete_ids(empty_game_ids)
   end
 end

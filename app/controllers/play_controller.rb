@@ -5,6 +5,7 @@ class PlayController < ApplicationController
 
   before_filter :get_ids
   after_filter :update_users_not_in_game
+  after_filter :touch_game
   helper_method :jchan
 
   def play
@@ -369,8 +370,15 @@ class PlayController < ApplicationController
     @game.users.each {|u|
       remove << u.id unless @state.players.include? u.id_s
     }
-    User.update_all({:game_id => nil}, {:id => remove})
-    logger.info "Removed game from users #{remove.join ', '}"
+    unless remove.empty?
+      User.update_all({:game_id => nil}, {:id => remove})
+      logger.info "Removed game from users #{remove.join ', '}"
+    end
+  end
+
+  def touch_game
+    return unless @game
+    @game.update_attributes(:updated_at => Time.now)
   end
 
 

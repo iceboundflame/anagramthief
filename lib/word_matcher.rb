@@ -50,7 +50,6 @@ module WordMatcher
   def self.word_match(pool, stealable, target,
                       need_ms=nil, stolen=[],
                       depth=1, dbg=false)
-    dbg=true
 
     need_ms = MyMultiset.from_letters(target) unless need_ms
     raise ArgumentError, 'pool should be Array' unless pool.kind_of?(Array)
