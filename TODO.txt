@@ -1,24 +1,7 @@
-LAUNCH BLOCKERS
-/ Detect game finish
-/   Vote that you're "done"
-/     Per-person score: number of games won
-      In-room score
-      Publish game results
-    Detect "old" rooms with people who left
-      Count their scores
-  Flood protection for chat and claim field
-  Landing page for non-signed-in users
-  Instructions / How Do I Play? in top leftcol
-  Fix race condition on purging empty games
-  Remove people from the last game after they close out
-/ Remove game_id from inactive users
-/ Purge empty rooms
-
 ENHANCEMENTS
-  Last activity in a game - in lobby
-  See people in lobby
-  Flip rate limiting
-  Finish making FB request invitations work - list on index page, link to game rooms
+  Landing page for non-signed-in users
+  In-room score
+
   Game stats: # letters stolen, # words made, longest steal
   Sound effects
   Achievements
@@ -36,22 +19,21 @@ ENHANCEMENTS
       Grand Theft Alphabet
       Heist Master
     Taking the last word
+  Flip rate limiting
   Private rooms
   Guest mode
+  Round table simulation for matching fairness
   Show unmatched words at endgame
   Bookmark words for study
+
+PROBABLY NOT
+  See people in lobby
+  Finish making FB request invitations work - list on index page, link to game rooms
   Turn taking 5x at a time - with vote to skip turn
-  Round table simulation for matching fairness
-
-COSMETIC
-  Allow Vscrollbar
-  Tagline. e.g. "Grand Theft Alpha"
-  Move "A David Liu Production"
-/ Make "Flip" bigger
-/ Clicking inside the message box should focus chat
-
 
 PERFORMANCE/CLEANUP
+  Need to refactor GameState again, and possibly the controllers
+    Consider the concerned_with plugin
   Heartbeats on separate redis keys
   Fix GameState.saved?, only save if needed
   Consolidate redis connections
@@ -67,6 +49,23 @@ TESTING
 
 
 OLD/DONE
+/ Last activity in a game - in lobby
+/ Allow Vscrollbar
+/ Move "A David Liu Production"
+/ Make "Flip" bigger
+/ Clicking inside the message box should focus chat
+/ Detect game finish
+/   Vote that you're "done"
+/     Per-person score: number of games won
+/     Publish game results
+/   Detect "old" rooms with people who left
+/     Count their scores
+/ Flood protection for chat and claim field
+/ Instructions / How Do I Play? in top leftcol
+/ Fix race condition on purging empty games
+/ Remove people from the last game after they close out
+/ Remove game_id from inactive users
+/ Purge empty rooms
 
 / GameState locking
 / What happens if crashed? Lock released?
