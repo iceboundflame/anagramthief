@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   helper_method :current_user, :user_signed_in?, :oauth_url
+  helper_method :ordinalize
   before_filter :send_fucking_p3p
 
   def send_fucking_p3p # Goddamn this bullshit.
@@ -54,5 +55,22 @@ class ApplicationController < ActionController::Base
 
   def oauth_url
     MiniFB.oauth_url(Facebook::APP_ID, sessions_create_url, :scope => '')
+  end
+
+  def ordinalize(value)
+    case value.to_s
+    when /^[0-9]*[1][0-9]$/
+      suffix = "th"
+    when /^[0-9]*[1]$/
+      suffix = "st"
+    when /^[0-9]*[2]$/
+      suffix = "nd"
+    when /^[0-9]*[3]$/
+      suffix = "rd"
+    else
+      suffix = "th"
+    end
+
+    return value.to_s << suffix
   end
 end
