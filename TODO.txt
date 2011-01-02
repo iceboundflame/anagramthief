@@ -35,6 +35,7 @@ ENHANCEMENTS
       Burglar
       Grand Theft Alphabet
       Heist Master
+    Taking the last word
   Private rooms
   Guest mode
   Show unmatched words at endgame

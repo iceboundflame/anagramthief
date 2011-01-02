@@ -146,15 +146,6 @@
   </div>
 </div>
 
-<a href="javascript:$('#debug').toggle()">Toggle debug</a>
-<pre style="overflow: scroll; display: none" id="debug">
-@state: <%= @state.inspect %>
-
-@player_profiles: <%= @player_profiles.inspect %>
-
-@players: <%= @players.inspect %>
-</pre>
-
 <% content_for :after_scripts do %>
 <script type="text/javascript">
   $(document).ready(function() {

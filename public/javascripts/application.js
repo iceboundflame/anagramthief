@@ -325,13 +325,12 @@ var Anathief = function() {
   function hideInstructions() {
     $('#hide-instructions-link').hide();
     $('#show-instructions-link').show();
-    $('#instructions-section').slideUp(null, FB.Canvas.setSize);
+    $('#instructions-section').slideUp(null, setSize);
   }
   function showInstructions() {
     $('#show-instructions-link').hide();
     $('#hide-instructions-link').show();
-    $('#instructions-section').slideDown();
-    FB.Canvas.setSize({height: 2000});
+    $('#instructions-section').slideDown(null, setSize);
   }
 
   function initInviteInterface() {
@@ -350,19 +349,30 @@ var Anathief = function() {
   function hideInvites() {
     $('#hide-invites-link').hide();
     $('#show-invites-link').show();
-    $('#invites-section').slideUp(null, FB.Canvas.setSize);
+    $('#invites-section').slideUp(null, function(){
+      $('#invites-section').hide(); // make document.body.scrollHeight good again
+      setSize();
+    });
   }
   function showInvites() {
     $('#show-invites-link').hide();
     $('#hide-invites-link').show();
-    $('#invites-section').slideDown();
-    FB.Canvas.setSize({height: 2000});
+    $('#invites-section').slideDown(null, setSize);
+  }
+
+  function setSize() {
+    // FB by default doesn't make room for scrollbars
+    // N.B. document.body doesn't shrink less than the current viewport height
+    // in Chrome, but document.documentElement does.
+    FB.Canvas.setSize({height: document.documentElement.scrollHeight + 30});
+    /*FB.Canvas.setSize({height: $('#wrap')[0].scrollHeight + 30});*/
   }
 
   return {
     init: init,
     heartbeat: heartbeat,
     hideInvites: hideInvites,
-    showInvites: showInvites
+    showInvites: showInvites,
+    setSize: setSize
   };
 }();
