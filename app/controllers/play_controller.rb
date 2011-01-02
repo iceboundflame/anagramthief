@@ -180,8 +180,27 @@ class PlayController < ApplicationController
       unlock_game
     end
 
-    jpublish_update players_update_json,
-      game_over_update_json(game_ending ? {:just_finished => true} : {})
+    extra_data = {}
+    if game_ending
+      desc_lines = []
+      @state.compute_ranks.each do |p|
+        desc = ''
+        player = @state.player(p[:id])
+        if p[:rank] == 1
+          desc += 'Winner:'
+        else
+          desc += "#{ordinalize p[:rank]} Place:"
+        end
+        desc += " #{player.user.name} -- #{player.num_letters} letters"
+        desc_lines << desc
+      end
+      extra_data[:just_finished] = true
+      extra_data[:publish_fb] = {
+        :title_line => "I just played a game of Anagram Thief!",
+        :description => desc_lines.join("\n"),
+      }
+    end
+    jpublish_update players_update_json, game_over_update_json(extra_data)
 
     jpublish 'action', @me, :body => message
     render :json => {:status => true}

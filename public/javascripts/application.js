@@ -250,8 +250,8 @@ var Anathief = function() {
 
     votedDone = ($.inArray(gd.me_id, data.users_voted_done) != -1);
 
-    if (data.just_finished) {
-      publishGame();
+    if (data.publish_fb) {
+      publishGame(data.publish_fb);
     }
 
     updateDoneButton();
@@ -284,14 +284,14 @@ var Anathief = function() {
     }
   }
 
-  function publishGame() {
+  function publishGame(data) {
     FB.ui({
         method: 'feed',
         /*display: 'popup',*/
-        name: 'I just played a game of Anagram Thief',
+        name: data.title_line,
         link: gd.urls.canvas,
         picture: gd.urls.fbPostImg,
-        description: 'You should too!',
+        description: data.description,
         message: ''
       },
       function(response) {
