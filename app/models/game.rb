@@ -33,6 +33,7 @@ class Game < ActiveRecord::Base
     # end game -- updates user stats if game completed
     purge_game_ids.each do |gid|
       gs = GameState.load gid
+      gs.load_player_users
       gs.end_game
     end
 
