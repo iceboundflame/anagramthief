@@ -65,18 +65,13 @@
     </fieldset>
 
     <fieldset>
-      <legend>Recent Games</legend>
-      <ul>
-        <% @recent_records.each do |r| %>
-          <li><%= time_ago_in_words r.created_at %> ago in<br />
-          <%= r.gameroom.name %> (created by <%= r.gameroom.creator.name %>)
-          <ul>
-          <% r.user_game_records.each do |u_r| %>
-            <li><%= ordinalize u_r.rank %>: <%= u_r.user.name %>, <%= u_r.num_letters %> letters</li>
-          <% end %>
-        </ul></li>
-        <% end %>
-      </ul>
+      <legend>Your Recent Games</legend>
+      <%= render :partial => 'game_record_list', :object => @my_recent_records %>
+    </fieldset>
+
+    <fieldset>
+      <legend>All Recent Games</legend>
+      <%= render :partial => 'game_record_list', :object => @recent_records %>
     </fieldset>
   </div>
 </div>

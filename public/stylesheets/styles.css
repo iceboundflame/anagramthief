@@ -55,6 +55,19 @@ ul.game-list>li a:hover {
   color: #22227c;
 }
 
+/* RECENT GAMES */
+ul.game-record-list {
+  list-style-type: none;
+  margin: 0; padding: 0;
+}
+ul.game-record-list>li {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+
+/* PLAY */
+
 body.game-over .game {
   background-color: #ddd;
 }
