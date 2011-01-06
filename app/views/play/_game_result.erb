@@ -21,4 +21,23 @@
     </li>
   <% end %>
   </ul>
+
+  <% stats = @state.compute_stats %>
+  <% unless stats[:longest_steals].empty? %>
+    <h4>Longest Steals</h4>
+    <ul>
+    <% stats[:longest_steals].each do |(user_id, word, words_stolen)|%>
+      <li><%= @state.player(user_id).user.name %> made <%= word %> by stealing <%= words_stolen.join ', ' %></li>
+    <% end %>
+    </ul>
+  <% end %>
+  <% unless stats[:word_combines].empty? %>
+    <h4>Multi-Word Steals</h4>
+    <ul>
+    <% stats[:word_combines].each do |(user_id, word, words_stolen)|%>
+      <li><%= @state.player(user_id).user.name %> made <%= word %> by stealing <%= words_stolen.join ', ' %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
 <% end %>

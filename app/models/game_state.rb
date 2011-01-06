@@ -226,9 +226,9 @@ class GameState
   def end_game(should_update_records = true)
     @is_game_over = true
 
-    if should_update_records and completed?
+    if should_update_records
       compute_ranks true
-      record_user_stats
+      record_user_stats if completed?
       record_game
     end
   end
@@ -244,12 +244,12 @@ class GameState
           longest_steals = []
           longest_steal_len = num_ltrs_stolen
         end
-        if num_ltrs_stolen == longest_steal_len
+        if num_ltrs_stolen > 0 and num_ltrs_stolen == longest_steal_len
           longest_steals << [user_id, word, words_stolen]
         end
 
         if words_stolen.size > 1
-          word_combines << [word_id, word, words_stolen]
+          word_combines << [user_id, word, words_stolen]
         end
       end
     end
@@ -264,6 +264,7 @@ class GameState
     r = GameRecord.create(
       :gameroom_id => @game_id,
       :data => compute_stats.to_json,
+      :completed => completed?,
     )
     compute_ranks.each do |pinfo|
       p = pinfo[:player]
