@@ -38,6 +38,7 @@ class Game < ActiveRecord::Base
       next unless gs
       gs.load_player_users
       gs.end_game
+      # no save because we're about to delete the GameState!
     end
 
     logger.info "Deleting old games #{end_game_ids}"

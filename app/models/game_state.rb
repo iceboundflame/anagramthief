@@ -224,12 +224,14 @@ class GameState
   end
 
   def end_game(should_update_records = true)
-    @is_game_over = true
+    unless @is_game_over
+      @is_game_over = true
 
-    if should_update_records
-      compute_ranks true
-      record_user_stats if completed?
-      record_game
+      if should_update_records
+        compute_ranks true
+        record_user_stats if completed?
+        record_game
+      end
     end
   end
 
