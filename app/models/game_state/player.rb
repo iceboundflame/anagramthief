@@ -84,7 +84,7 @@ class GameState::Player
     @is_active = data['is_active']
     @last_heartbeat = data['last_heartbeat']
     @last_heartbeat &&= Time.parse @last_heartbeat
-    @claims = data['claims']
+    @claims = data['claims'] || []
     self
   end
 end
