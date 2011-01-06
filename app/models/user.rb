@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   belongs_to :game
+  has_many :user_game_records
+  has_many :game_records, :through => :user_game_records
 
   #def facebook_friends(access_token)
     #@graph ||= MiniFB::OAuthSession.new(access_token)

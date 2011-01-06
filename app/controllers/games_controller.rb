@@ -36,8 +36,11 @@ class GamesController < ApplicationController
                       my_game_ids.include? g.id}
     @public_games = sort_games_by_user_ct @public_games
 
+    @recent_records = GameRecord
+      .includes({:user_game_records => :user, :gameroom => :creator})
+      .order('game_records.created_at DESC').all
 
-    Game.purge_old
+    Game.end_old
   end
 
   def create

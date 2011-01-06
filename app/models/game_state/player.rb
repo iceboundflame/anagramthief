@@ -1,6 +1,6 @@
 class GameState::Player
   attr_accessor :id, :words, :voted_done, :next_word_id,
-    :is_active, :last_heartbeat
+    :is_active, :last_heartbeat, :claims
   attr_accessor :user
 
   def initialize(id=nil)
@@ -10,6 +10,7 @@ class GameState::Player
     @next_word_id = 1
     @is_active = false
     @last_heartbeat = nil
+    @claims = []
     @user = nil
   end
 
@@ -17,6 +18,7 @@ class GameState::Player
     @words = {}
     @voted_done = false
     @next_word_id = 1
+    @claims = []
   end
 
   def voted_done?
@@ -36,6 +38,11 @@ class GameState::Player
     @words[@next_word_id] = w
     @next_word_id += 1
     w
+  end
+
+  def claim_word(word, words_stolen, pool_used)
+    @claims << [word, words_stolen, pool_used.to_array]
+    return add_word word
   end
 
   def remove_word_id(id)
@@ -61,6 +68,7 @@ class GameState::Player
       'next_word_id' => @next_word_id,
       'is_active' => @is_active,
       'last_heartbeat' => @last_heartbeat,
+      'claims' => @claims,
     }
   end
   def self.from_data(x); new.from_data(x); end
@@ -76,6 +84,7 @@ class GameState::Player
     @is_active = data['is_active']
     @last_heartbeat = data['last_heartbeat']
     @last_heartbeat &&= Time.parse @last_heartbeat
+    @claims = data['claims']
     self
   end
 end

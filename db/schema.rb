@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110102052417) do
+ActiveRecord::Schema.define(:version => 20110106054437) do
+
+  create_table "game_records", :force => true do |t|
+    t.integer  "gameroom_id"
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "games", :force => true do |t|
     t.string   "name"
@@ -19,6 +26,15 @@ ActiveRecord::Schema.define(:version => 20110102052417) do
     t.integer  "creator_id"
     t.boolean  "is_private", :default => false
     t.boolean  "permanent",  :default => false
+    t.boolean  "active",     :default => true
+  end
+
+  create_table "user_game_records", :force => true do |t|
+    t.integer "game_record_id"
+    t.integer "user_id"
+    t.integer "num_letters"
+    t.text    "data"
+    t.integer "rank"
   end
 
   create_table "users", :force => true do |t|

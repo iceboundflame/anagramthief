@@ -2,6 +2,8 @@ class Game < ActiveRecord::Base
   has_many :users
   belongs_to :creator, :class_name => 'User'
 
+  has_many :game_records
+
   validates :name, :presence => true, :length => {:maximum => 30}
   validates :creator, :presence => true
 
@@ -17,28 +19,30 @@ class Game < ActiveRecord::Base
 
   def self.hide_old
     # To prevent people joining a game that's in the process of being
-    # deleted, ensure that the purge_old timeout is much greater than
-    # the time out here.
+    # deleted, ensure that the purge_old timeout is greater than
+    # the timeout here.
     self.where('games.permanent = ? OR games.updated_at > ?', true, 3.hour.ago)
   end
 
-  def self.purge_old
-    purge_game_ids = self.includes(:users)
-      .where(:permanent => false)
-      .where('games.updated_at < ?', 1.day.ago)
+  def self.end_old
+    end_game_ids = self.includes(:users)
+      .where('games.updated_at < ?', 4.hour.ago)
+      .where(:active => true)
       .map {|g|g.id}
 
-    return if purge_game_ids.empty?
+    return if end_game_ids.empty?
 
     # end game -- updates user stats if game completed
-    purge_game_ids.each do |gid|
+    end_game_ids.each do |gid|
       gs = GameState.load gid
+      next unless gs
       gs.load_player_users
       gs.end_game
     end
 
-    logger.info "Deleting old games #{purge_game_ids}"
-    Game.delete_all(:id => purge_game_ids)
-    GameState.delete_ids(purge_game_ids)
+    logger.info "Deleting old games #{end_game_ids}"
+    # let's keep the Game around, just delete the GameState
+    Game.update_all({:active => false}, {:id => end_game_ids})
+    GameState.delete_ids(end_game_ids)
   end
 end

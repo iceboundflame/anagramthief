@@ -167,7 +167,8 @@ class GameState
       count.times { @pool_seen.delete_at(@pool_seen.index letter) }
     end
 
-    new_word = @players[user_id].add_word word
+    p = @players[user_id]
+    new_word = p.claim_word word, words_stolen, pool_used
 
     return :ok, new_word, words_stolen, pool_used
   end
@@ -193,7 +194,7 @@ class GameState
     return @ranks if !force_recompute and @ranks
 
     sorted = @players.map do |id, p|
-      {:id => id, :score => p.num_letters}
+      {:id => id, :score => p.num_letters, :player => p}
     end.sort {|p1,p2| p2[:score] <=> p1[:score]}
     rank = 1
     sorted.each_with_index do |p, idx|
@@ -222,20 +223,72 @@ class GameState
     pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
   end
 
-  def end_game(update_user_records = true)
+  def end_game(should_update_records = true)
     @is_game_over = true
 
-    if update_user_records and completed?
-      winner_ids.each do |id|
-        @players[id].user.wins += 1
-      end
-      @players.values.each do |p|
-        u = p.user
-        u.games_completed += 1
-        u.save
-      end
+    if should_update_records and completed?
+      compute_ranks true
+      record_user_stats
+      record_game
     end
   end
+
+  def compute_stats
+    longest_steals = [] # [  [user_id, new_word, [words_stolen]], ...  ]
+    word_combines = [] # [  [user_id, new_word, [words_stolen]], ...  ]
+    longest_steal_len = 0
+    @players.each do |user_id,p|
+      p.claims.each do |(word, words_stolen, pool_used_arr)|
+        num_ltrs_stolen = words_stolen.inject(0){|ct, word| ct+word.size}
+        if num_ltrs_stolen > longest_steal_len
+          longest_steals = []
+          longest_steal_len = num_ltrs_stolen
+        end
+        if num_ltrs_stolen == longest_steal_len
+          longest_steals << [user_id, word, words_stolen]
+        end
+
+        if words_stolen.size > 1
+          word_combines << [word_id, word, words_stolen]
+        end
+      end
+    end
+
+    return {
+      :longest_steals => longest_steals,
+      :word_combines => word_combines,
+    }
+  end
+
+  def record_game
+    r = GameRecord.create(
+      :gameroom_id => @game_id,
+      :data => compute_stats.to_json,
+    )
+    compute_ranks.each do |pinfo|
+      p = pinfo[:player]
+      UserGameRecord.create(
+        :game_record => r,
+        :user => p.user,
+        :num_letters => p.num_letters,
+        :data => {:claims => p.claims},
+        :rank => pinfo[:rank],
+      )
+    end
+  end
+
+  def record_user_stats
+    winner_ids.each do |id|
+      @players[id].user.wins += 1
+    end
+
+    @players.values.each do |p|
+      u = p.user
+      u.games_completed += 1
+      u.save
+    end
+  end
+
 
 
   ### SERIALIZATION ###

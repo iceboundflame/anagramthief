@@ -33,7 +33,8 @@ class MyMultiset
     self
   end
 
-  def to_a
+  def to_a; to_array; end
+  def to_array
     res = []
     @hash.each do |ltr, ct|
       res += [ltr] * ct
