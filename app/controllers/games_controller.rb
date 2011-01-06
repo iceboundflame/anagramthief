@@ -36,14 +36,12 @@ class GamesController < ApplicationController
                       my_game_ids.include? g.id}
     @public_games = sort_games_by_user_ct @public_games
 
-    logger.info("8"*80);
     @my_recent_records = GameRecord
       .includes({:user_game_records => :user, :gameroom => :creator})
       .where(:user_game_records => {:user_id => current_user.id})
       .order('game_records.created_at DESC')
       .limit(8)
       .all
-    logger.info("8"*80);
 
     @recent_records = GameRecord
       .includes({:user_game_records => :user, :gameroom => :creator})
