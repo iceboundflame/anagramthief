@@ -33,6 +33,8 @@ class PlayController < ApplicationController
   end
 
   def flip_char
+    timeout = 3
+
     lock_game
     begin
       load_game
@@ -41,21 +43,31 @@ class PlayController < ApplicationController
         return # Note: the ensure block is still executed
       end
 
-      char = @state.flip_char
-      save_game
+      # Make sure this timeout in in sync with the JS client delay!
+      last_flip = @state.player(@me_id).last_flip
+      if !last_flip || Time.now - last_flip > timeout.seconds
+        flip_acknowledged = true
+        char = @state.flip_char
+        @state.player(@me_id).record_flip
+        save_game
+      end
     ensure
       unlock_game
     end
 
-    if char
-      jpublish_update pool_update_json
+    if flip_acknowledged
+      if char
+        jpublish_update pool_update_json
 
-      msg = "flipped '#{char}'"
-      jpublish 'action', @me, :body => msg
+        msg = "flipped '#{char}'"
+        jpublish 'action', @me, :body => msg
 
-      render :json => {:status => true}
+        render :json => {:status => true}
+      else
+        render :json => {:status => false, :message => 'No more letters to flip.'}
+      end
     else
-      render :json => {:status => false, :message => 'No more letters to flip.'}
+      render :json => {:status => false, :message => "Wait #{timeout} seconds between flips."}
     end
   end
 

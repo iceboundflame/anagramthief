@@ -2,6 +2,7 @@ var Anathief = function() {
   var gd;
   var jug;
   var gameOver = false, votedDone = false;
+  var connected = false;
 
   function log(x) {
     if (typeof console == "object")
@@ -63,11 +64,13 @@ var Anathief = function() {
     addMessage(null, 'Connected!');
     enableConnUi();
     log('Connected');
+    connected = true;
   }
   function onDisconnect() {
     addMessage(null, 'Disconnected.');
     disableConnUi();
     log('Disconnected');
+    connected = false;
   }
   function onReconnect() {
     addMessage(null, 'Reconnecting...');
@@ -201,6 +204,13 @@ var Anathief = function() {
   }
 
   function flipChar() {
+    $('#flip-btn').attr('disabled', 'disabled');
+    /*$('#flip-wait').show();*/
+    setTimeout(function () {
+        /*$('#flip-wait').hide();*/
+      if (connected && !gameOver)
+        $('#flip-btn').removeAttr('disabled');
+    }, 3000); // make sure this is in sync with the server side delay
     $.post(gd.urls.flipChar,
       function(data) {
         if (data.message) {

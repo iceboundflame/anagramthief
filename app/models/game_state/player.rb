@@ -1,6 +1,6 @@
 class GameState::Player
   attr_accessor :id, :words, :voted_done, :next_word_id,
-    :is_active, :last_heartbeat, :claims
+    :is_active, :last_heartbeat, :claims, :last_flip
   attr_accessor :user
 
   def initialize(id=nil)
@@ -23,6 +23,10 @@ class GameState::Player
 
   def voted_done?
     @voted_done
+  end
+
+  def record_flip
+    @last_flip = Time.now
   end
 
   def beat_heart
@@ -68,6 +72,7 @@ class GameState::Player
       'next_word_id' => @next_word_id,
       'is_active' => @is_active,
       'last_heartbeat' => @last_heartbeat,
+      'last_flip' => @last_flip,
       'claims' => @claims,
     }
   end
@@ -84,6 +89,8 @@ class GameState::Player
     @is_active = data['is_active']
     @last_heartbeat = data['last_heartbeat']
     @last_heartbeat &&= Time.parse @last_heartbeat
+    @last_flip = data['last_flip']
+    @last_flip &&= Time.parse @last_flip
     @claims = data['claims'] || []
     self
   end
