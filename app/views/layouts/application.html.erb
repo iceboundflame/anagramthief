@@ -7,6 +7,7 @@
 <!--[if lt IE 8]><link rel="stylesheet" href="<%= stylesheet_path 'blueprint/ie.css' %>" type="text/css" media="screen, projection"><![endif]-->
 <%= stylesheet_link_tag :all %>
 <%= csrf_meta_tag %>
+<meta http-equiv="P3P" href="<%= public_file_url 'privacy.p3p' %>" content='CP="NON CURa ADMa DEVa TAIa OUR BUS IND PHY UNI COM NAV DEM"' />
 </head>
 <body onload="Anathief.setSize();" <%= yield :body_attr %>>
 
