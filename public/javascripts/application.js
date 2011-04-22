@@ -210,7 +210,7 @@ var Anathief = function() {
         /*$('#flip-wait').hide();*/
       if (connected && !gameOver)
         $('#flip-btn').removeAttr('disabled');
-    }, 3000); // make sure this is in sync with the server side delay
+    }, 1000); // make sure this is in sync with the server side delay
     $.post(gd.urls.flipChar,
       function(data) {
         if (data.message) {

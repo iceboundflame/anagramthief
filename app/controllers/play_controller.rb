@@ -33,7 +33,7 @@ class PlayController < ApplicationController
   end
 
   def flip_char
-    timeout = 3
+    timeout = 1
 
     lock_game
     begin
