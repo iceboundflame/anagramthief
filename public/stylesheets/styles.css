@@ -212,7 +212,7 @@ ul.player-words>li {
     padding: 10px;
   }
   #pool #pool-info {
-    margin: 10px;
+    margin: 10px 10px 0 10px;
   }
 .player-info {
   width: 100%;
@@ -290,6 +290,9 @@ ul.player-words>li {
 .score-pfpic {
   float: left;
   margin: 0 10px;
+  
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #666;
 }
 ul.scorelist {
   padding: 0;

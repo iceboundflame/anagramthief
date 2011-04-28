@@ -1,8 +1,22 @@
+ENHANCEMENTS 2
+  Factor out header.
+  Welcome, User! header on game page.
+  Fix oversized Connect w Facebook button for guests in header
+  Space out /play header buttons
+  Space out sidebar on /games/list
+  Tutorial/finish smart tooltips.
+  Make invite links work after signing in.
+  Graphical misalignment of floats in game over dialog.
+  Don't offer to post to FB with guests; instead, ask them to log in and tell them why.
+
+  Better "disabled" claim field/letter pool  appearance.
+  body class="game-over" kills "fbframe" class
+
 ENHANCEMENTS
-  Landing page for non-signed-in users
+/ Landing page for non-signed-in users
   In-room score
 
-  Game stats: # letters stolen, # words made, longest steal
+~ Game stats: # letters stolen, # words made, longest steal
   Sound effects
   Achievements
     Games Completed
@@ -21,7 +35,7 @@ ENHANCEMENTS
     Taking the last word
   Flip rate limiting
   Private rooms
-  Guest mode
+/ Guest mode
   Round table simulation for matching fairness
   Show unmatched words at endgame
   Bookmark words for study
