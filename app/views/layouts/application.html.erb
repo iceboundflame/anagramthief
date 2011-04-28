@@ -2,6 +2,8 @@
 <html>
 <head>
 <title>Anathief</title>
+<link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Nobile' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="<%= stylesheet_path 'blueprint/screen.css' %>" type="text/css" media="screen, projection">
 <link rel="stylesheet" href="<%= stylesheet_path 'blueprint/print.css' %>" type="text/css" media="print">  
 <!--[if lt IE 8]><link rel="stylesheet" href="<%= stylesheet_path 'blueprint/ie.css' %>" type="text/css" media="screen, projection"><![endif]-->
@@ -9,7 +11,7 @@
 <%= csrf_meta_tag %>
 <meta http-equiv="P3P" href="<%= public_file_url 'privacy.p3p' %>" content='CP="NON CURa ADMa DEVa TAIa OUR BUS IND PHY UNI COM NAV DEM"' />
 </head>
-<body onload="Anathief.setSize();" <%= yield :body_attr %>>
+<body onload="Anathief.setSize();" <%= yield :body_attr %> class="fbframe">
 
 <div id="fb-root"></div>
 <script>
@@ -27,7 +29,9 @@
   }());
 </script>
 
+<div id="wrap">
 <%= yield %>
+</div>
 
 <%#= javascript_include_tag :defaults %>
 <%= javascript_include_tag "https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" %>

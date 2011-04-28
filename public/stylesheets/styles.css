@@ -1,3 +1,36 @@
+@import "buttons.css";
+@import "tooltips.css";
+
+body {
+  /*background: #fffcee;*/
+  /*background: url(http://www.stripegenerator.com/generators/generate_stripes.php?fore=FFF4A3&h=30&w=36&p=36&back1=FFF9CF&back2=ff0000&gt=0&d=0&shadow=0&) repeat;*/
+  background: url(/images/bg.png) repeat;
+}
+body, input, * {
+  font-family: 'Nobile', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+  font-family: 'Permanent Marker', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+#wrap {
+  background: #fffcf6;
+  width: 740px;
+  margin: 0 auto;
+  padding: 10px 30px 30px 30px;
+
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.2);
+  /*border-radius: 5px;*/
+}
+body.fbframe #wrap {
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+}
+
 .left-col {
   width: 480px;
   margin-right: 10px;
@@ -8,9 +41,12 @@
   float: left;
 }
 
-.tagline {
-  font-size: 0.75em;
-  margin-left: 4em;
+h2.title {
+  margin-bottom: 0;
+}
+h3.tagline {
+  /*font-size: 0.75em;*/
+  /*margin-left: 4em;*/
 }
 
 /* GAME LIST */
@@ -22,17 +58,20 @@ ul.game-list>li {
   margin: 10px 0;
 }
 ul.game-list>li a {
-  border: 1px solid black;
+  border: 1px solid #359;
   padding: 5px;
   text-decoration: none;
   color: #333;
   background-color: #def;
+  border-radius: 5px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#def), to(#abd));
 }
 ul.game-list>li a:hover {
   padding: 5px;
   text-decoration: none;
   color: #000;
   background-color: #fff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#def));
 }
 .game-list-pfpic {
   float: left;
@@ -86,25 +125,33 @@ ul.tiles {
 }
 ul.tiles li {
   display: inline-block;
-  width: 15px; height: 15px;
-  margin: 1px;
+  width: 17px; height: 17px;
+  /*margin: 1px;*/
   background-color: #ffe;
-  /*border: 1px solid black;*/
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb), to(#cc8));
   border: 1px solid #986;
   text-align: center;
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: bold;
+  border-radius: 2px;
 }
 ul.tiles li.unseen {
   background-color: #eed;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eed), to(#ccb));
 }
 
 /* MESSAGES */
+
+#message-area, #chat, #claimword, #definition { /* All boxes */
+  border: 1px solid #ccc;
+  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background: #fff;
+}
 #message-area {
   overflow: auto;
   height: 200px;
   width: 100%;
-  border: 1px solid black;
 }
 #messages {
   list-style-type: none;
@@ -118,9 +165,19 @@ ul.tiles li.unseen {
   padding-bottom: 2px;
   text-indent: -15px;
 }
-.failed {
-  color: #444;
+#messages li.failed {
+  color: #944;
   font-style: italic;
+}
+#messages li.claimed {
+  color: #000;
+  background-color: #ff0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#efd), to(#bea));
+}
+#messages li.chat {
+  color: #000;
+  background-color: #d8ffc8;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
 }
 
 /* PLAYERS */
@@ -132,7 +189,7 @@ ul.player-words {
 ul.player-words>li {
   display: inline-block;
   margin: 2px 8px;
-  padding: 0;
+  padding: 2px;
   /*border: 1px solid #ccc;*/
 }
 .highlighted {
@@ -141,24 +198,48 @@ ul.player-words>li {
 .highlighted ul.tiles li {
   background-color: transparent;
 }
+#pool {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
+  background-color: #e0ffcc;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#efc), to(#bdb));
+  border: 1px solid #393;
+}
+  #pool>div {
+    padding: 10px;
+  }
+  #pool #pool-info {
+    margin: 10px;
+  }
 .player-info {
   width: 100%;
   background-color: #ccc;
   margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
 }
-.active-player {
-  background-color: #e0ffcc;
-}
-.inactive-player {
-  background-color: #ccc;
-}
-#me .player-info {
-  background-color: #cef;
-}
+  .player-info .username {
+    font-weight: bold;
+  }
+  .active-player {
+    background-color: #e0ffcc;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#efc), to(#bdb));
+    border: 1px solid #393;
+  }
+  .inactive-player {
+    background-color: #ccc;
+    border: 1px solid #333;
+  }
+  #me .player-info {
+    background-color: #cef;
+  }
 #chat {
   width: 240px;
   height: 3em;
-  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
 }
 
 /* GAME UI */
@@ -176,7 +257,6 @@ ul.player-words>li {
   overflow: auto;
   height: 200px;
   width: 100%;
-  border: 1px solid black;
 }
 #definition>div {
   margin: 5px;

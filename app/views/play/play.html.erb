@@ -2,20 +2,20 @@
 
 <div class="clearfix">
   <div class="left-col">
-    <h3>Anagram Thief! Beta
-    <span class="tagline">a David Liu production</span></h3>
+    <h2 class="title">Anagram Thief!</h2>
+    <h3 class="tagline">a David Liu production</h3>
 
 <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D<%=Facebook::APP_ID%>&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
   </div>
   <div class="right-col">
     <span class="sectionhead">Game Room: <%= @game.name %>.</span><br />
-      <%= link_to 'Back to Lobby', games_list_url %><br />
+      <%= link_to 'Back to Lobby', games_list_url, :class => "button black medium" %><br />
 
-    <a href="#" id="show-instructions-link" class="large"><strong>How Do I Play? (Instructions)</strong></a>
-    <a href="#" id="hide-instructions-link" class="large" style="display:none"><strong>Hide Instructions</strong></a> <br />
+    <a href="#" id="show-instructions-link" class="button black"><strong>Instructions</strong></a>
+    <a href="#" id="hide-instructions-link" class="button black" style="display:none"><strong>Hide Instructions</strong></a> <br />
 
-    <a href="#" id="show-invites-link" class="large">Invite your friends to join this game!</a>
-    <a href="#" id="hide-invites-link" class="large" style="display:none">Hide invitations</a>
+    <a href="#" id="show-invites-link" class="button black medium">Invite friends</a>
+    <a href="#" id="hide-invites-link" class="button black" style="display:none">Hide invitations</a>
   </div>
 </div>
 
@@ -84,22 +84,25 @@
     <div class="when-game-over notice">
       <p class="large">The game is over. 
       <input type="button" id="restart-btn" value="Restart Game"
-        class="conn-ui fat-btn" /></p>
+        class="conn-ui button black" /></p>
       <div id="game-over-info"><%= render :partial => 'game_result' %></div>
     </div>
 
     <div class="game">
-      <div class="clearfix">
-        <h3 class="left">Letter Pool
-        <input type="button" value="Flip a letter!" id="flip-btn"
-          class="conn-ui play-ui fat-btn" />
-        </h3>
+      <div id="pool">
+        <div>
+          <div class="clearfix">
+            <h3 class="left">Letter Pool</h3>
+            <span class="tooltip">
+              <input type="button" value="Flip a letter!" id="flip-btn"
+                class="conn-ui play-ui button black" />
+              <span>Reveal letters below by clicking here.</span></span>
+          </div>
+          <div id="pool-info">
+            <%= render :partial => 'pool_info' %>
+          </div>
+        </div>
       </div>
-      <div id="pool-info">
-        <%= render :partial => 'pool_info' %>
-      </div>
-
-      <hr />
 
       <div id="player-info-area">
         <%= render :partial => 'player', :collection => @players %>
@@ -110,17 +113,18 @@
 
     <div>
       <input type="button" id="vote-done-btn" value="Vote to End the Game?"
-        class="conn-ui fat-btn" />
+        class="conn-ui button black" />
       <input type="button" id="cancel-vote-btn" value="Cancel Vote"
-        class="conn-ui fat-btn" style="display:none" />
+        class="conn-ui button black" style="display:none" />
       <input type="button" id="refresh-btn" value="Refresh"
-          class="conn-ui fat-btn" />
+          class="conn-ui button black" />
     </div>
   </div>
   <div class="right-col">
     <div class="game">
       <label for="claimword" class="sectionhead">Claim a word:</label>
-      <input type="text" id="claimword" class="conn-ui play-ui" />
+      <span class="tooltip tooltip-shown"><input type="text" id="claimword" class="conn-ui play-ui" />
+      <span>If you see a word, type it quickly!</span></span>
     </div>
 
     <hr />
@@ -132,8 +136,7 @@
       </ul>
     </div>
 
-    <% chat_filler = "Type here and press enter to chat\u2026" %>
-    <textarea id="chat" class="conn-ui"><%= chat_filler %></textarea>
+    <textarea id="chat" class="conn-ui" placeholder="Type here and press enter to chat&hellip;"></textarea>
 
     <div id="defn-nav">
       <span class="sectionhead">Definitions</span>
@@ -163,8 +166,7 @@
         heartbeat: '<%= escape_javascript play_heartbeat_url %>',
         refresh: '<%= escape_javascript play_refresh_url %>'
       },
-      heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>,
-      chatFiller: '<%= escape_javascript chat_filler %>'
+      heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>
     });
   });
 </script>

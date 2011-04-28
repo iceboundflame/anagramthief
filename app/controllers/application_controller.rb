@@ -13,19 +13,20 @@ class ApplicationController < ActionController::Base
       fbinfo = MiniFB.signed_request_params(Facebook::SECRET, params[:signed_request])
 
       if fbinfo.has_key?('user_id')
-        uid = session[:uid] = fbinfo['user_id']
-        tok = session[:tok] = fbinfo['oauth_token']
-        logger.info "Got rq from auth'd user #{uid}"
-        logger.info "Tok #{tok}"
+        fb_uid = fbinfo['user_id']
+        fb_tok = session[:fb_tok] = fbinfo['oauth_token']
+        logger.info "Got rq from auth'd user #{fb_uid}"
+        logger.info "Tok #{fb_tok}"
 
-        unless @current_user = User.find_by_uid(uid)
-          me = MiniFB.get(tok, 'me')
-          @current_user = User.create :uid => uid
+        me = MiniFB.get(fb_tok, 'me')
+        unless @current_user = User.find_by_uid(fb_uid)
+          raise "User account #{fb_uid} not found" #FIXME do we ever reach this?
+          #@current_user = User.create :uid => fb_uid
         end
-        @current_user.update_from_graph(tok, me)
+        @current_user.update_from_graph(fb_tok, me)
       else
         logger.info "Not logged in anymore"
-        session[:uid] = session[:tok] = nil
+        session[:fb_tok] = nil #FIXME what to do here? delete user_id too?
       end
 
       return true
@@ -36,8 +37,8 @@ class ApplicationController < ActionController::Base
   protected
 
   def current_user
-    if (session[:uid])
-      @current_user ||= User.find_by_uid(session[:uid])
+    if (session[:user_id])
+      @current_user ||= User.find(session[:user_id])
     else
       @current_user
     end
@@ -49,12 +50,12 @@ class ApplicationController < ActionController::Base
 
   def require_user
     signed_in = user_signed_in?
-    redirect_to oauth_url unless signed_in
+    redirect_to root_url unless signed_in
     signed_in
   end
 
   def oauth_url
-    MiniFB.oauth_url(Facebook::APP_ID, sessions_create_url, :scope => '')
+    MiniFB.oauth_url(Facebook::APP_ID, sessions_fb_callback_url, :scope => '')
   end
 
   def ordinalize(value)
@@ -72,5 +73,9 @@ class ApplicationController < ActionController::Base
     end
 
     return value.to_s << suffix
+  end
+
+  def random_guest_name
+    return "Guest #{100000 + rand(10000)}"
   end
 end

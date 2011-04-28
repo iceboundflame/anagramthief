@@ -81,11 +81,11 @@ var Anathief = function() {
     log(data);
     switch (data.type) {
       case 'chat':
-        addMessage(data.from, data.body, false);
+        addMessage(data.from, data.body, false, 'chat', true);
         break;
 
       case 'action':
-        addMessage(data.from, data.body, true, data.msgclass);
+        addMessage(data.from, data.body, true, data.msgclass, !!data.msgclass);
         break;
 
       case 'update':
@@ -124,15 +124,6 @@ var Anathief = function() {
   /** Chat **/
 
   function initChat() {
-    $('#chat').focus(function() {
-      if ($('#chat').val() == gd.chatFiller)
-        $('#chat').val('');
-    });
-    $('#chat').blur(function() {
-      if ($('#chat').val() == '')
-        $('#chat').val(gd.chatFiller);
-    });
-
     $('#chat').keyup(function(e) {
       if (e.keyCode != 13) return;
       var msg = $('#chat').val();
@@ -310,7 +301,7 @@ var Anathief = function() {
   }
 
   // Messages area
-  function addMessage(from, message, isAction, msgclass) {
+  function addMessage(from, message, isAction, msgclass, suppressHighlight) {
     var msgId = 'message-' + Math.floor(Math.random()*2147483647);
     var li = $('<li id="'+msgId+'" />');
     if (from)
@@ -320,7 +311,8 @@ var Anathief = function() {
     $('#messages').append(li);
     messageArea = $('#message-area');
     messageArea.scrollTop(messageArea[0].scrollHeight);
-    $('#'+msgId).effect('highlight', {}, 3000);
+    if (!suppressHighlight)
+      $('#'+msgId).effect('highlight', {}, 3000);
   }
 
   function initInstructionsInterface() {

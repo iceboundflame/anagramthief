@@ -1,7 +1,8 @@
 Anathief::Application.routes.draw do
   root :to => 'welcome#index'
 
-  match '/auth/callback', :to => 'sessions#create', :as => 'sessions_create'
+  match '/auth/fb_callback', :to => 'sessions#fb_callback', :as => 'sessions_fb_callback'
+  match '/auth/guest', :to => 'sessions#guest_in', :as => 'sessions_guest_in'
 
   match '/games/list', :to => 'games#list', :as => 'games_list'
   match '/games/create', :to => 'games#create', :as => 'games_create'

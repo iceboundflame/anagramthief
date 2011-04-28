@@ -4,31 +4,35 @@ class GamesController < ApplicationController
   def list
     Game.process_inactive
 
+    @my_games = sort_games_by_user_ct Game.includes(:users)
+      .where(:creator_id => current_user.id).all
+
+    my_game_ids = @my_games.map{|g| g.id}
+
     friend_game_ids = []
-    begin
-      @fb = MiniFB::OAuthSession.new(session[:tok], 'en_US')
-      @friend_ids = @fb.get('me/friends')['data'].map { |x| x['id'] }
-      @friend_ids << current_user.uid
+    @friend_games = []
+    @friend_ids = []
+    if session[:fb_tok]
+      begin
+        @fb = MiniFB::OAuthSession.new(session[:fb_tok], 'en_US')
+        @friend_ids = @fb.get('me/friends')['data'].map { |x| x['id'] }
+        @friend_ids << current_user.uid
 
-      @friend_games = Game.hide_old.includes(:users)
-        .where(:users => {:uid => @friend_ids}).all
+        @friend_games = Game.hide_old.includes(:users)
+          .where(:users => {:uid => @friend_ids}).all
 
-      @my_games = sort_games_by_user_ct Game.includes(:users)
-        .where(:creator_id => current_user.id).all
+        @friend_games = sort_games_by_friend_ct @friend_games
+          .delete_if {|g| my_game_ids.include? g.id }
+        friend_game_ids = @friend_games.map{|g| g.id}
+      rescue MiniFB::FaceBookError
+        logger.error "FB error in games_list: #{$!}"
 
-      my_game_ids = @my_games.map{|g| g.id}
+        logger.info "Lost login state"
+        session[:fb_uid] = session[:fb_tok] = nil
 
-      @friend_games = sort_games_by_friend_ct @friend_games
-        .delete_if {|g| my_game_ids.include? g.id }
-      friend_game_ids = @friend_games.map{|g| g.id}
-    rescue MiniFB::FaceBookError
-      logger.error "FB error in games_list: #{$!}"
-
-      logger.info "Lost login state"
-      session[:uid] = session[:tok] = nil
-
-      redirect_to root_url
-      return
+        redirect_to root_url
+        return
+      end
     end
 
     @public_games = Game.hide_old.includes(:creator, :users)

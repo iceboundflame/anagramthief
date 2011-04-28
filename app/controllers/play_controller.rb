@@ -95,7 +95,7 @@ class PlayController < ApplicationController
         players_update_json(:new_word_id => [@me_id, new_word.id])
       
       msg = "claimed #{word} by #{describe_move words_stolen, pool_used}."
-      jpublish 'action', @me, :body => msg
+      jpublish 'action', @me, :body => msg, :msgclass => 'claimed'
 
       # do this as late as possible so it doesn't matter if this API
       # hangs/takes a long time
@@ -204,10 +204,13 @@ class PlayController < ApplicationController
         props[k] = v.join '; '
       end
       extra_data[:just_finished] = true
-      extra_data[:publish_fb] = {
-        :title_line => "I just played a game of Anagram Thief!",
-        :properties => props,
-      }
+
+      if @state.completed?
+        extra_data[:publish_fb] = {
+          :title_line => "I just played a game of Anagram Thief!",
+          :properties => props,
+        }
+      end
     end
     jpublish_update players_update_json, game_over_update_json(extra_data)
 

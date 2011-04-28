@@ -1,11 +1,22 @@
 <div class="clearfix">
   <div class="left-col">
-    <h3>Welcome to Anagram Thief! Beta
-    <span class="tagline">a David Liu production</span></h3>
+    <h2 class="title">Welcome to Anagram Thief!</h2>
+    <h3 class="tagline">a David Liu production</h3>
 
 <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D<%=Facebook::APP_ID%>&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
   </div>
   <div class="right-col">
+    <div class="clearfix">
+      <%= image_tag current_user.profile_pic,
+        :width => 50, :height => 50, :class => 'right' %>
+      Welcome,
+      <strong><%= current_user.name %></strong>!
+    </div>
+
+    <% if current_user.guest? %>
+    <a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton.png" alt="Sign in with Facebook" /></a>
+    <% end %>
+
     <span class="sectionhead">Game Lobby</span><br />
     Pick a room or create one to get started.
   </div>
@@ -33,8 +44,7 @@
   <div class="right-col">
 
     <%= form_tag games_create_url do %>
-    <%= field_set_tag do %>
-      <legend>Create a new room</legend>
+      <h3>Create a new room</h3>
 
       <% if flash[:create_errors] %>
         <p class="error"><strong>Error:</strong><br />
@@ -54,24 +64,17 @@
         <%= submit_tag 'Create room' %>
       </div>
     <% end %>
-    <% end %>
 
-    <fieldset>
-      <legend>Your Statistics</legend>
+      <h3>Your Statistics</h3>
       <ul>
         <li>Games Completed: <%= current_user.games_completed %></li>
         <li>Games Won: <%= current_user.wins %></li>
       </ul>
-    </fieldset>
 
-    <fieldset>
-      <legend>Your Recent Games</legend>
+      <h3>Your Recent Games</h3>
       <%= render :partial => 'game_record_list', :object => @my_recent_records %>
-    </fieldset>
 
-    <fieldset>
-      <legend>All Recent Games</legend>
+      <h3>All Recent Games</h3>
       <%= render :partial => 'game_record_list', :object => @recent_records %>
-    </fieldset>
   </div>
 </div>

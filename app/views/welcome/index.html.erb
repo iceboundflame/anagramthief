@@ -1,3 +1,29 @@
-<script>top.location.href='<%= raw escape_javascript oauth_url %>';</script>
-<h3>Welcome to Anagram Thief!</h3>
-<%= link_to 'Sign in with Facebook', oauth_url, :target => '_top' %>
+<!--script>top.location.href='<%= raw escape_javascript oauth_url %>';</script-->
+
+<h1>Welcome to Anagram Thief!</h1>
+
+<h2>What is Anagram Thief?</h2>
+
+<p>Anagram Thief is a real-time, web-based version of a board game called "Snatch-word" or "Anagrams." You play with a pile of letter tiles that start out face down.</p>
+
+<p>As you and your opponents flip them over, try to take words that appear.</p>
+
+<p>Steal other people's words by rearranging the letters and adding new ones!</p>
+
+<h2>Play Now</h2>
+
+<h3>Start playing immediately as a guest</h3>
+<%= form_tag(sessions_guest_in_path) do %>
+  <%= label_tag(:name, "Your name:") %>
+  <%= text_field_tag(:name, '', :placeholder => @guest_name) %>
+  <%= submit_tag("Play as Guest", :class => 'button black') %>
+  <%= hidden_field_tag(:placeholder_name, @guest_name) %>
+<% end %>
+
+<h3>Play using Facebook</h3>
+
+<p>Sign in using Facebook to associate your profile picture with your account, and see what friends are up to.</p>
+
+<p>Don't worry, Anagram Thief won't post anything without asking you first.</p>
+
+<a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton.png" alt="Sign in with Facebook" /></a>

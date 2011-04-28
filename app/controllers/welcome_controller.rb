@@ -15,8 +15,10 @@ class WelcomeController < ApplicationController
         # Render sign-in link
         session[:game_id] = params
       end
-    else
-      redirect_to Facebook::CANVAS_URL
+    #
+      #redirect_to Facebook::CANVAS_URL
     end
+
+    @guest_name = random_guest_name
   end
 end

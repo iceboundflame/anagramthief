@@ -29,4 +29,8 @@ class User < ActiveRecord::Base
   def profile_pic
     "http://graph.facebook.com/#{self.uid}/picture?type=square"
   end
+
+  def guest?
+    uid.nil?
+  end
 end
