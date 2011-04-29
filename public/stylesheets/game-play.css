@@ -1,0 +1,283 @@
+/* PLAY */
+/* line 3, ../../app/stylesheets/game-play.scss */
+body.game-over .game {
+  background-color: #ddd;
+}
+
+/* line 6, ../../app/stylesheets/game-play.scss */
+.when-game-over {
+  display: none;
+}
+
+/* line 9, ../../app/stylesheets/game-play.scss */
+body.game-over .when-game-over {
+  display: inherit;
+}
+
+/* TILES */
+/* line 14, ../../app/stylesheets/game-play.scss */
+ul.tiles {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 19, ../../app/stylesheets/game-play.scss */
+ul.tiles li {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  /*margin: 1px;*/
+  background-color: #ffe;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffbb), to(#cccc88));
+  border: 1px solid #986;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 2px;
+}
+
+/* line 31, ../../app/stylesheets/game-play.scss */
+ul.tiles li.unseen {
+  background-color: #eed;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeedd), to(#ccccbb));
+}
+
+/* MESSAGES */
+/* line 38, ../../app/stylesheets/game-play.scss */
+#message-area, #chat, #claimword, #definition {
+  /* All boxes */
+  border: 1px solid #ccc;
+  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background: #fff;
+}
+
+/* line 44, ../../app/stylesheets/game-play.scss */
+#message-area {
+  overflow: auto;
+  height: 200px;
+  width: 100%;
+}
+
+/* line 49, ../../app/stylesheets/game-play.scss */
+#messages {
+  list-style-type: none;
+  margin: 3px;
+  padding: 0;
+}
+
+/* line 54, ../../app/stylesheets/game-play.scss */
+#messages li {
+  padding-left: 20px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-indent: -15px;
+}
+
+/* line 61, ../../app/stylesheets/game-play.scss */
+#messages li.failed {
+  color: #944;
+  font-style: italic;
+}
+
+/* line 65, ../../app/stylesheets/game-play.scss */
+#messages li.claimed {
+  color: #000;
+  background-color: #ff0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffdd), to(#bbeeaa));
+}
+
+/* line 70, ../../app/stylesheets/game-play.scss */
+#messages li.chat {
+  color: #000;
+  background-color: #d8ffc8;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
+}
+
+/* PLAYERS */
+/* line 77, ../../app/stylesheets/game-play.scss */
+ul.player-words {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+/* line 82, ../../app/stylesheets/game-play.scss */
+ul.player-words > li {
+  display: inline-block;
+  margin: 2px 8px;
+  padding: 2px;
+  /*border: 1px solid #ccc;*/
+}
+
+/* line 88, ../../app/stylesheets/game-play.scss */
+.highlighted {
+  background-color: #fc9;
+}
+
+/* line 91, ../../app/stylesheets/game-play.scss */
+.highlighted ul.tiles li {
+  background-color: transparent;
+}
+
+/* line 94, ../../app/stylesheets/game-play.scss */
+#pool {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
+  background-color: #e0ffcc;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  border: 1px solid #393;
+}
+
+/* line 104, ../../app/stylesheets/game-play.scss */
+#pool > div {
+  padding: 10px;
+}
+
+/* line 107, ../../app/stylesheets/game-play.scss */
+#pool #pool-info {
+  margin: 10px 10px 0 10px;
+}
+
+/* line 110, ../../app/stylesheets/game-play.scss */
+.player-info {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
+}
+
+/* line 117, ../../app/stylesheets/game-play.scss */
+.player-info .username {
+  font-weight: bold;
+}
+
+/* line 120, ../../app/stylesheets/game-play.scss */
+.active-player {
+  background-color: #e0ffcc;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  border: 1px solid #393;
+}
+
+/* line 125, ../../app/stylesheets/game-play.scss */
+.inactive-player {
+  background-color: #ccc;
+  border: 1px solid #333;
+}
+
+/* line 129, ../../app/stylesheets/game-play.scss */
+#me .player-info {
+  background-color: #cef;
+}
+
+/* line 132, ../../app/stylesheets/game-play.scss */
+#chat {
+  width: 240px;
+  height: 3em;
+  /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
+}
+
+/* GAME UI */
+/* line 139, ../../app/stylesheets/game-play.scss */
+#flip-btn {
+  margin: 0 2em;
+}
+
+/* line 142, ../../app/stylesheets/game-play.scss */
+.fat-btn {
+  padding: 0.5em 4em;
+  /*width: 12em;*/
+  /*height: 2.2em;*/
+}
+
+/* DEFINITIONS */
+/* line 149, ../../app/stylesheets/game-play.scss */
+#definition {
+  overflow: auto;
+  height: 200px;
+  width: 100%;
+}
+
+/* line 154, ../../app/stylesheets/game-play.scss */
+#definition > div {
+  margin: 5px;
+  display: none;
+}
+
+/* line 158, ../../app/stylesheets/game-play.scss */
+#definition .active-defn {
+  display: block;
+}
+
+/* line 161, ../../app/stylesheets/game-play.scss */
+.defn-headword {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* line 165, ../../app/stylesheets/game-play.scss */
+.defn-pos {
+  font-style: italic;
+}
+
+/* line 168, ../../app/stylesheets/game-play.scss */
+.defn-list {
+  margin-bottom: 0.5em;
+}
+
+/* line 171, ../../app/stylesheets/game-play.scss */
+#next-defn, #prev-defn {
+  /*font-size: 1.5em;*/
+}
+
+/* line 174, ../../app/stylesheets/game-play.scss */
+.sectionhead {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* INSTRUCTIONS, INVITE */
+/* line 180, ../../app/stylesheets/game-play.scss */
+#invite-url {
+  width: 480px;
+}
+
+/* line 183, ../../app/stylesheets/game-play.scss */
+.score-pfpic {
+  float: left;
+  margin: 0 10px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #666;
+}
+
+/* line 190, ../../app/stylesheets/game-play.scss */
+ul.scorelist {
+  padding: 0;
+}
+
+/* line 193, ../../app/stylesheets/game-play.scss */
+ul.scorelist li {
+  list-style-type: none;
+  margin: 5px;
+}
+
+/*.scores-col {
+  float: left; width: 370px;
+}
+#finalegame {
+  margin: 20px 0px;
+}
+h2.rank {
+  float: left;
+  color: #999;
+  width: 1em;
+  text-align: right;
+  margin-bottom: 0;
+}
+.disclaimer {color:#666; font-size: .8em;}*/

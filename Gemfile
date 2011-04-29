@@ -41,3 +41,5 @@ gem 'redis'
 gem 'juggernaut'
 gem 'term-ansicolor'
 gem 'wordnik-ruby'
+
+gem "compass", ">= 0.11.1"

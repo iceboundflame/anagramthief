@@ -1,0 +1,55 @@
+/* GAME LIST */
+ul.game-list {
+  list-style-type: none;
+}
+ul.game-list>li {
+  width: 100%;
+  margin: 10px 0;
+}
+ul.game-list>li a {
+  display: block;
+  border: 1px solid #359;
+  padding: 5px;
+  text-decoration: none;
+  color: #333;
+  background-color: #def;
+  border-radius: 5px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#def), to(#abd));
+}
+ul.game-list>li a:hover {
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#def));
+}
+.game-list-pfpic {
+  float: left;
+  margin: 0 10px;
+}
+
+.game-name {
+  font-weight: bold;
+}
+.game-private-label {
+  font-style: italic;
+}
+.creator-name {
+  font-weight: bold;
+}
+.game-player {
+  font-weight: bold;
+}
+.friend-name {
+  color: #22227c;
+}
+
+/* RECENT GAMES */
+ul.game-record-list {
+  list-style-type: none;
+  margin: 0; padding: 0;
+}
+ul.game-record-list>li {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}

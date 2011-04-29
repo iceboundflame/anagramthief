@@ -1,0 +1,617 @@
+/* http://webdesignerwall.com/tutorials/css3-gradient-buttons */
+/* line 2, ../../../app/stylesheets/buttons.scss */
+.button {
+  display: inline-block;
+  zoom: 1;
+  /* zoom and *display = ie7 hack for display:inline-block */
+  *display: inline;
+  vertical-align: baseline;
+  margin: 0 2px;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font: 14px;
+  padding: .5em 2em .55em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: .5em;
+  -moz-border-radius: .5em;
+  border-radius: .5em;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* gray */
+  /* white */
+}
+/* line 22, ../../../app/stylesheets/buttons.scss */
+.button:hover:not([disabled]) {
+  text-decoration: none;
+}
+/* line 25, ../../../app/stylesheets/buttons.scss */
+.button:active:not([disabled]) {
+  position: relative;
+  top: 1px;
+}
+/* line 30, ../../../app/stylesheets/buttons.scss */
+.button.bigrounded {
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+/* line 35, ../../../app/stylesheets/buttons.scss */
+.button.medium {
+  font-size: 12px;
+  padding: .4em 1.5em .42em;
+}
+/* line 39, ../../../app/stylesheets/buttons.scss */
+.button.small {
+  font-size: 11px;
+  padding: .2em 1em .275em;
+}
+/* line 44, ../../../app/stylesheets/buttons.scss */
+.button.black {
+  color: #fff;
+  border: solid 1px #333;
+  background: #333;
+  background: -webkit-gradient(linear, left top, left bottom, from(#666666), to(black));
+  background: -moz-linear-gradient(top, #666666, black);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');
+}
+/* line 52, ../../../app/stylesheets/buttons.scss */
+.button.black:hover:not([disabled]) {
+  background: #000;
+  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(black));
+  background: -moz-linear-gradient(top, #444444, black);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#000000');
+}
+/* line 58, ../../../app/stylesheets/buttons.scss */
+.button.black:active:not([disabled]) {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(black), to(#444444));
+  background: -moz-linear-gradient(top, black, #444444);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#666666');
+}
+/* line 64, ../../../app/stylesheets/buttons.scss */
+.button.black[disabled] {
+  background: #888;
+}
+/* line 69, ../../../app/stylesheets/buttons.scss */
+.button.gray {
+  color: #e9e9e9;
+  border: solid 1px #555;
+  background: #6e6e6e;
+  background: -webkit-gradient(linear, left top, left bottom, from(#888888), to(#575757));
+  background: -moz-linear-gradient(top, #888888, #575757);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+}
+/* line 77, ../../../app/stylesheets/buttons.scss */
+.button.gray:hover {
+  background: #616161;
+  background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
+  background: -moz-linear-gradient(top, #757575, #4b4b4b);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+}
+/* line 83, ../../../app/stylesheets/buttons.scss */
+.button.gray:active {
+  color: #afafaf;
+  background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888888));
+  background: -moz-linear-gradient(top, #575757, #888888);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+}
+/* line 91, ../../../app/stylesheets/buttons.scss */
+.button.white {
+  color: #606060;
+  border: solid 1px #b7b7b7;
+  background: #fff;
+  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#ededed));
+  background: -moz-linear-gradient(top, white, #ededed);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+/* line 99, ../../../app/stylesheets/buttons.scss */
+.button.white:hover {
+  background: #ededed;
+  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dcdcdc));
+  background: -moz-linear-gradient(top, white, #dcdcdc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+}
+/* line 105, ../../../app/stylesheets/buttons.scss */
+.button.white:active {
+  color: #999;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(white));
+  background: -moz-linear-gradient(top, #ededed, white);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+}
+
+/* http://files.droplr.com/files/38746080/kCOq.demo.html */
+/* alternatives:
+http://forrst.com/posts/Simple_pure_CSS_tooltip_with_arrow-BkY
+*/
+/* line 6, ../../../app/stylesheets/tooltips.scss */
+.tooltip {
+  /*text-decoration: underline;*/
+  /*border-bottom: 1px solid black;*/
+  margin-bottom: -1px;
+  z-index: 1;
+  position: relative;
+}
+
+/* line 13, ../../../app/stylesheets/tooltips.scss */
+.tooltip::before {
+  content: ".";
+  line-height: 0;
+  color: transparent;
+  font-size: 0;
+  display: none;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-bottom-color: #333;
+  position: absolute;
+  top: 100%;
+  opacity: 0;
+  left: 50%;
+  margin-left: -5px;
+  font-size: 12px;
+}
+
+/* line 30, ../../../app/stylesheets/tooltips.scss */
+.tooltip span {
+  /*content: attr(data-tooltip);*/
+  /*display: none;*/
+  opacity: 0;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  padding: 0 2px;
+  min-height: 20px;
+  line-height: 20px;
+  z-index: 0;
+  font-size: 12px;
+  color: white;
+  background: black;
+  background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(black));
+  background: -moz-linear-gradient(top, #333333, black);
+  /*font-family: "Puritan", sans-serif;*/
+  font-weight: normal;
+  text-align: center;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  margin-top: 10px;
+  top: 100%;
+}
+
+/* line 56, ../../../app/stylesheets/tooltips.scss */
+.tooltip.tooltip-shown span {
+  opacity: 0.8;
+  z-index: 2;
+  display: block;
+}
+
+/* line 61, ../../../app/stylesheets/tooltips.scss */
+.tooltip.tooltip-shown::before {
+  opacity: 0.8;
+  display: block;
+}
+
+/* line 4, ../../../app/stylesheets/x/styles.scss */
+body {
+  /*background: #fffcee;*/
+  /*background: url(http://www.stripegenerator.com/generators/generate_stripes.php?fore=FFF4A3&h=30&w=36&p=36&back1=FFF9CF&back2=ff0000&gt=0&d=0&shadow=0&) repeat;*/
+  background: url(/images/bg.png) repeat;
+}
+
+/* line 9, ../../../app/stylesheets/x/styles.scss */
+body, input, * {
+  font-family: 'Nobile', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+/* line 13, ../../../app/stylesheets/x/styles.scss */
+h1, h2, h3, h4 {
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+  font-family: 'Permanent Marker', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+/* line 18, ../../../app/stylesheets/x/styles.scss */
+#wrap {
+  background: #fffcf6;
+  width: 740px;
+  margin: 0 auto;
+  padding: 10px 30px 30px 30px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.2);
+  /*border-radius: 5px;*/
+}
+
+/* line 28, ../../../app/stylesheets/x/styles.scss */
+body.fbframe #wrap {
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+}
+
+/* line 34, ../../../app/stylesheets/x/styles.scss */
+.left-col {
+  width: 480px;
+  margin-right: 10px;
+  float: left;
+}
+
+/* line 39, ../../../app/stylesheets/x/styles.scss */
+.right-col {
+  width: 250px;
+  float: left;
+}
+
+/* line 44, ../../../app/stylesheets/x/styles.scss */
+h2.title {
+  margin-bottom: 0;
+}
+
+/* line 47, ../../../app/stylesheets/x/styles.scss */
+h3.tagline {
+  /*font-size: 0.75em;*/
+  /*margin-left: 4em;*/
+}
+
+/* GAME LIST */
+/* line 53, ../../../app/stylesheets/x/styles.scss */
+ul.game-list {
+  list-style-type: none;
+}
+
+/* line 56, ../../../app/stylesheets/x/styles.scss */
+ul.game-list > li {
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* line 60, ../../../app/stylesheets/x/styles.scss */
+ul.game-list > li a {
+  border: 1px solid #359;
+  padding: 5px;
+  text-decoration: none;
+  color: #333;
+  background-color: #def;
+  border-radius: 5px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddeeff), to(#aabbdd));
+}
+
+/* line 69, ../../../app/stylesheets/x/styles.scss */
+ul.game-list > li a:hover {
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddeeff));
+}
+
+/* line 76, ../../../app/stylesheets/x/styles.scss */
+.game-list-pfpic {
+  float: left;
+  margin: 0 10px;
+}
+
+/* line 81, ../../../app/stylesheets/x/styles.scss */
+.game-name {
+  font-weight: bold;
+}
+
+/* line 84, ../../../app/stylesheets/x/styles.scss */
+.game-private-label {
+  font-style: italic;
+}
+
+/* line 87, ../../../app/stylesheets/x/styles.scss */
+.creator-name {
+  font-weight: bold;
+}
+
+/* line 90, ../../../app/stylesheets/x/styles.scss */
+.game-player {
+  font-weight: bold;
+}
+
+/* line 93, ../../../app/stylesheets/x/styles.scss */
+.friend-name {
+  color: #22227c;
+}
+
+/* RECENT GAMES */
+/* line 98, ../../../app/stylesheets/x/styles.scss */
+ul.game-record-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 102, ../../../app/stylesheets/x/styles.scss */
+ul.game-record-list > li {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+/* PLAY */
+/* line 110, ../../../app/stylesheets/x/styles.scss */
+body.game-over .game {
+  background-color: #ddd;
+}
+
+/* line 113, ../../../app/stylesheets/x/styles.scss */
+.when-game-over {
+  display: none;
+}
+
+/* line 116, ../../../app/stylesheets/x/styles.scss */
+body.game-over .when-game-over {
+  display: inherit;
+}
+
+/* TILES */
+/* line 121, ../../../app/stylesheets/x/styles.scss */
+ul.tiles {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 126, ../../../app/stylesheets/x/styles.scss */
+ul.tiles li {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  /*margin: 1px;*/
+  background-color: #ffe;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffbb), to(#cccc88));
+  border: 1px solid #986;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 2px;
+}
+
+/* line 138, ../../../app/stylesheets/x/styles.scss */
+ul.tiles li.unseen {
+  background-color: #eed;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeedd), to(#ccccbb));
+}
+
+/* MESSAGES */
+/* line 145, ../../../app/stylesheets/x/styles.scss */
+#message-area, #chat, #claimword, #definition {
+  /* All boxes */
+  border: 1px solid #ccc;
+  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background: #fff;
+}
+
+/* line 151, ../../../app/stylesheets/x/styles.scss */
+#message-area {
+  overflow: auto;
+  height: 200px;
+  width: 100%;
+}
+
+/* line 156, ../../../app/stylesheets/x/styles.scss */
+#messages {
+  list-style-type: none;
+  margin: 3px;
+  padding: 0;
+}
+
+/* line 161, ../../../app/stylesheets/x/styles.scss */
+#messages li {
+  padding-left: 20px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-indent: -15px;
+}
+
+/* line 168, ../../../app/stylesheets/x/styles.scss */
+#messages li.failed {
+  color: #944;
+  font-style: italic;
+}
+
+/* line 172, ../../../app/stylesheets/x/styles.scss */
+#messages li.claimed {
+  color: #000;
+  background-color: #ff0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffdd), to(#bbeeaa));
+}
+
+/* line 177, ../../../app/stylesheets/x/styles.scss */
+#messages li.chat {
+  color: #000;
+  background-color: #d8ffc8;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
+}
+
+/* PLAYERS */
+/* line 184, ../../../app/stylesheets/x/styles.scss */
+ul.player-words {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+/* line 189, ../../../app/stylesheets/x/styles.scss */
+ul.player-words > li {
+  display: inline-block;
+  margin: 2px 8px;
+  padding: 2px;
+  /*border: 1px solid #ccc;*/
+}
+
+/* line 195, ../../../app/stylesheets/x/styles.scss */
+.highlighted {
+  background-color: #fc9;
+}
+
+/* line 198, ../../../app/stylesheets/x/styles.scss */
+.highlighted ul.tiles li {
+  background-color: transparent;
+}
+
+/* line 201, ../../../app/stylesheets/x/styles.scss */
+#pool {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
+  background-color: #e0ffcc;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  border: 1px solid #393;
+}
+
+/* line 211, ../../../app/stylesheets/x/styles.scss */
+#pool > div {
+  padding: 10px;
+}
+
+/* line 214, ../../../app/stylesheets/x/styles.scss */
+#pool #pool-info {
+  margin: 10px 10px 0 10px;
+}
+
+/* line 217, ../../../app/stylesheets/x/styles.scss */
+.player-info {
+  width: 100%;
+  background-color: #ccc;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-radius: 5px;
+}
+
+/* line 224, ../../../app/stylesheets/x/styles.scss */
+.player-info .username {
+  font-weight: bold;
+}
+
+/* line 227, ../../../app/stylesheets/x/styles.scss */
+.active-player {
+  background-color: #e0ffcc;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  border: 1px solid #393;
+}
+
+/* line 232, ../../../app/stylesheets/x/styles.scss */
+.inactive-player {
+  background-color: #ccc;
+  border: 1px solid #333;
+}
+
+/* line 236, ../../../app/stylesheets/x/styles.scss */
+#me .player-info {
+  background-color: #cef;
+}
+
+/* line 239, ../../../app/stylesheets/x/styles.scss */
+#chat {
+  width: 240px;
+  height: 3em;
+  /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
+}
+
+/* GAME UI */
+/* line 246, ../../../app/stylesheets/x/styles.scss */
+#flip-btn {
+  margin: 0 2em;
+}
+
+/* line 249, ../../../app/stylesheets/x/styles.scss */
+.fat-btn {
+  padding: 0.5em 4em;
+  /*width: 12em;*/
+  /*height: 2.2em;*/
+}
+
+/* DEFINITIONS */
+/* line 256, ../../../app/stylesheets/x/styles.scss */
+#definition {
+  overflow: auto;
+  height: 200px;
+  width: 100%;
+}
+
+/* line 261, ../../../app/stylesheets/x/styles.scss */
+#definition > div {
+  margin: 5px;
+  display: none;
+}
+
+/* line 265, ../../../app/stylesheets/x/styles.scss */
+#definition .active-defn {
+  display: block;
+}
+
+/* line 268, ../../../app/stylesheets/x/styles.scss */
+.defn-headword {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* line 272, ../../../app/stylesheets/x/styles.scss */
+.defn-pos {
+  font-style: italic;
+}
+
+/* line 275, ../../../app/stylesheets/x/styles.scss */
+.defn-list {
+  margin-bottom: 0.5em;
+}
+
+/* line 278, ../../../app/stylesheets/x/styles.scss */
+#next-defn, #prev-defn {
+  /*font-size: 1.5em;*/
+}
+
+/* line 281, ../../../app/stylesheets/x/styles.scss */
+.sectionhead {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* INSTRUCTIONS, INVITE */
+/* line 287, ../../../app/stylesheets/x/styles.scss */
+#invite-url {
+  width: 480px;
+}
+
+/* line 290, ../../../app/stylesheets/x/styles.scss */
+.score-pfpic {
+  float: left;
+  margin: 0 10px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #666;
+}
+
+/* line 297, ../../../app/stylesheets/x/styles.scss */
+ul.scorelist {
+  padding: 0;
+}
+
+/* line 300, ../../../app/stylesheets/x/styles.scss */
+ul.scorelist li {
+  list-style-type: none;
+  margin: 5px;
+}
+
+/*.scores-col {
+  float: left; width: 370px;
+}
+#finalegame {
+  margin: 20px 0px;
+}
+h2.rank {
+  float: left;
+  color: #999;
+  width: 1em;
+  text-align: right;
+  margin-bottom: 0;
+}
+.disclaimer {color:#666; font-size: .8em;}*/

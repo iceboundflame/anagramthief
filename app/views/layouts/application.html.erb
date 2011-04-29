@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Anathief</title>
+<title>Anagram Thief!</title>
 <link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Nobile' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="<%= stylesheet_path 'blueprint/screen.css' %>" type="text/css" media="screen, projection">
-<link rel="stylesheet" href="<%= stylesheet_path 'blueprint/print.css' %>" type="text/css" media="print">  
-<!--[if lt IE 8]><link rel="stylesheet" href="<%= stylesheet_path 'blueprint/ie.css' %>" type="text/css" media="screen, projection"><![endif]-->
-<%= stylesheet_link_tag :all %>
+<%= stylesheet_link_tag 'screen.css', :media => 'screen, projection' %>
+<%= stylesheet_link_tag 'print.css', :media => 'print' %>
+<!--[if IE]><%= stylesheet_link_tag 'ie.css', :media => 'screen, projection' %><![endif]-->
 <%= csrf_meta_tag %>
 <meta http-equiv="P3P" href="<%= public_file_url 'privacy.p3p' %>" content='CP="NON CURa ADMa DEVa TAIa OUR BUS IND PHY UNI COM NAV DEM"' />
 </head>

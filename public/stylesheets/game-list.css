@@ -1,0 +1,77 @@
+/* GAME LIST */
+/* line 2, ../../app/stylesheets/game-list.scss */
+ul.game-list {
+  list-style-type: none;
+}
+
+/* line 5, ../../app/stylesheets/game-list.scss */
+ul.game-list > li {
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* line 9, ../../app/stylesheets/game-list.scss */
+ul.game-list > li a {
+  display: block;
+  border: 1px solid #359;
+  padding: 5px;
+  text-decoration: none;
+  color: #333;
+  background-color: #def;
+  border-radius: 5px;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddeeff), to(#aabbdd));
+}
+
+/* line 19, ../../app/stylesheets/game-list.scss */
+ul.game-list > li a:hover {
+  padding: 5px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddeeff));
+}
+
+/* line 26, ../../app/stylesheets/game-list.scss */
+.game-list-pfpic {
+  float: left;
+  margin: 0 10px;
+}
+
+/* line 31, ../../app/stylesheets/game-list.scss */
+.game-name {
+  font-weight: bold;
+}
+
+/* line 34, ../../app/stylesheets/game-list.scss */
+.game-private-label {
+  font-style: italic;
+}
+
+/* line 37, ../../app/stylesheets/game-list.scss */
+.creator-name {
+  font-weight: bold;
+}
+
+/* line 40, ../../app/stylesheets/game-list.scss */
+.game-player {
+  font-weight: bold;
+}
+
+/* line 43, ../../app/stylesheets/game-list.scss */
+.friend-name {
+  color: #22227c;
+}
+
+/* RECENT GAMES */
+/* line 48, ../../app/stylesheets/game-list.scss */
+ul.game-record-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 52, ../../app/stylesheets/game-list.scss */
+ul.game-record-list > li {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
