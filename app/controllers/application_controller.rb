@@ -24,6 +24,8 @@ class ApplicationController < ActionController::Base
           #@current_user = User.create :uid => fb_uid
         end
         @current_user.update_from_graph(fb_tok, me)
+
+        session[:user_id] = @current_user.id
       else
         logger.info "Not logged in anymore"
         session[:fb_tok] = nil #FIXME what to do here? delete user_id too?

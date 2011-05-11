@@ -13,9 +13,12 @@
       <strong><%= current_user.name %></strong>!
     </div>
 
+    <p>
     <% if current_user.guest? %>
-      <p><a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton_sm.png" alt="Sign in with Facebook" /></a></p>
+      <a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton_sm.png" alt="Sign in with Facebook" /></a>
     <% end %>
+    <a href="<%= sessions_logout_url %>">Logout</a>
+    </p>
 
     <%= yield :header_area %>
   </div>

@@ -40,6 +40,12 @@ class SessionsController < ApplicationController
     session[:user_id] = user.id
     session[:fb_tok] = nil
 
-    redirect_to games_list_url
+    redirect_to root_url
+  end
+
+  def logout
+    session[:user_id] = session[:fb_tok] = session[:go_to_game_id] = nil
+
+    redirect_to root_url
   end
 end

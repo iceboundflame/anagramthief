@@ -3,6 +3,7 @@ Anathief::Application.routes.draw do
 
   match '/auth/fb_callback', :to => 'sessions#fb_callback', :as => 'sessions_fb_callback'
   match '/auth/guest', :to => 'sessions#guest_in', :as => 'sessions_guest_in'
+  match '/auth/logout', :to => 'sessions#logout', :as => 'sessions_logout'
 
   match '/games/list', :to => 'games#list', :as => 'games_list'
   match '/games/create', :to => 'games#create', :as => 'games_create'
