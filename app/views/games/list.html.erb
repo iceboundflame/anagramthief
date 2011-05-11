@@ -1,50 +1,30 @@
-<div class="clearfix">
-  <div class="left-col">
-    <h2 class="title">Welcome to Anagram Thief!</h2>
-    <h3 class="tagline">a David Liu production</h3>
-
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D<%=Facebook::APP_ID%>&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
-  </div>
-  <div class="right-col">
-    <div class="clearfix">
-      <%= image_tag current_user.profile_pic,
-        :width => 50, :height => 50, :class => 'right' %>
-      Welcome,
-      <strong><%= current_user.name %></strong>!
-    </div>
-
-    <% if current_user.guest? %>
-    <a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton.png" alt="Sign in with Facebook" /></a>
-    <% end %>
-
-    <span class="sectionhead">Game Lobby</span><br />
-    Pick a room or create one to get started.
-  </div>
-</div>
-
-<hr />
+<% content_for :header_area do%>
+  <span class="sectionhead">Game Lobby</span><br />
+  Pick a room or create one to get started.
+<% end %>
+<%= render :partial => 'shared/header' %>
 
 <div class="clearfix">
   <div class="left-col">
     <% unless @my_games.empty? %>
-      <h3>Rooms You Created</h3>
+      <h3 class="newsec">Rooms You Created</h3>
       <%= render :partial => 'game_list', :object => @my_games %>
     <% end %>
 
     <% unless @friend_games.empty? %>
-      <h3>Rooms Your Friends are Playing In</h3>
+      <h3 class="newsec">Rooms Your Friends are Playing In</h3>
       <%= render :partial => 'game_list', :object => @friend_games %>
     <% end %>
 
     <% top_shown = !@my_games.empty? || !@friend_games.empty? %>
-    <h3><%= 'More ' if top_shown %>Rooms</h3>
+    <h3 class="newsec"><%= 'More ' if top_shown %>Rooms</h3>
     <%= render :partial => 'game_list', :object => @public_games %>
 
   </div>
   <div class="right-col">
 
     <%= form_tag games_create_url do %>
-      <h3>Create room</h3>
+      <h3 class="newsec">Create room</h3>
 
       <% if flash[:create_errors] %>
         <p class="error"><strong>Error:</strong><br />
@@ -65,16 +45,16 @@
       </div>
     <% end %>
 
-      <h3>Your Statistics</h3>
+      <h3 class="newsec">Your Statistics</h3>
       <ul>
         <li>Games Completed: <%= current_user.games_completed %></li>
         <li>Games Won: <%= current_user.wins %></li>
       </ul>
 
-      <h3>Your Recent Games</h3>
+      <h3 class="newsec">Your Recent Games</h3>
       <%= render :partial => 'game_record_list', :object => @my_recent_records %>
 
-      <h3>All Recent Games</h3>
+      <h3 class="newsec">All Recent Games</h3>
       <%= render :partial => 'game_record_list', :object => @recent_records %>
   </div>
 </div>

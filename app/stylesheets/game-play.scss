@@ -1,3 +1,5 @@
+@import "compass";
+
 /* PLAY */
 
 body.game-over .game {
@@ -20,31 +22,32 @@ ul.tiles li {
   display: inline-block;
   width: 17px; height: 17px;
   /*margin: 1px;*/
-  background-color: #ffe;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb), to(#cc8));
+  background-color: #ffb;
+  @include background-image(linear-gradient(#ffb, #cc8));
   border: 1px solid #986;
   text-align: center;
   font-size: 1.1em;
   font-weight: bold;
-  border-radius: 2px;
+  @include border-radius(2px);
 }
 ul.tiles li.unseen {
   background-color: #eed;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eed), to(#ccb));
+  @include background-image(linear-gradient(#eed, #ccb));
 }
 
 /* MESSAGES */
 
 #message-area, #chat, #claimword, #definition { /* All boxes */
   border: 1px solid #ccc;
-  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.1) inset);
+  //@include border-radius(5px);
   background: #fff;
 }
 #message-area {
   overflow: auto;
   height: 200px;
   width: 100%;
+  @include box-sizing(border-box);
 }
 #messages {
   list-style-type: none;
@@ -64,13 +67,13 @@ ul.tiles li.unseen {
 }
 #messages li.claimed {
   color: #000;
-  background-color: #ff0;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#efd), to(#bea));
+  background-color: #efd;
+  @include background-image(linear-gradient(#efd, #bea));
 }
 #messages li.chat {
   color: #000;
-  background-color: #d8ffc8;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
+  background-color: #ffffac;
+  @include background-image(linear-gradient(#ffffac, #fff54d));
 }
 
 /* PLAYERS */
@@ -93,12 +96,13 @@ ul.player-words>li {
 }
 #pool {
   width: 100%;
+  @include box-sizing(border-box);
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
-  border-radius: 5px;
-  background-color: #e0ffcc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#efc), to(#bdb));
+  @include border-radius(5px);
+  background-color: #efc;
+  @include background-image(linear-gradient(#efc, #bdb));
   border: 1px solid #393;
 }
   #pool>div {
@@ -109,17 +113,18 @@ ul.player-words>li {
   }
 .player-info {
   width: 100%;
+  @include box-sizing(border-box);
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
-  border-radius: 5px;
+  @include border-radius(5px);
 }
   .player-info .username {
     font-weight: bold;
   }
   .active-player {
-    background-color: #e0ffcc;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#efc), to(#bdb));
+    background-color: #efc;
+    @include background-image(linear-gradient(#efc, #bdb));
     border: 1px solid #393;
   }
   .inactive-player {
@@ -130,7 +135,8 @@ ul.player-words>li {
     background-color: #cef;
   }
 #chat {
-  width: 240px;
+  width: 100%;
+  @include box-sizing(border-box);
   height: 3em;
   /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
 }
@@ -150,6 +156,7 @@ ul.player-words>li {
   overflow: auto;
   height: 200px;
   width: 100%;
+  @include box-sizing(border-box);
 }
 #definition>div {
   margin: 5px;
@@ -184,7 +191,7 @@ ul.player-words>li {
   float: left;
   margin: 0 10px;
   
-  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   border: 1px solid #666;
 }
 ul.scorelist {
@@ -209,3 +216,25 @@ h2.rank {
   margin-bottom: 0;
 }
 .disclaimer {color:#666; font-size: .8em;}*/
+
+#prompt-login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  &>div {
+    position: relative;
+    width: 400px;
+    margin-left: -200px;
+    height: 300px;
+    margin-top: -150px;
+
+    background: #fff;
+    border: 3px solid #ccc;
+    @include box-shadow(0px 0px 10px rgba(0,0,0, 0.8));
+    padding: 10px;
+
+    z-index: 99;
+  }
+
+}

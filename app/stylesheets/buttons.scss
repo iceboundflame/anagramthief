@@ -12,12 +12,8 @@
   font: 14px;
   padding: .5em 2em .55em;
   text-shadow: 0 1px 1px rgba(0,0,0,.3);
-  -webkit-border-radius: .5em; 
-  -moz-border-radius: .5em;
-  border-radius: .5em;
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  @include border-radius(.5em);
+  @include box-shadow(0 1px 2px rgba(0,0,0,.2));
 
   &:hover:not([disabled]) {
     text-decoration: none;
@@ -28,9 +24,7 @@
   }
 
   &.bigrounded {
-    -webkit-border-radius: 2em;
-    -moz-border-radius: 2em;
-    border-radius: 2em;
+    @include border-radius(2em);
   }
   &.medium {
     font-size: 12px;
@@ -45,21 +39,15 @@
     color: #fff;
     border: solid 1px #333;
     background: #333;
-    background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#000));
-    background: -moz-linear-gradient(top,  #666,  #000);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');
+    @include background-image(linear-gradient(#666, #000));
   }
   &.black:hover:not([disabled]) {
     background: #000;
-    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#000));
-    background: -moz-linear-gradient(top,  #444,  #000);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#000000');
+    @include background-image(linear-gradient(#444, #000));
   }
   &.black:active:not([disabled]) {
     color: #999;
-    background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#444));
-    background: -moz-linear-gradient(top,  #000,  #444);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#666666');
+    @include background-image(linear-gradient(#000, #444));
   }
   &.black[disabled] {
     background: #888;
@@ -70,21 +58,15 @@
     color: #e9e9e9;
     border: solid 1px #555;
     background: #6e6e6e;
-    background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
-    background: -moz-linear-gradient(top,  #888,  #575757);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+    @include background-image(linear-gradient(#888, #575757));
   }
   &.gray:hover {
     background: #616161;
-    background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
-    background: -moz-linear-gradient(top,  #757575,  #4b4b4b);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+    @include background-image(linear-gradient(#757575, #4b4b4b));
   }
   &.gray:active {
     color: #afafaf;
-    background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888));
-    background: -moz-linear-gradient(top,  #575757,  #888);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+    @include background-image(linear-gradient(#575757, #888));
   }
 
   /* white */
@@ -92,20 +74,14 @@
     color: #606060;
     border: solid 1px #b7b7b7;
     background: #fff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
-    background: -moz-linear-gradient(top,  #fff,  #ededed);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+    @include background-image(linear-gradient(#fff, #ededed));
   }
   &.white:hover {
     background: #ededed;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
-    background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+    @include background-image(linear-gradient(#fff, #dcdcdc));
   }
   &.white:active {
     color: #999;
-    background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
-    background: -moz-linear-gradient(top,  #ededed,  #fff);
-    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+    @include background-image(linear-gradient(#ededed, #fff));
   }
 }

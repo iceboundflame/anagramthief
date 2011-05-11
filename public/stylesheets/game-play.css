@@ -1,73 +1,92 @@
 /* PLAY */
-/* line 3, ../../app/stylesheets/game-play.scss */
+/* line 5, ../../app/stylesheets/game-play.scss */
 body.game-over .game {
   background-color: #ddd;
 }
 
-/* line 6, ../../app/stylesheets/game-play.scss */
+/* line 8, ../../app/stylesheets/game-play.scss */
 .when-game-over {
   display: none;
 }
 
-/* line 9, ../../app/stylesheets/game-play.scss */
+/* line 11, ../../app/stylesheets/game-play.scss */
 body.game-over .when-game-over {
   display: inherit;
 }
 
 /* TILES */
-/* line 14, ../../app/stylesheets/game-play.scss */
+/* line 16, ../../app/stylesheets/game-play.scss */
 ul.tiles {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-/* line 19, ../../app/stylesheets/game-play.scss */
+/* line 21, ../../app/stylesheets/game-play.scss */
 ul.tiles li {
   display: inline-block;
   width: 17px;
   height: 17px;
   /*margin: 1px;*/
-  background-color: #ffe;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffbb), to(#cccc88));
+  background-color: #ffb;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffbb), color-stop(100%, #cccc88));
+  background-image: -webkit-linear-gradient(#ffffbb, #cccc88);
+  background-image: -moz-linear-gradient(#ffffbb, #cccc88);
+  background-image: -o-linear-gradient(#ffffbb, #cccc88);
+  background-image: linear-gradient(#ffffbb, #cccc88);
   border: 1px solid #986;
   text-align: center;
   font-size: 1.1em;
   font-weight: bold;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -khtml-border-radius: 2px;
   border-radius: 2px;
 }
 
-/* line 31, ../../app/stylesheets/game-play.scss */
+/* line 33, ../../app/stylesheets/game-play.scss */
 ul.tiles li.unseen {
   background-color: #eed;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeedd), to(#ccccbb));
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeeedd), color-stop(100%, #ccccbb));
+  background-image: -webkit-linear-gradient(#eeeedd, #ccccbb);
+  background-image: -moz-linear-gradient(#eeeedd, #ccccbb);
+  background-image: -o-linear-gradient(#eeeedd, #ccccbb);
+  background-image: linear-gradient(#eeeedd, #ccccbb);
 }
 
 /* MESSAGES */
-/* line 38, ../../app/stylesheets/game-play.scss */
+/* line 40, ../../app/stylesheets/game-play.scss */
 #message-area, #chat, #claimword, #definition {
   /* All boxes */
   border: 1px solid #ccc;
-  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  -o-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
   background: #fff;
 }
 
-/* line 44, ../../app/stylesheets/game-play.scss */
+/* line 46, ../../app/stylesheets/game-play.scss */
 #message-area {
   overflow: auto;
   height: 200px;
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* line 49, ../../app/stylesheets/game-play.scss */
+/* line 52, ../../app/stylesheets/game-play.scss */
 #messages {
   list-style-type: none;
   margin: 3px;
   padding: 0;
 }
 
-/* line 54, ../../app/stylesheets/game-play.scss */
+/* line 57, ../../app/stylesheets/game-play.scss */
 #messages li {
   padding-left: 20px;
   padding-right: 5px;
@@ -76,35 +95,43 @@ ul.tiles li.unseen {
   text-indent: -15px;
 }
 
-/* line 61, ../../app/stylesheets/game-play.scss */
+/* line 64, ../../app/stylesheets/game-play.scss */
 #messages li.failed {
   color: #944;
   font-style: italic;
 }
 
-/* line 65, ../../app/stylesheets/game-play.scss */
+/* line 68, ../../app/stylesheets/game-play.scss */
 #messages li.claimed {
   color: #000;
-  background-color: #ff0;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffdd), to(#bbeeaa));
+  background-color: #efd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffdd), color-stop(100%, #bbeeaa));
+  background-image: -webkit-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: -moz-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: -o-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: linear-gradient(#eeffdd, #bbeeaa);
 }
 
-/* line 70, ../../app/stylesheets/game-play.scss */
+/* line 73, ../../app/stylesheets/game-play.scss */
 #messages li.chat {
   color: #000;
-  background-color: #d8ffc8;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
+  background-color: #ffffac;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffac), color-stop(100%, #fff54d));
+  background-image: -webkit-linear-gradient(#ffffac, #fff54d);
+  background-image: -moz-linear-gradient(#ffffac, #fff54d);
+  background-image: -o-linear-gradient(#ffffac, #fff54d);
+  background-image: linear-gradient(#ffffac, #fff54d);
 }
 
 /* PLAYERS */
-/* line 77, ../../app/stylesheets/game-play.scss */
+/* line 80, ../../app/stylesheets/game-play.scss */
 ul.player-words {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
 
-/* line 82, ../../app/stylesheets/game-play.scss */
+/* line 85, ../../app/stylesheets/game-play.scss */
 ul.player-words > li {
   display: inline-block;
   margin: 2px 8px;
@@ -112,84 +139,114 @@ ul.player-words > li {
   /*border: 1px solid #ccc;*/
 }
 
-/* line 88, ../../app/stylesheets/game-play.scss */
+/* line 91, ../../app/stylesheets/game-play.scss */
 .highlighted {
   background-color: #fc9;
 }
 
-/* line 91, ../../app/stylesheets/game-play.scss */
+/* line 94, ../../app/stylesheets/game-play.scss */
 .highlighted ul.tiles li {
   background-color: transparent;
 }
 
-/* line 94, ../../app/stylesheets/game-play.scss */
+/* line 97, ../../app/stylesheets/game-play.scss */
 #pool {
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
   border-radius: 5px;
-  background-color: #e0ffcc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  background-color: #efc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffcc), color-stop(100%, #bbddbb));
+  background-image: -webkit-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -moz-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -o-linear-gradient(#eeffcc, #bbddbb);
+  background-image: linear-gradient(#eeffcc, #bbddbb);
   border: 1px solid #393;
 }
 
-/* line 104, ../../app/stylesheets/game-play.scss */
+/* line 108, ../../app/stylesheets/game-play.scss */
 #pool > div {
   padding: 10px;
 }
 
-/* line 107, ../../app/stylesheets/game-play.scss */
+/* line 111, ../../app/stylesheets/game-play.scss */
 #pool #pool-info {
   margin: 10px 10px 0 10px;
 }
 
-/* line 110, ../../app/stylesheets/game-play.scss */
+/* line 114, ../../app/stylesheets/game-play.scss */
 .player-info {
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
   border-radius: 5px;
 }
 
-/* line 117, ../../app/stylesheets/game-play.scss */
+/* line 122, ../../app/stylesheets/game-play.scss */
 .player-info .username {
   font-weight: bold;
 }
 
-/* line 120, ../../app/stylesheets/game-play.scss */
+/* line 125, ../../app/stylesheets/game-play.scss */
 .active-player {
-  background-color: #e0ffcc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  background-color: #efc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffcc), color-stop(100%, #bbddbb));
+  background-image: -webkit-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -moz-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -o-linear-gradient(#eeffcc, #bbddbb);
+  background-image: linear-gradient(#eeffcc, #bbddbb);
   border: 1px solid #393;
 }
 
-/* line 125, ../../app/stylesheets/game-play.scss */
+/* line 130, ../../app/stylesheets/game-play.scss */
 .inactive-player {
   background-color: #ccc;
   border: 1px solid #333;
 }
 
-/* line 129, ../../app/stylesheets/game-play.scss */
+/* line 134, ../../app/stylesheets/game-play.scss */
 #me .player-info {
   background-color: #cef;
 }
 
-/* line 132, ../../app/stylesheets/game-play.scss */
+/* line 137, ../../app/stylesheets/game-play.scss */
 #chat {
-  width: 240px;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   height: 3em;
   /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
 }
 
 /* GAME UI */
-/* line 139, ../../app/stylesheets/game-play.scss */
+/* line 145, ../../app/stylesheets/game-play.scss */
 #flip-btn {
   margin: 0 2em;
 }
 
-/* line 142, ../../app/stylesheets/game-play.scss */
+/* line 148, ../../app/stylesheets/game-play.scss */
 .fat-btn {
   padding: 0.5em 4em;
   /*width: 12em;*/
@@ -197,71 +254,75 @@ ul.player-words > li {
 }
 
 /* DEFINITIONS */
-/* line 149, ../../app/stylesheets/game-play.scss */
+/* line 155, ../../app/stylesheets/game-play.scss */
 #definition {
   overflow: auto;
   height: 200px;
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* line 154, ../../app/stylesheets/game-play.scss */
+/* line 161, ../../app/stylesheets/game-play.scss */
 #definition > div {
   margin: 5px;
   display: none;
 }
 
-/* line 158, ../../app/stylesheets/game-play.scss */
+/* line 165, ../../app/stylesheets/game-play.scss */
 #definition .active-defn {
   display: block;
 }
 
-/* line 161, ../../app/stylesheets/game-play.scss */
+/* line 168, ../../app/stylesheets/game-play.scss */
 .defn-headword {
   font-weight: bold;
   margin-right: 10px;
 }
 
-/* line 165, ../../app/stylesheets/game-play.scss */
+/* line 172, ../../app/stylesheets/game-play.scss */
 .defn-pos {
   font-style: italic;
 }
 
-/* line 168, ../../app/stylesheets/game-play.scss */
+/* line 175, ../../app/stylesheets/game-play.scss */
 .defn-list {
   margin-bottom: 0.5em;
 }
 
-/* line 171, ../../app/stylesheets/game-play.scss */
+/* line 178, ../../app/stylesheets/game-play.scss */
 #next-defn, #prev-defn {
   /*font-size: 1.5em;*/
 }
 
-/* line 174, ../../app/stylesheets/game-play.scss */
+/* line 181, ../../app/stylesheets/game-play.scss */
 .sectionhead {
   font-weight: bold;
   font-size: 1.2em;
 }
 
 /* INSTRUCTIONS, INVITE */
-/* line 180, ../../app/stylesheets/game-play.scss */
+/* line 187, ../../app/stylesheets/game-play.scss */
 #invite-url {
   width: 480px;
 }
 
-/* line 183, ../../app/stylesheets/game-play.scss */
+/* line 190, ../../app/stylesheets/game-play.scss */
 .score-pfpic {
   float: left;
   margin: 0 10px;
-  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   border: 1px solid #666;
 }
 
-/* line 190, ../../app/stylesheets/game-play.scss */
+/* line 197, ../../app/stylesheets/game-play.scss */
 ul.scorelist {
   padding: 0;
 }
 
-/* line 193, ../../app/stylesheets/game-play.scss */
+/* line 200, ../../app/stylesheets/game-play.scss */
 ul.scorelist li {
   list-style-type: none;
   margin: 5px;
@@ -281,3 +342,25 @@ h2.rank {
   margin-bottom: 0;
 }
 .disclaimer {color:#666; font-size: .8em;}*/
+/* line 220, ../../app/stylesheets/game-play.scss */
+#prompt-login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+/* line 225, ../../app/stylesheets/game-play.scss */
+#prompt-login > div {
+  position: relative;
+  width: 400px;
+  margin-left: -200px;
+  height: 300px;
+  margin-top: -150px;
+  background: #fff;
+  border: 3px solid #ccc;
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  -o-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  z-index: 99;
+}

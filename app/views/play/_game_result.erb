@@ -5,7 +5,7 @@
   <ul class="scorelist">
   <% @state.compute_ranks.each do |p| %>
     <% player = @state.player(p[:id]) %>
-    <li class="<%= 'winner' if p[:rank] == 1 %>">
+    <li class="<%= 'winner' if p[:rank] == 1 %> clearfix">
       <%= image_tag player.user.profile_pic, :width => 40, :height => 40, :class => 'score-pfpic' %>
       <strong>
         <% if p[:rank] == 1 %>

@@ -22,6 +22,8 @@ var Anathief = function() {
 
     initInstructionsInterface();
     initInviteInterface();
+
+    initPromptLogin();
   }
 
   /** Connectivity **/
@@ -286,18 +288,22 @@ var Anathief = function() {
   }
 
   function publishGame(data) {
-    FB.ui({
-        method: 'feed',
-        /*display: 'popup',*/
-        name: data.title_line,
-        link: gd.urls.canvas,
-        picture: gd.urls.fbPostImg,
-        description: 'Anagram Thief is an exciting multi-player game where you try to make words by stealing letters from your opponents.',
-        properties: data.properties,
-        message: ''
-      },
-      function(response) {
-      });
+    if (gd.isGuest) {
+      $('#prompt-login').show();
+    } else {
+      FB.ui({
+          method: 'feed',
+          /*display: 'popup',*/
+          name: data.title_line,
+          link: gd.urls.canvas,
+          picture: gd.urls.fbPostImg,
+          description: 'Anagram Thief is an exciting multi-player game where you try to make words by stealing letters from your opponents.',
+          properties: data.properties,
+          message: ''
+        },
+        function(response) {
+        });
+    }
   }
 
   // Messages area
@@ -363,6 +369,13 @@ var Anathief = function() {
     $('#invites-section').slideDown(null, setSize);
   }
 
+  function initPromptLogin() {
+    $('#hide-prompt-login').click(function() {
+      $('#prompt-login').hide();
+      return false;
+    });
+  }
+
   function setSize() {
     // FB by default doesn't make room for scrollbars
     // N.B. document.body doesn't shrink less than the current viewport height
@@ -379,3 +392,7 @@ var Anathief = function() {
     setSize: setSize
   };
 }();
+
+$(document).ready(function() {
+  $('[placeholder]').placeholder();
+});

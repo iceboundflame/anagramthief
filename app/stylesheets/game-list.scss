@@ -1,3 +1,5 @@
+@import "compass";
+
 /* GAME LIST */
 ul.game-list {
   list-style-type: none;
@@ -13,8 +15,8 @@ ul.game-list>li a {
   text-decoration: none;
   color: #333;
   background-color: #def;
-  border-radius: 5px;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#def), to(#abd));
+  @include border-radius(5px);
+  @include background-image(linear-gradient(#def, #abd));
 }
 ul.game-list>li a:hover {
   padding: 5px;
@@ -22,6 +24,7 @@ ul.game-list>li a:hover {
   color: #000;
   background-color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#def));
+  @include background-image(linear-gradient(#fff, #def));
 }
 .game-list-pfpic {
   float: left;

@@ -1,123 +1,96 @@
-/* http://webdesignerwall.com/tutorials/css3-gradient-buttons */
-/* line 2, ../../app/stylesheets/buttons.scss */
-.button {
-  display: inline-block;
-  zoom: 1;
-  /* zoom and *display = ie7 hack for display:inline-block */
-  *display: inline;
-  vertical-align: baseline;
-  margin: 0 2px;
-  outline: none;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  font: 14px;
-  padding: .5em 2em .55em;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  -webkit-border-radius: .5em;
-  -moz-border-radius: .5em;
-  border-radius: .5em;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  /* gray */
-  /* white */
-}
-/* line 22, ../../app/stylesheets/buttons.scss */
-.button:hover:not([disabled]) {
-  text-decoration: none;
-}
-/* line 25, ../../app/stylesheets/buttons.scss */
-.button:active:not([disabled]) {
-  position: relative;
-  top: 1px;
-}
-/* line 30, ../../app/stylesheets/buttons.scss */
-.button.bigrounded {
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em;
-}
-/* line 35, ../../app/stylesheets/buttons.scss */
-.button.medium {
-  font-size: 12px;
-  padding: .4em 1.5em .42em;
-}
-/* line 39, ../../app/stylesheets/buttons.scss */
-.button.small {
-  font-size: 11px;
-  padding: .2em 1em .275em;
-}
-/* line 44, ../../app/stylesheets/buttons.scss */
-.button.black {
-  color: #fff;
-  border: solid 1px #333;
-  background: #333;
-  background: -webkit-gradient(linear, left top, left bottom, from(#666666), to(black));
-  background: -moz-linear-gradient(top, #666666, black);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');
-}
-/* line 52, ../../app/stylesheets/buttons.scss */
-.button.black:hover:not([disabled]) {
-  background: #000;
-  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(black));
-  background: -moz-linear-gradient(top, #444444, black);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#000000');
-}
-/* line 58, ../../app/stylesheets/buttons.scss */
-.button.black:active:not([disabled]) {
-  color: #999;
-  background: -webkit-gradient(linear, left top, left bottom, from(black), to(#444444));
-  background: -moz-linear-gradient(top, black, #444444);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#666666');
-}
-/* line 64, ../../app/stylesheets/buttons.scss */
-.button.black[disabled] {
-  background: #888;
-}
-/* line 69, ../../app/stylesheets/buttons.scss */
-.button.gray {
-  color: #e9e9e9;
-  border: solid 1px #555;
-  background: #6e6e6e;
-  background: -webkit-gradient(linear, left top, left bottom, from(#888888), to(#575757));
-  background: -moz-linear-gradient(top, #888888, #575757);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
-}
-/* line 77, ../../app/stylesheets/buttons.scss */
-.button.gray:hover {
-  background: #616161;
-  background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
-  background: -moz-linear-gradient(top, #757575, #4b4b4b);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
-}
-/* line 83, ../../app/stylesheets/buttons.scss */
-.button.gray:active {
-  color: #afafaf;
-  background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888888));
-  background: -moz-linear-gradient(top, #575757, #888888);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
-}
-/* line 91, ../../app/stylesheets/buttons.scss */
-.button.white {
-  color: #606060;
-  border: solid 1px #b7b7b7;
-  background: #fff;
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#ededed));
-  background: -moz-linear-gradient(top, white, #ededed);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
-}
-/* line 99, ../../app/stylesheets/buttons.scss */
-.button.white:hover {
-  background: #ededed;
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dcdcdc));
-  background: -moz-linear-gradient(top, white, #dcdcdc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
-}
-/* line 105, ../../app/stylesheets/buttons.scss */
-.button.white:active {
-  color: #999;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(white));
-  background: -moz-linear-gradient(top, #ededed, white);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
-}
+/*
+Syntax error: Undefined mixin 'border-radius'.
+        on line 15 of /home/iceboundflame/anathief/app/stylesheets/buttons.scss, in `border-radius'
+        from line 15 of /home/iceboundflame/anathief/app/stylesheets/buttons.scss
+
+10:   text-align: center;
+11:   text-decoration: none;
+12:   font: 14px;
+13:   padding: .5em 2em .55em;
+14:   text-shadow: 0 1px 1px rgba(0,0,0,.3);
+15:   @include border-radius(.5em);
+16:   @include box-shadow(0 1px 2px rgba(0,0,0,.2));
+17: 
+18:   &:hover:not([disabled]) {
+19:     text-decoration: none;
+20:   }
+
+Backtrace:
+/home/iceboundflame/anathief/app/stylesheets/buttons.scss:15:in `border-radius'
+/home/iceboundflame/anathief/app/stylesheets/buttons.scss:15
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:169:in `visit_mixin'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:230:in `visit_rule'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:47:in `visit_root'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/visitors/perform.rb:7:in `visit'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/tree/root_node.rb:20:in `render'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/engine.rb:291:in `_render'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/engine.rb:239:in `block in render'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/util.rb:298:in `silence_sass_warnings'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/engine.rb:239:in `render'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:319:in `update_stylesheet'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:181:in `block (2 levels) in update_stylesheets'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:175:in `each'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:175:in `block in update_stylesheets'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:173:in `each'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/compiler.rb:173:in `update_stylesheets'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin.rb:81:in `update_stylesheets'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin.rb:54:in `check_for_updates'
+/home/iceboundflame/gems1.9.1/gems/sass-3.1.1/lib/sass/plugin/rack.rb:51:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/head.rb:14:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/methodoverride.rb:24:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/flash.rb:182:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/cookies.rb:302:in `call'
+/home/iceboundflame/gems1.9.1/gems/activerecord-3.0.4/lib/active_record/query_cache.rb:32:in `block in call'
+/home/iceboundflame/gems1.9.1/gems/activerecord-3.0.4/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/home/iceboundflame/gems1.9.1/gems/activerecord-3.0.4/lib/active_record/query_cache.rb:12:in `cache'
+/home/iceboundflame/gems1.9.1/gems/activerecord-3.0.4/lib/active_record/query_cache.rb:31:in `call'
+/home/iceboundflame/gems1.9.1/gems/activerecord-3.0.4/lib/active_record/connection_adapters/abstract/connection_pool.rb:354:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/callbacks.rb:46:in `block in call'
+/home/iceboundflame/gems1.9.1/gems/activesupport-3.0.4/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/sendfile.rb:107:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/show_exceptions.rb:47:in `call'
+/home/iceboundflame/gems1.9.1/gems/railties-3.0.4/lib/rails/rack/logger.rb:13:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/runtime.rb:17:in `call'
+/home/iceboundflame/gems1.9.1/gems/activesupport-3.0.4/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/lock.rb:11:in `block in call'
+<internal:prelude>:10:in `synchronize'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/lock.rb:11:in `call'
+/home/iceboundflame/gems1.9.1/gems/actionpack-3.0.4/lib/action_dispatch/middleware/static.rb:30:in `call'
+/home/iceboundflame/gems1.9.1/gems/railties-3.0.4/lib/rails/application.rb:168:in `call'
+/home/iceboundflame/gems1.9.1/gems/railties-3.0.4/lib/rails/application.rb:77:in `method_missing'
+/home/iceboundflame/gems1.9.1/gems/railties-3.0.4/lib/rails/rack/log_tailer.rb:14:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/content_length.rb:13:in `call'
+/usr/local/rvm/gems/ruby-1.9.2-p136/gems/rack-1.2.1/lib/rack/handler/webrick.rb:52:in `service'
+/usr/local/rvm/rubies/ruby-1.9.2-p136/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+/usr/local/rvm/rubies/ruby-1.9.2-p136/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+/usr/local/rvm/rubies/ruby-1.9.2-p136/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined mixin 'border-radius'.\A         on line 15 of /home/iceboundflame/anathief/app/stylesheets/buttons.scss, in `border-radius'\A         from line 15 of /home/iceboundflame/anathief/app/stylesheets/buttons.scss\A \A 10:   text-align: center;\A 11:   text-decoration: none;\A 12:   font: 14px;\A 13:   padding: .5em 2em .55em;\A 14:   text-shadow: 0 1px 1px rgba(0,0,0,.3);\A 15:   @include border-radius(.5em);\A 16:   @include box-shadow(0 1px 2px rgba(0,0,0,.2));\A 17: \A 18:   &:hover:not([disabled]) {\A 19:     text-decoration: none;\A 20:   }"; }

@@ -1,13 +1,5 @@
-<% content_for :body_attr do %><% if @state.is_game_over %>class="game-over"<% end %><% end %>
-
-<div class="clearfix">
-  <div class="left-col">
-    <h2 class="title">Anagram Thief!</h2>
-    <h3 class="tagline">a David Liu production</h3>
-
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D<%=Facebook::APP_ID%>&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
-  </div>
-  <div class="right-col">
+<% content_for :body_attr do %><% if @state.is_game_over %>game-over<% end %><% end %>
+<% content_for :header_area do %>
     <span class="sectionhead">Game Room: <%= @game.name %>.</span><br />
       <%= link_to 'Back to Lobby', games_list_url, :class => "button white medium" %><br />
 
@@ -16,18 +8,8 @@
 
     <a href="#" id="show-invites-link" class="button white medium">Invite friends</a>
     <a href="#" id="hide-invites-link" class="button white medium" style="display:none">Hide invitations</a>
-  </div>
-</div>
-
-<div class="clearfix">
-  <div class="left-col">
-
-  </div>
-  <div class="right-col">
-  </div>
-</div>
-
-<hr />
+<% end %>
+<%= render :partial => 'shared/header' %>
 
 <div class="clearfix" style="display:none" id="instructions-section">
   <div id="instructions-text">
@@ -57,23 +39,29 @@
 </p>
 
 <h4>Option 2: Facebook Invite</h4>
-<p>You should see the invite box in a few moments below.</p>
 
-<fb:serverFbml style="width:500px">
-<script type="text/fbml">
-  <fb:request-form
-      action="<%= play_in_canvas_url @game_id %>"
-      method="post"
-      type="Anagram Thief"
-      content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
+<% if current_user.guest? %>
+  <p>You need to sign in with Facebook to use this option!<br />
+  <a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton.png" alt="Sign in with Facebook" /></a></p>
+<% else %>
+  <p>You should see the invite box in a few moments below.</p>
 
-    <fb:multi-friend-selector condensed="true"
-        actiontext="Invite your friends to play here!"
-        style="width:500px" />
-    <fb:request-form-submit import_external_friends="false" />
-  </fb:request-form>
-</script>
-</fb:serverFbml>
+  <fb:serverFbml style="width:500px">
+  <script type="text/fbml">
+    <fb:request-form
+        action="<%= play_in_canvas_url @game_id %>"
+        method="post"
+        type="Anagram Thief"
+        content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
+
+      <fb:multi-friend-selector condensed="true"
+          actiontext="Invite your friends to play here!"
+          style="width:500px" />
+      <fb:request-form-submit import_external_friends="false" />
+    </fb:request-form>
+  </script>
+  </fb:serverFbml>
+<% end %>
 
 <a href="#" id="close-invites-link" style="display:none"></a>
 <hr />
@@ -93,10 +81,8 @@
         <div>
           <div class="clearfix">
             <h3 class="left">Letter Pool</h3>
-            <span class="tooltip">
-              <input type="button" value="Flip a letter!" id="flip-btn"
-                class="conn-ui play-ui button black" />
-              <span>Reveal letters below by clicking here.</span></span>
+            <input type="button" value="Flip a letter!" id="flip-btn"
+              class="conn-ui play-ui button black" />
           </div>
           <div id="pool-info">
             <%= render :partial => 'pool_info' %>
@@ -123,8 +109,7 @@
   <div class="right-col">
     <div class="game">
       <label for="claimword" class="sectionhead">Claim a word:</label>
-      <span class="tooltip"><input type="text" id="claimword" class="conn-ui play-ui" />
-      <span>If you see a word, type it quickly!</span></span>
+      <input type="text" id="claimword" class="conn-ui play-ui" />
     </div>
 
     <hr />
@@ -149,6 +134,23 @@
   </div>
 </div>
 
+<div id="prompt-login" style="display: none"><div>
+  <p class="sectionhead">Have you considered logging in with Facebook?</p>
+  <p>You'll be able to:</p>
+  <ul>
+    <li>Keep a record of your wins and losses</li>
+    <li>See which rooms your friends are in</li>
+    <li>Send Facebook invites to friends</li>
+    <li>Post your best games to your Facebook wall</li>
+  </ul>
+
+  <p>Anagram Thief won't post anything without asking you each time.</p>
+
+  <p><a href="<%= oauth_url %>" target="_top"><img src="/images/loginbutton.png" alt="Sign in with Facebook" /></a><br />
+
+  <a href="#" id="hide-prompt-login" class="button black">No thanks</a></p>
+</div></div>
+
 <% content_for :after_scripts do %>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -166,7 +168,8 @@
         heartbeat: '<%= escape_javascript play_heartbeat_url %>',
         refresh: '<%= escape_javascript play_refresh_url %>'
       },
-      heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>
+      heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>,
+      isGuest: <%= current_user.guest? ? 'true' : 'false' %>
     });
   });
 </script>

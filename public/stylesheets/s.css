@@ -65,18 +65,18 @@ footer, header, hgroup, menu, nav, section {
 }
 
 /* GAME LIST */
-/* line 2, ../../app/stylesheets/game-list.scss */
+/* line 4, ../../app/stylesheets/game-list.scss */
 ul.game-list {
   list-style-type: none;
 }
 
-/* line 5, ../../app/stylesheets/game-list.scss */
+/* line 7, ../../app/stylesheets/game-list.scss */
 ul.game-list > li {
   width: 100%;
   margin: 10px 0;
 }
 
-/* line 9, ../../app/stylesheets/game-list.scss */
+/* line 11, ../../app/stylesheets/game-list.scss */
 ul.game-list > li a {
   display: block;
   border: 1px solid #359;
@@ -84,134 +84,167 @@ ul.game-list > li a {
   text-decoration: none;
   color: #333;
   background-color: #def;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
   border-radius: 5px;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ddeeff), to(#aabbdd));
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ddeeff), color-stop(100%, #aabbdd));
+  background-image: -webkit-linear-gradient(#ddeeff, #aabbdd);
+  background-image: -moz-linear-gradient(#ddeeff, #aabbdd);
+  background-image: -o-linear-gradient(#ddeeff, #aabbdd);
+  background-image: linear-gradient(#ddeeff, #aabbdd);
 }
 
-/* line 19, ../../app/stylesheets/game-list.scss */
+/* line 21, ../../app/stylesheets/game-list.scss */
 ul.game-list > li a:hover {
   padding: 5px;
   text-decoration: none;
   color: #000;
   background-color: #fff;
   background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddeeff));
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ddeeff));
+  background-image: -webkit-linear-gradient(#ffffff, #ddeeff);
+  background-image: -moz-linear-gradient(#ffffff, #ddeeff);
+  background-image: -o-linear-gradient(#ffffff, #ddeeff);
+  background-image: linear-gradient(#ffffff, #ddeeff);
 }
 
-/* line 26, ../../app/stylesheets/game-list.scss */
+/* line 29, ../../app/stylesheets/game-list.scss */
 .game-list-pfpic {
   float: left;
   margin: 0 10px;
 }
 
-/* line 31, ../../app/stylesheets/game-list.scss */
+/* line 34, ../../app/stylesheets/game-list.scss */
 .game-name {
   font-weight: bold;
 }
 
-/* line 34, ../../app/stylesheets/game-list.scss */
+/* line 37, ../../app/stylesheets/game-list.scss */
 .game-private-label {
   font-style: italic;
 }
 
-/* line 37, ../../app/stylesheets/game-list.scss */
+/* line 40, ../../app/stylesheets/game-list.scss */
 .creator-name {
   font-weight: bold;
 }
 
-/* line 40, ../../app/stylesheets/game-list.scss */
+/* line 43, ../../app/stylesheets/game-list.scss */
 .game-player {
   font-weight: bold;
 }
 
-/* line 43, ../../app/stylesheets/game-list.scss */
+/* line 46, ../../app/stylesheets/game-list.scss */
 .friend-name {
   color: #22227c;
 }
 
 /* RECENT GAMES */
-/* line 48, ../../app/stylesheets/game-list.scss */
+/* line 51, ../../app/stylesheets/game-list.scss */
 ul.game-record-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-/* line 52, ../../app/stylesheets/game-list.scss */
+/* line 55, ../../app/stylesheets/game-list.scss */
 ul.game-record-list > li {
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
 /* PLAY */
-/* line 3, ../../app/stylesheets/game-play.scss */
+/* line 5, ../../app/stylesheets/game-play.scss */
 body.game-over .game {
   background-color: #ddd;
 }
 
-/* line 6, ../../app/stylesheets/game-play.scss */
+/* line 8, ../../app/stylesheets/game-play.scss */
 .when-game-over {
   display: none;
 }
 
-/* line 9, ../../app/stylesheets/game-play.scss */
+/* line 11, ../../app/stylesheets/game-play.scss */
 body.game-over .when-game-over {
   display: inherit;
 }
 
 /* TILES */
-/* line 14, ../../app/stylesheets/game-play.scss */
+/* line 16, ../../app/stylesheets/game-play.scss */
 ul.tiles {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-/* line 19, ../../app/stylesheets/game-play.scss */
+/* line 21, ../../app/stylesheets/game-play.scss */
 ul.tiles li {
   display: inline-block;
   width: 17px;
   height: 17px;
   /*margin: 1px;*/
-  background-color: #ffe;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffbb), to(#cccc88));
+  background-color: #ffb;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffbb), color-stop(100%, #cccc88));
+  background-image: -webkit-linear-gradient(#ffffbb, #cccc88);
+  background-image: -moz-linear-gradient(#ffffbb, #cccc88);
+  background-image: -o-linear-gradient(#ffffbb, #cccc88);
+  background-image: linear-gradient(#ffffbb, #cccc88);
   border: 1px solid #986;
   text-align: center;
   font-size: 1.1em;
   font-weight: bold;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -khtml-border-radius: 2px;
   border-radius: 2px;
 }
 
-/* line 31, ../../app/stylesheets/game-play.scss */
+/* line 33, ../../app/stylesheets/game-play.scss */
 ul.tiles li.unseen {
   background-color: #eed;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeedd), to(#ccccbb));
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeeedd), color-stop(100%, #ccccbb));
+  background-image: -webkit-linear-gradient(#eeeedd, #ccccbb);
+  background-image: -moz-linear-gradient(#eeeedd, #ccccbb);
+  background-image: -o-linear-gradient(#eeeedd, #ccccbb);
+  background-image: linear-gradient(#eeeedd, #ccccbb);
 }
 
 /* MESSAGES */
-/* line 38, ../../app/stylesheets/game-play.scss */
+/* line 40, ../../app/stylesheets/game-play.scss */
 #message-area, #chat, #claimword, #definition {
   /* All boxes */
   border: 1px solid #ccc;
-  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  -o-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
   background: #fff;
 }
 
-/* line 44, ../../app/stylesheets/game-play.scss */
+/* line 46, ../../app/stylesheets/game-play.scss */
 #message-area {
   overflow: auto;
   height: 200px;
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* line 49, ../../app/stylesheets/game-play.scss */
+/* line 52, ../../app/stylesheets/game-play.scss */
 #messages {
   list-style-type: none;
   margin: 3px;
   padding: 0;
 }
 
-/* line 54, ../../app/stylesheets/game-play.scss */
+/* line 57, ../../app/stylesheets/game-play.scss */
 #messages li {
   padding-left: 20px;
   padding-right: 5px;
@@ -220,35 +253,43 @@ ul.tiles li.unseen {
   text-indent: -15px;
 }
 
-/* line 61, ../../app/stylesheets/game-play.scss */
+/* line 64, ../../app/stylesheets/game-play.scss */
 #messages li.failed {
   color: #944;
   font-style: italic;
 }
 
-/* line 65, ../../app/stylesheets/game-play.scss */
+/* line 68, ../../app/stylesheets/game-play.scss */
 #messages li.claimed {
   color: #000;
-  background-color: #ff0;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffdd), to(#bbeeaa));
+  background-color: #efd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffdd), color-stop(100%, #bbeeaa));
+  background-image: -webkit-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: -moz-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: -o-linear-gradient(#eeffdd, #bbeeaa);
+  background-image: linear-gradient(#eeffdd, #bbeeaa);
 }
 
-/* line 70, ../../app/stylesheets/game-play.scss */
+/* line 73, ../../app/stylesheets/game-play.scss */
 #messages li.chat {
   color: #000;
-  background-color: #d8ffc8;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffac), to(#fff54d));
+  background-color: #ffffac;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffac), color-stop(100%, #fff54d));
+  background-image: -webkit-linear-gradient(#ffffac, #fff54d);
+  background-image: -moz-linear-gradient(#ffffac, #fff54d);
+  background-image: -o-linear-gradient(#ffffac, #fff54d);
+  background-image: linear-gradient(#ffffac, #fff54d);
 }
 
 /* PLAYERS */
-/* line 77, ../../app/stylesheets/game-play.scss */
+/* line 80, ../../app/stylesheets/game-play.scss */
 ul.player-words {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
 
-/* line 82, ../../app/stylesheets/game-play.scss */
+/* line 85, ../../app/stylesheets/game-play.scss */
 ul.player-words > li {
   display: inline-block;
   margin: 2px 8px;
@@ -256,84 +297,114 @@ ul.player-words > li {
   /*border: 1px solid #ccc;*/
 }
 
-/* line 88, ../../app/stylesheets/game-play.scss */
+/* line 91, ../../app/stylesheets/game-play.scss */
 .highlighted {
   background-color: #fc9;
 }
 
-/* line 91, ../../app/stylesheets/game-play.scss */
+/* line 94, ../../app/stylesheets/game-play.scss */
 .highlighted ul.tiles li {
   background-color: transparent;
 }
 
-/* line 94, ../../app/stylesheets/game-play.scss */
+/* line 97, ../../app/stylesheets/game-play.scss */
 #pool {
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
   border-radius: 5px;
-  background-color: #e0ffcc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  background-color: #efc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffcc), color-stop(100%, #bbddbb));
+  background-image: -webkit-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -moz-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -o-linear-gradient(#eeffcc, #bbddbb);
+  background-image: linear-gradient(#eeffcc, #bbddbb);
   border: 1px solid #393;
 }
 
-/* line 104, ../../app/stylesheets/game-play.scss */
+/* line 108, ../../app/stylesheets/game-play.scss */
 #pool > div {
   padding: 10px;
 }
 
-/* line 107, ../../app/stylesheets/game-play.scss */
+/* line 111, ../../app/stylesheets/game-play.scss */
 #pool #pool-info {
   margin: 10px 10px 0 10px;
 }
 
-/* line 110, ../../app/stylesheets/game-play.scss */
+/* line 114, ../../app/stylesheets/game-play.scss */
 .player-info {
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #ccc;
   margin: 5px 0;
   padding: 5px 0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
   border-radius: 5px;
 }
 
-/* line 117, ../../app/stylesheets/game-play.scss */
+/* line 122, ../../app/stylesheets/game-play.scss */
 .player-info .username {
   font-weight: bold;
 }
 
-/* line 120, ../../app/stylesheets/game-play.scss */
+/* line 125, ../../app/stylesheets/game-play.scss */
 .active-player {
-  background-color: #e0ffcc;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#eeffcc), to(#bbddbb));
+  background-color: #efc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffcc), color-stop(100%, #bbddbb));
+  background-image: -webkit-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -moz-linear-gradient(#eeffcc, #bbddbb);
+  background-image: -o-linear-gradient(#eeffcc, #bbddbb);
+  background-image: linear-gradient(#eeffcc, #bbddbb);
   border: 1px solid #393;
 }
 
-/* line 125, ../../app/stylesheets/game-play.scss */
+/* line 130, ../../app/stylesheets/game-play.scss */
 .inactive-player {
   background-color: #ccc;
   border: 1px solid #333;
 }
 
-/* line 129, ../../app/stylesheets/game-play.scss */
+/* line 134, ../../app/stylesheets/game-play.scss */
 #me .player-info {
   background-color: #cef;
 }
 
-/* line 132, ../../app/stylesheets/game-play.scss */
+/* line 137, ../../app/stylesheets/game-play.scss */
 #chat {
-  width: 240px;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   height: 3em;
   /*font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;*/
 }
 
 /* GAME UI */
-/* line 139, ../../app/stylesheets/game-play.scss */
+/* line 145, ../../app/stylesheets/game-play.scss */
 #flip-btn {
   margin: 0 2em;
 }
 
-/* line 142, ../../app/stylesheets/game-play.scss */
+/* line 148, ../../app/stylesheets/game-play.scss */
 .fat-btn {
   padding: 0.5em 4em;
   /*width: 12em;*/
@@ -341,71 +412,75 @@ ul.player-words > li {
 }
 
 /* DEFINITIONS */
-/* line 149, ../../app/stylesheets/game-play.scss */
+/* line 155, ../../app/stylesheets/game-play.scss */
 #definition {
   overflow: auto;
   height: 200px;
   width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* line 154, ../../app/stylesheets/game-play.scss */
+/* line 161, ../../app/stylesheets/game-play.scss */
 #definition > div {
   margin: 5px;
   display: none;
 }
 
-/* line 158, ../../app/stylesheets/game-play.scss */
+/* line 165, ../../app/stylesheets/game-play.scss */
 #definition .active-defn {
   display: block;
 }
 
-/* line 161, ../../app/stylesheets/game-play.scss */
+/* line 168, ../../app/stylesheets/game-play.scss */
 .defn-headword {
   font-weight: bold;
   margin-right: 10px;
 }
 
-/* line 165, ../../app/stylesheets/game-play.scss */
+/* line 172, ../../app/stylesheets/game-play.scss */
 .defn-pos {
   font-style: italic;
 }
 
-/* line 168, ../../app/stylesheets/game-play.scss */
+/* line 175, ../../app/stylesheets/game-play.scss */
 .defn-list {
   margin-bottom: 0.5em;
 }
 
-/* line 171, ../../app/stylesheets/game-play.scss */
+/* line 178, ../../app/stylesheets/game-play.scss */
 #next-defn, #prev-defn {
   /*font-size: 1.5em;*/
 }
 
-/* line 174, ../../app/stylesheets/game-play.scss */
+/* line 181, ../../app/stylesheets/game-play.scss */
 .sectionhead {
   font-weight: bold;
   font-size: 1.2em;
 }
 
 /* INSTRUCTIONS, INVITE */
-/* line 180, ../../app/stylesheets/game-play.scss */
+/* line 187, ../../app/stylesheets/game-play.scss */
 #invite-url {
   width: 480px;
 }
 
-/* line 183, ../../app/stylesheets/game-play.scss */
+/* line 190, ../../app/stylesheets/game-play.scss */
 .score-pfpic {
   float: left;
   margin: 0 10px;
-  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   border: 1px solid #666;
 }
 
-/* line 190, ../../app/stylesheets/game-play.scss */
+/* line 197, ../../app/stylesheets/game-play.scss */
 ul.scorelist {
   padding: 0;
 }
 
-/* line 193, ../../app/stylesheets/game-play.scss */
+/* line 200, ../../app/stylesheets/game-play.scss */
 ul.scorelist li {
   list-style-type: none;
   margin: 5px;
@@ -425,6 +500,29 @@ h2.rank {
   margin-bottom: 0;
 }
 .disclaimer {color:#666; font-size: .8em;}*/
+/* line 220, ../../app/stylesheets/game-play.scss */
+#prompt-login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+/* line 225, ../../app/stylesheets/game-play.scss */
+#prompt-login > div {
+  position: relative;
+  width: 400px;
+  margin-left: -200px;
+  height: 300px;
+  margin-top: -150px;
+  background: #fff;
+  border: 3px solid #ccc;
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  -o-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  z-index: 99;
+}
+
 /* http://webdesignerwall.com/tutorials/css3-gradient-buttons */
 /* line 2, ../../app/stylesheets/buttons.scss */
 .button {
@@ -441,112 +539,137 @@ h2.rank {
   font: 14px;
   padding: .5em 2em .55em;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  -webkit-border-radius: .5em;
-  -moz-border-radius: .5em;
-  border-radius: .5em;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  -o-border-radius: 0.5em;
+  -ms-border-radius: 0.5em;
+  -khtml-border-radius: 0.5em;
+  border-radius: 0.5em;
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   /* gray */
   /* white */
 }
-/* line 22, ../../app/stylesheets/buttons.scss */
+/* line 18, ../../app/stylesheets/buttons.scss */
 .button:hover:not([disabled]) {
   text-decoration: none;
 }
-/* line 25, ../../app/stylesheets/buttons.scss */
+/* line 21, ../../app/stylesheets/buttons.scss */
 .button:active:not([disabled]) {
   position: relative;
   top: 1px;
 }
-/* line 30, ../../app/stylesheets/buttons.scss */
+/* line 26, ../../app/stylesheets/buttons.scss */
 .button.bigrounded {
-  -webkit-border-radius: 2em;
   -moz-border-radius: 2em;
+  -webkit-border-radius: 2em;
+  -o-border-radius: 2em;
+  -ms-border-radius: 2em;
+  -khtml-border-radius: 2em;
   border-radius: 2em;
 }
-/* line 35, ../../app/stylesheets/buttons.scss */
+/* line 29, ../../app/stylesheets/buttons.scss */
 .button.medium {
   font-size: 12px;
   padding: .4em 1.5em .42em;
 }
-/* line 39, ../../app/stylesheets/buttons.scss */
+/* line 33, ../../app/stylesheets/buttons.scss */
 .button.small {
   font-size: 11px;
   padding: .2em 1em .275em;
 }
-/* line 44, ../../app/stylesheets/buttons.scss */
+/* line 38, ../../app/stylesheets/buttons.scss */
 .button.black {
   color: #fff;
   border: solid 1px #333;
   background: #333;
-  background: -webkit-gradient(linear, left top, left bottom, from(#666666), to(black));
-  background: -moz-linear-gradient(top, #666666, black);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #666666), color-stop(100%, #000000));
+  background-image: -webkit-linear-gradient(#666666, #000000);
+  background-image: -moz-linear-gradient(#666666, #000000);
+  background-image: -o-linear-gradient(#666666, #000000);
+  background-image: linear-gradient(#666666, #000000);
 }
-/* line 52, ../../app/stylesheets/buttons.scss */
+/* line 44, ../../app/stylesheets/buttons.scss */
 .button.black:hover:not([disabled]) {
   background: #000;
-  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(black));
-  background: -moz-linear-gradient(top, #444444, black);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#000000');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #000000));
+  background-image: -webkit-linear-gradient(#444444, #000000);
+  background-image: -moz-linear-gradient(#444444, #000000);
+  background-image: -o-linear-gradient(#444444, #000000);
+  background-image: linear-gradient(#444444, #000000);
 }
-/* line 58, ../../app/stylesheets/buttons.scss */
+/* line 48, ../../app/stylesheets/buttons.scss */
 .button.black:active:not([disabled]) {
   color: #999;
-  background: -webkit-gradient(linear, left top, left bottom, from(black), to(#444444));
-  background: -moz-linear-gradient(top, black, #444444);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#666666');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #000000), color-stop(100%, #444444));
+  background-image: -webkit-linear-gradient(#000000, #444444);
+  background-image: -moz-linear-gradient(#000000, #444444);
+  background-image: -o-linear-gradient(#000000, #444444);
+  background-image: linear-gradient(#000000, #444444);
 }
-/* line 64, ../../app/stylesheets/buttons.scss */
+/* line 52, ../../app/stylesheets/buttons.scss */
 .button.black[disabled] {
   background: #888;
 }
-/* line 69, ../../app/stylesheets/buttons.scss */
+/* line 57, ../../app/stylesheets/buttons.scss */
 .button.gray {
   color: #e9e9e9;
   border: solid 1px #555;
   background: #6e6e6e;
-  background: -webkit-gradient(linear, left top, left bottom, from(#888888), to(#575757));
-  background: -moz-linear-gradient(top, #888888, #575757);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #888888), color-stop(100%, #575757));
+  background-image: -webkit-linear-gradient(#888888, #575757);
+  background-image: -moz-linear-gradient(#888888, #575757);
+  background-image: -o-linear-gradient(#888888, #575757);
+  background-image: linear-gradient(#888888, #575757);
 }
-/* line 77, ../../app/stylesheets/buttons.scss */
+/* line 63, ../../app/stylesheets/buttons.scss */
 .button.gray:hover {
   background: #616161;
-  background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b));
-  background: -moz-linear-gradient(top, #757575, #4b4b4b);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #757575), color-stop(100%, #4b4b4b));
+  background-image: -webkit-linear-gradient(#757575, #4b4b4b);
+  background-image: -moz-linear-gradient(#757575, #4b4b4b);
+  background-image: -o-linear-gradient(#757575, #4b4b4b);
+  background-image: linear-gradient(#757575, #4b4b4b);
 }
-/* line 83, ../../app/stylesheets/buttons.scss */
+/* line 67, ../../app/stylesheets/buttons.scss */
 .button.gray:active {
   color: #afafaf;
-  background: -webkit-gradient(linear, left top, left bottom, from(#575757), to(#888888));
-  background: -moz-linear-gradient(top, #575757, #888888);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #575757), color-stop(100%, #888888));
+  background-image: -webkit-linear-gradient(#575757, #888888);
+  background-image: -moz-linear-gradient(#575757, #888888);
+  background-image: -o-linear-gradient(#575757, #888888);
+  background-image: linear-gradient(#575757, #888888);
 }
-/* line 91, ../../app/stylesheets/buttons.scss */
+/* line 73, ../../app/stylesheets/buttons.scss */
 .button.white {
   color: #606060;
   border: solid 1px #b7b7b7;
   background: #fff;
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#ededed));
-  background: -moz-linear-gradient(top, white, #ededed);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ededed));
+  background-image: -webkit-linear-gradient(#ffffff, #ededed);
+  background-image: -moz-linear-gradient(#ffffff, #ededed);
+  background-image: -o-linear-gradient(#ffffff, #ededed);
+  background-image: linear-gradient(#ffffff, #ededed);
 }
-/* line 99, ../../app/stylesheets/buttons.scss */
+/* line 79, ../../app/stylesheets/buttons.scss */
 .button.white:hover {
   background: #ededed;
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dcdcdc));
-  background: -moz-linear-gradient(top, white, #dcdcdc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#ffffff, #dcdcdc);
+  background-image: -moz-linear-gradient(#ffffff, #dcdcdc);
+  background-image: -o-linear-gradient(#ffffff, #dcdcdc);
+  background-image: linear-gradient(#ffffff, #dcdcdc);
 }
-/* line 105, ../../app/stylesheets/buttons.scss */
+/* line 83, ../../app/stylesheets/buttons.scss */
 .button.white:active {
   color: #999;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(white));
-  background: -moz-linear-gradient(top, #ededed, white);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ffffff');
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ededed), color-stop(100%, #ffffff));
+  background-image: -webkit-linear-gradient(#ededed, #ffffff);
+  background-image: -moz-linear-gradient(#ededed, #ffffff);
+  background-image: -o-linear-gradient(#ededed, #ffffff);
+  background-image: linear-gradient(#ededed, #ffffff);
 }
 
 /* http://files.droplr.com/files/38746080/kCOq.demo.html */
