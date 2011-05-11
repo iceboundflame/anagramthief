@@ -46,17 +46,18 @@ label {
 #wrap {
   background: #fffcf6;
   width: 740px;
-  margin: 0 auto;
-  padding: 10px 30px 30px 30px;
 
-  border: 1px solid #ccc;
-  @include box-shadow(0 1px 6px 0 rgba(0, 0, 0, 0.2));
-  /*border-radius: 5px;*/
-}
-body.fbframe #wrap {
   margin: 10px 0;
   padding: 10px;
   border: none;
+
+  @include box-shadow(0 1px 6px 0 rgba(0, 0, 0, 0.2));
+  /*border-radius: 5px;*/
+}
+body.standalone #wrap {
+  margin: 0 auto;
+  padding: 10px 30px 30px 30px;
+  border: 0 1px 1px 1px solid #ccc;
 }
 
 .left-col {
@@ -67,6 +68,11 @@ body.fbframe #wrap {
 .right-col {
   width: 250px;
   float: left;
+}
+
+.framed {
+  @include box-shadow(0px 0px 5px rgba(0,0,0,0.8));
+  border: 1px solid #999;
 }
 
 @import "game-list";

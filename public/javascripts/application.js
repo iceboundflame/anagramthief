@@ -396,3 +396,5 @@ var Anathief = function() {
 $(document).ready(function() {
   $('[placeholder]').placeholder();
 });
+if (top.location.href == window.location.href)
+  $(document.body).addClass('standalone');
