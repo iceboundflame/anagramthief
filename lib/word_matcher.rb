@@ -79,7 +79,7 @@ module WordMatcher
           new_stolen = stolen.dup << word
           match_result = word_match(pool, remaining_words,
                                     target, deficit_ms, new_stolen,
-                                    depth+1, true)
+                                    depth+1, dbg)
 
           #puts "#{ind}=>#{match_result}" if dbg and match_result
           return match_result if match_result and match_result[0][0] == :ok
@@ -91,9 +91,11 @@ module WordMatcher
     ## Check the pool
 
     leftover_ms, deficit_ms = MyMultiset.from_array(pool) ^ need_ms
-    puts "#{ind}=> pool = #{MyMultiset.from_array(pool)}"
-    puts "#{ind}=> need = #{need_ms}"
-    puts "#{ind}=> pool - need = #{leftover_ms}, #{deficit_ms}"
+    if dbg
+      puts "#{ind}=> pool = #{MyMultiset.from_array(pool)}"
+      puts "#{ind}=> need = #{need_ms}"
+      puts "#{ind}=> pool - need = #{leftover_ms}, #{deficit_ms}"
+    end
 
     if deficit_ms.size == 0
       pool_used_ms = need_ms
