@@ -20,15 +20,24 @@ class ApplicationController < ActionController::Base
 
         me = MiniFB.get(fb_tok, 'me')
         unless @current_user = User.find_by_uid(fb_uid)
-          raise "User account #{fb_uid} not found" #FIXME do we ever reach this?
-          #@current_user = User.create :uid => fb_uid
+          # do we ever reach this? Apparently so.
+          logger.info "Strange: user account #{fb_uid} not found"
+          logger.info "Creating new user for fbid #{fb_uid}"
+          @current_user = User.create :uid => fb_uid
         end
         @current_user.update_from_graph(fb_tok, me)
 
         session[:user_id] = @current_user.id
       else
         logger.info "Not logged in anymore"
-        session[:fb_tok] = nil #FIXME what to do here? delete user_id too?
+
+        session[:fb_tok] = nil
+
+        # if logged in as fb user, logout
+        if current_user and current_user.uid
+          session[:user_id] = nil
+          @current_user = nil
+        end
       end
 
       return true
@@ -39,7 +48,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def current_user
-    if (session[:user_id])
+    if session[:user_id]
       @current_user ||= User.find(session[:user_id])
     else
       @current_user

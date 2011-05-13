@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
     self.first_name = me['first_name']
     self.last_name = me['last_name']
 
+    logger.info "Updating user: #{id} => #{uid} / #{name} / #{first_name} / #{last_name}"
+
     self.save
   rescue
     logger.error "Error in update_from_graph: #{$!}"

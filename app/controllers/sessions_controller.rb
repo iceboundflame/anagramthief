@@ -16,6 +16,7 @@ class SessionsController < ApplicationController
     me = @fb.me
 
     unless user = User.find_by_uid(me['id'])
+      logger.info "New FB user #{me['id']}"
       user = User.create :uid => me['id']
     end
 
@@ -39,6 +40,8 @@ class SessionsController < ApplicationController
 
     session[:user_id] = user.id
     session[:fb_tok] = nil
+
+    logger.info "New guest user #{user.id} : #{user.name}"
 
     redirect_to root_url
   end
