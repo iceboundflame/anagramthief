@@ -12,6 +12,7 @@ Anathief::WORDNIK_KEY = Anathief::SETTINGS['wordnik']['api_key']
 
 # strangest interface...
 Wordnik::Wordnik.new :api_key => Anathief::WORDNIK_KEY
+Wordnik::Wordnik.default_timeout 2
 
 unless MiniFB.method_defined?(:signed_request_params)
   puts "Monkey patching MiniFB"
