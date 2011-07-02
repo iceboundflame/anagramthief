@@ -246,6 +246,11 @@ class PlayController < ApplicationController
       .merge(game_over_update_json)
   end
 
+  def refresh_data
+    load_game
+    render :json => {:status => true, :data => game_state_json}
+  end
+
   def invite_form
     # just render
     #render :layout => nil
@@ -255,14 +260,18 @@ class PlayController < ApplicationController
   protected
 
   def jpublish_update(*json_pieces)
-    jpublish 'update', nil, json_pieces.inject({}) {|r, j| r.merge j}
+    Juggernaut.publish jchan(@game_id), json_pieces.inject({:type => 'update'}) {|r, j| r.merge j}
+    Juggernaut.publish jchan_data(@game_id), {:type => 'data', :data => game_state_json}
   end
+
+  # Rendered HTML fragments
   def pool_update_json(addl={})
     { :pool_info => {
         :body => render_to_string(:partial => 'pool_info'),
       }.merge(addl),
     }
   end
+  # Rendered HTML fragments
   def players_update_json(addl={})
     rendered_players = {}
     @state.players.each do |user_id, player| 
@@ -275,6 +284,7 @@ class PlayController < ApplicationController
       }.merge(addl),
     }
   end
+  # Rendered HTML fragments
   def game_over_update_json(addl={})
     body = {}
     body[:body] = render_to_string(:partial => 'game_result') if @state.is_game_over
@@ -299,12 +309,37 @@ class PlayController < ApplicationController
     out = {:type => type}.merge(from).merge(data)
     #logger.debug green "**PUBLISH** #{PP.pp out,''}"
     Juggernaut.publish jchan(@game_id), out
+
+    Juggernaut.publish jchan_data(@game_id), out
   end
 
   def jchan(id)
     "/#{Anathief::JUGGERNAUT_PREFIX}/game/#{id}"
   end
+  def jchan_data(id)
+    "/#{Anathief::JUGGERNAUT_PREFIX}/game_data/#{id}"
+  end
 
+  # Full Game State JSON data for mobile clients.
+  def game_state_json
+    {
+      :id => @game_id,
+      :name => @game.name,
+      :players => @players.map {|p|
+          {
+            :id => p.id,
+            :name => p.user.name,
+            :pf_pic_url => p.user.profile_pic,
+            :words => p.words.values.map {|x| x.word}, ## FIXME: sort by ID?
+            :score => p.num_letters,
+            :is_active => p.is_active,
+            :voted_done => p.voted_done,
+          }
+        },
+      :pool => @state.pool_seen,
+      :pool_remaining => @state.num_unseen
+    }
+  end
 
   def get_ids
     require_user or return false

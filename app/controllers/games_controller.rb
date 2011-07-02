@@ -54,6 +54,23 @@ class GamesController < ApplicationController
       .all
 
     Game.end_old
+
+    respond_to do |format|
+      format.json {
+        games_json = []
+        [*@public_games, *@friend_games, *@my_games].each do |g|
+          games_json << {
+            :name => g.name,
+            :players => g.users.all.map { |u| u.name }.join(', '),
+            :id => g.id,
+          }
+        end
+        render :json => {:status => true,
+          :games => games_json,
+        }
+      }
+      format.html {}
+    end
   end
 
   def create

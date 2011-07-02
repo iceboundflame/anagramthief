@@ -43,7 +43,10 @@ class SessionsController < ApplicationController
 
     logger.info "New guest user #{user.id} : #{user.name}"
 
-    redirect_to root_url
+    respond_to do |format|
+      format.json { render :json => {:status => true, :user_id => user.id} }
+      format.html { redirect_to root_url }
+    end
   end
 
   def logout

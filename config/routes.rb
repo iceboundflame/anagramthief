@@ -16,6 +16,7 @@ Anathief::Application.routes.draw do
   match '/play/:id/restart', :to => 'play#restart', :as => 'play_restart'
   match '/play/:id/heartbeat', :to => 'play#heartbeat', :as => 'play_heartbeat'
   match '/play/:id/refresh', :to => 'play#refresh', :as => 'play_refresh'
+  match '/play/:id/refresh_data', :to => 'play#refresh_data', :as => 'play_refresh_data'
 
   match '/play/:id/invite_form', :to => 'play#invite_form', :as => 'play_invite_form'
 

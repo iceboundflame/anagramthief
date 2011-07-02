@@ -61,7 +61,12 @@ class ApplicationController < ActionController::Base
 
   def require_user
     signed_in = user_signed_in?
-    redirect_to root_url unless signed_in
+    unless signed_in
+      respond_to do |format|
+        format.html { redirect_to root_url }
+        format.json { render :json => {:status => false, :error => 'Login required'} }
+      end
+    end
     signed_in
   end
 
