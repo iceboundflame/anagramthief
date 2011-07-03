@@ -7,17 +7,17 @@ class GameState
   attr_accessor :record
   attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
 
-  def self.redis_key(game_id)
-    "#{Anathief::REDIS_KPREFIX}/game_state/#{game_id}"
-  end
-  def redis_key
-    self.class.redis_key(@game_id)
-  end
+  #def self.redis_key(game_id)
+    #"#{Anathief::REDIS_KPREFIX}/game_state/#{game_id}"
+  #end
+  #def redis_key
+    #self.class.redis_key(@game_id)
+  #end
 
-  def self.delete_ids(game_ids)
-    redis_keys = game_ids.map{|id| redis_key id}
-    redis.del *redis_keys
-  end
+  #def self.delete_ids(game_ids)
+    #redis_keys = game_ids.map{|id| redis_key id}
+    #redis.del *redis_keys
+  #end
 
   def initialize(game_id=nil)
     @game_id = game_id
@@ -35,27 +35,29 @@ class GameState
     @pool_unseen = MyMultiset.from_hash self.class.default_letters
     @pool_seen = []
     @is_saved = false
+
+    flip_char; flip_char; flip_char; flip_char; flip_char; flip_char;
   end
 
-  def self.load(game_id)
-    key = redis_key game_id
-    game_json = redis[key]
-    return nil unless game_json
-    #puts "DBG**** gamestate.load: #{game_json}"
-    g = GameState.new.from_json game_json
-    g.is_saved = true
-    g
-  end
+  #def self.load(game_id)
+    #key = redis_key game_id
+    #game_json = redis[key]
+    #return nil unless game_json
+    ##puts "DBG**** gamestate.load: #{game_json}"
+    #g = GameState.new.from_json game_json
+    #g.is_saved = true
+    #g
+  #end
 
-  def save
-    redis[redis_key] = to_json
-    @is_saved = true
-  end
+  #def save
+    #redis[redis_key] = to_json
+    #@is_saved = true
+  #end
 
-  def delete
-    redis.del redis_key
-    @is_saved = false
-  end
+  #def delete
+    #redis.del redis_key
+    #@is_saved = false
+  #end
 
   def player(user_id)
     @players[user_id.to_s]
@@ -83,30 +85,6 @@ class GameState
   end
 
   PLAYER_TIMEOUT = 15.seconds
-
-  def update_active_players(active_user_ids)
-    now = Time.now
-    became_active, became_inactive = [], []
-    @players.each {|id,p|
-      in_game = active_user_ids.include?(id)
-      heart_beatedness =
-        p.last_heartbeat && (now - p.last_heartbeat < PLAYER_TIMEOUT)
-      is_active = in_game && heart_beatedness
-      #puts "Player #{id} was active #{p.is_active} in_game #{in_game} heart #{heart_beatedness}"
-      if p.is_active ^ is_active
-        #puts "Player #{id} becoming #{is_active}"
-        p.is_active = is_active
-        if is_active
-          became_active << id
-        else
-          became_inactive << id
-        end
-      end
-    }
-
-    @is_saved = false unless became_active.empty? and became_inactive.empty?
-    return became_active, became_inactive
-  end
 
   def purge_inactive_players
     to_remove = @players.keys.select do |id|
@@ -333,12 +311,12 @@ class GameState
 
   protected
 
-  def self.redis
-    @@r ||= Redis.new
-  end
-  def redis
-    @@r ||= Redis.new
-  end
+  #def self.redis
+    #@@r ||= Redis.new
+  #end
+  #def redis
+    #@@r ||= Redis.new
+  #end
 
   ### UTILITY METHODS ###
 

@@ -37,6 +37,10 @@ GEM
       fssm (>= 0.2.7)
       sass (~> 3.1)
     crack (0.1.8)
+    em-mysqlplus (0.1.5)
+      eventmachine (>= 0.12.9)
+    em-synchrony (0.2.0)
+      eventmachine (>= 0.12.9)
     em-websocket (0.3.0)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
@@ -61,6 +65,7 @@ GEM
       hashie
       rest-client
     mysql2 (0.2.6)
+    mysqlplus (0.1.2)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.14)
@@ -102,12 +107,15 @@ PLATFORMS
 
 DEPENDENCIES
   compass (>= 0.11.1)
+  em-mysqlplus
+  em-synchrony
   em-websocket
   eventmachine
   json
   juggernaut
   mini_fb
   mysql2 (< 0.3)
+  mysqlplus
   rails (= 3.0.4)
   redis
   sqlite3-ruby
