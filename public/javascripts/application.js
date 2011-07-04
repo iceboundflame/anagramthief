@@ -1,12 +1,34 @@
+function escapeHtml(text) {
+  return text.replace(/[&<>"'`]/g, function (chr) {
+      return '&#' + chr.charCodeAt(0) + ';';
+    });
+};
+
 var Anathief = function() {
   var gd;
-  var jug;
-  var gameOver = false, votedDone = false;
+  var sock;
+  var isGameOver = false, votedDone = false;
   var connected = false;
+  var players = {};
+
+  var next_serial = 1;
+  var msgResponseCallbacks = {};
 
   function log(x) {
     if (typeof console == "object")
       console.log(x);
+  }
+
+  function ssend(type, data, onresponse) {
+    var serial = next_serial++;
+
+    if (onresponse) {
+      msgResponseCallbacks[serial] = onresponse;
+    }
+
+    var out = JSON.stringify(_.extend({_t: type, _s: serial}, data));
+    log(">> " + out);
+    sock.send(out);
   }
 
   function init(_gd) {
@@ -34,14 +56,11 @@ var Anathief = function() {
     disableConnUi();
     addMessage(null, 'Connecting...');
 
-    jug = new Juggernaut();
-    jug.on('connect', onConnect);
-    jug.on('disconnect', onDisconnect);
-    jug.on('reconnect', onReconnect);
-    jug.subscribe(gd.jchan, onDataReceived);
-
-    if (gd.heartRate > 0)
-      setInterval('Anathief.heartbeat()', gd.heartRate);
+    sock = new io.connect(gd.sio);
+    sock.on('connect', onConnect);
+    sock.on('disconnect', onDisconnect);
+    sock.on('reconnect', onReconnect);
+    sock.on('message', onMessage);
   }
 
   function disableConnUi() {
@@ -52,21 +71,26 @@ var Anathief = function() {
   }
   function disablePlayUi() {
     $('.play-ui').attr('disabled', 'disabled');
-    /*$(document.body).addClass('game-over').removeClass('game-on');*/
     $(document.body).addClass('game-over');
   }
   function enablePlayUi() {
     $('.play-ui').removeAttr('disabled');
-    /*$(document.body).addClass('game-on').removeClass('game-over');*/
     $(document.body).removeClass('game-over');
   }
 
   function onConnect() {
-    refreshState();
-    addMessage(null, 'Connected!');
-    enableConnUi();
-    log('Connected');
-    connected = true;
+    addMessage(null, 'Logging in...');
+    ssend('identify', {id_token: gd.idToken},
+      function (data) {
+        if (data.ok) {
+          addMessage(null, 'Connected.');
+          enableConnUi();
+          log('Connected');
+          connected = true;
+        } else {
+          addMessage(null, 'Error logging in: '+data.message+'.');
+        }
+      });
   }
   function onDisconnect() {
     addMessage(null, 'Disconnected.');
@@ -79,15 +103,62 @@ var Anathief = function() {
     log('Reconnecting');
   }
 
-  function onDataReceived(data) {
-    log(data);
-    switch (data.type) {
-      case 'chat':
-        addMessage(data.from, data.body, false, 'chat', true);
+  function onMessage(data_) {
+    log("<< " + data_);
+    data = JSON.parse(data_);
+    switch (data._t) {
+      case 'response':
+        if (data._s in msgResponseCallbacks) {
+          msgResponseCallbacks[data._s](data);
+          delete msgResponseCallbacks[data._s];
+        }
         break;
 
-      case 'action':
-        addMessage(data.from, data.body, true, data.msgclass, !!data.msgclass);
+      case 'chatted':
+        addMessage(data.from,
+            _.template('says: <%= escapeHtml(message) %>', data),
+            'chatted', true);
+        break;
+
+      case 'flipped':
+        addMessage(data.from,
+            _.template('flipped <%= escapeHtml(letter) %>', data),
+            'flipped');
+        break;
+
+      case 'claimed':
+        data.desc = describeMove(data);
+        addMessage(data.from,
+            _.template('claimed <%= escapeHtml(word) %><%= desc %>', data),
+            'claimed', true);
+        break;
+
+      case 'claim_failed':
+        data.desc = describeMove(data);
+        data.failReason = failReason(data);
+        addMessage(data.from,
+            _.template('tried to claim <%= escapeHtml(word) %><%= desc %>, but <%= failReason %>.', data),
+            'claim_failed');
+        break;
+
+      case 'voted_done':
+        addMessage(data.from,
+            _.template('<%= vote ? "voted to end the game." : "canceled vote to end game." %>'
+              + '<br /><%= num_voted %> votes / <%= num_needed %> needed'
+              + '<% if (game_ending) { %><br /><strong>Game Over!</strong><% } %>', data),
+            'voted_done');
+        break;
+
+      case 'restarted':
+        addMessage(data.from, 'restarted the game.', 'restarted');
+        break;
+
+      case 'joined':
+        addMessage(data.from, 'joined the game.', 'joined');
+        break;
+
+      case 'left':
+        addMessage(data.from, 'left the game.', 'left');
         break;
 
       case 'update':
@@ -95,17 +166,12 @@ var Anathief = function() {
         break;
 
       case 'definitions':
-        newdef = $('<div class="active-defn" />').html(data.body);
+        newdef = $('<div class="active-defn" />').html(definitions_template(data));
         $('#definition').children().removeClass('active-defn');
         $('#definition').append(newdef);
 
         break;
     }
-  }
-
-  function heartbeat() {
-    $.post(gd.urls.heartbeat);
-    log("Heartbeat");
   }
 
   /** Definitions **/
@@ -126,17 +192,25 @@ var Anathief = function() {
   /** Chat **/
 
   function initChat() {
-    $('#chat').keyup(function(e) {
-      if (e.keyCode != 13) return;
-      var msg = $('#chat').val();
+    $('#chat').keydown(function(e) {
+      if (e.keyCode == 13) { // enter
+        var msg = $('#chat').val();
 
-      if (!msg) return;
+        if (msg) {
+          ssend('chat', {message: msg});
+        } else {
+          $('#claimword').focus();
+        }
 
-      $.post(gd.urls.chat,
-        {message: msg});
+        $('#chat').val('');
+        return false;
 
-      $('#chat').val('');
-      return false;
+      } else if (e.keyCode == 27) { // escape
+        $('#chat').val('');
+        $('#claimword').focus();
+        return false;
+
+      }
     });
 
     $('#message-area').click(function() {
@@ -148,73 +222,72 @@ var Anathief = function() {
 
   function initGameInterface() {
     $('#flip-btn').click(function() {
-      flipChar();
-      return false;
-    });
-
-    $('#claimword').keyup(function(e) {
-      if (e.keyCode != 13) return;
-
-      var word = $('#claimword').val();
-      if (!word) {
         flipChar();
-        return;
-      }
+        return false;
+      });
 
-      $.post(gd.urls.claim,
-        {word: word},
-        function(data) {
-          if (data.message) {
-            addMessage(null, data.message, true);
+    $('#claimword').keydown(function(e) {
+        if (e.keyCode == 32) { // spacebar
+          $('#chat').focus();
+          return false;
+
+        } else if (e.keyCode == 27) { // escape
+          $('#claimword').val('');
+          return false;
+
+        } else if (e.keyCode == 13) { // enter
+          var word = $('#claimword').val();
+          if (!word) {
+            flipChar();
+            return;
           }
-        },
-        'json');
 
-      $('#claimword').val('');
-    });
+          ssend('claim', {word: word});
+
+          $('#claimword').val('');
+          return false;
+
+        }
+      });
 
     function voteBtn(vote) {
       votedDone = vote;
-      $.post(gd.urls.voteDone, {vote: votedDone});
+      ssend('vote_done', {vote: vote});
       updateDoneButton();
     }
     $('#vote-done-btn').click(function() { voteBtn(true); });
     $('#cancel-vote-btn').click(function() { voteBtn(false); });
-    $('#restart-btn').click(function() {
-      $.post(gd.urls.restart);
-    });
-
-    $('#refresh-btn').click(function() { refreshState(); return false; });
+    $('#restart-btn').click(function() { ssend('restart'); });
+    $('#refresh-btn').click(function() { refreshState(); });
   }
 
   function refreshState() {
-    $.post(gd.urls.refresh, {},
-      function(data) {
-        log(data);
-        processUpdate(data);
-      },
-      'json');
+    ssend('refresh', {}, function (data) {
+        if (data.ok) {
+          processUpdate(data.update_data);
+        }
+      });
   }
 
   function flipChar() {
     $('#flip-btn').attr('disabled', 'disabled');
-    /*$('#flip-wait').show();*/
+
     setTimeout(function () {
-        /*$('#flip-wait').hide();*/
-      if (connected && !gameOver)
+      if (connected && !isGameOver)
         $('#flip-btn').removeAttr('disabled');
     }, 1000); // make sure this is in sync with the server side delay
-    $.post(gd.urls.flipChar,
-      function(data) {
+
+    ssend('flip', {}, function (data) {
         if (data.message) {
-          addMessage(null, data.message, true);
+          addMessage(null, data.message);
         }
       });
+
     $('#claimword').focus();
   }
 
   function updateDoneButton() {
-    if (gameOver) {
+    if (isGameOver) {
       $('#vote-done-btn').hide();
       $('#cancel-vote-btn').hide();
     } else if (votedDone) {
@@ -226,51 +299,38 @@ var Anathief = function() {
     }
   }
 
-
   function processUpdate(data) {
-    if (data.pool_info)
-      updatePool(data.pool_info);
+    players = data.players;
 
-    if (data.players_info)
-      updatePlayersInfo(data.players_info);
-
-    if (data.game_over_info)
-      updateGameOverInfo(data.game_over_info);
+    updatePool(data);
+    updatePlayers(data);
+    updateGameOver(data);
 
     FB.Canvas.setSize();
   }
 
-  function updateGameOverInfo(data) {
-    gameOver = data.game_over;
-    if (gameOver) {
-      disablePlayUi();
-    } else {
-      enablePlayUi();
-    }
-    if (data.body) {
-      $('#game-over-info').html(data.body);
-    }
-
-    votedDone = ($.inArray(gd.me_id, data.users_voted_done) != -1);
-
-    if (data.publish_fb) {
-      publishGame(data.publish_fb);
-    }
-
-    updateDoneButton();
-  }
+  var tiles_template = _.template($('#tiles-tmpl').html());
+  var player_template = _.template($('#player-tmpl').html());
+  var game_over_template = _.template($('#game-over-tmpl').html());
+  var definitions_template = _.template($('#definitions-tmpl').html());
 
   function updatePool(data) {
-    $('#pool-info').html(data.body);
+    $('#pool-area').html(
+        tiles_template({tiles: data.pool, num_unseen: data.pool_remaining})
+      );
   }
 
-  function updatePlayersInfo(data) {
-    $('#player-info-area').empty();
-    for (var i in data.order) {
-      var id = data.order[i];
-      $('#player-info-area').append(data.body[id]);
-    }
-    if (data.added) {
+  function updatePlayers(data) {
+    players = data.players;
+
+    $('#player-area').empty();
+
+    _.each(data.players_order, function (pid) {
+      $('#player-area').append(
+          player_template(_.extend({tiles_template: tiles_template}, players[pid]))
+        );
+    });
+/*    if (data.added) {
       for (var i in data.added) {
         var id = data.added[i];
         $('#player-info-'+id).effect('highlight', {}, 3000);
@@ -278,13 +338,32 @@ var Anathief = function() {
     }
     if (data.removed) {
       // TODO
-    }
+    }*/
 
-    if (data.new_word_id) {
+    /*if (data.new_word_id) {
       $('#word-'+data.new_word_id.join('-'))
         .addClass('highlighted')
         .effect('highlight', {}, 5000);
+    }*/
+  }
+
+  function updateGameOver(data) {
+    isGameOver = data.is_game_over;
+    if (isGameOver) {
+      disablePlayUi();
+      $('#game-over-area').html(game_over_template(data));
+    } else {
+      enablePlayUi();
+      $('#game-over-area').empty();
     }
+
+    votedDone = ($.inArray(gd.userId, data.players_voted_done) != -1);
+
+    /*if (data.publish_fb) {*/
+    /*publishGame(data.publish_fb);*/
+    /*}*/
+
+    updateDoneButton();
   }
 
   function publishGame(data) {
@@ -307,11 +386,13 @@ var Anathief = function() {
   }
 
   // Messages area
-  function addMessage(from, message, isAction, msgclass, suppressHighlight) {
+  function addMessage(from, message, msgclass, suppressHighlight) {
     var msgId = 'message-' + Math.floor(Math.random()*2147483647);
     var li = $('<li id="'+msgId+'" />');
-    if (from)
-      li.append($('<strong />').text(from.name)).append(' ');
+    if (from && players[from]) {
+      var fromName = players[from].name;
+      li.append($('<strong />').text(fromName)).append(' ');
+    }
     if (msgclass) li.addClass(msgclass);
     li.append(message);
     $('#messages').append(li);
@@ -384,9 +465,45 @@ var Anathief = function() {
     /*FB.Canvas.setSize({height: $('#wrap')[0].scrollHeight + 30});*/
   }
 
+  function describeMove(data) {
+    var desc = '';
+    if (data.words_stolen && data.words_stolen.length) {
+      desc += 'stealing ' + data.words_stolen.join(', ');
+    }
+
+    if (data.pool_used && data.pool_used.length) {
+      desc += (data.words_stolen.length ? ' +' : 'taking');
+      desc += ' '+data.pool_used;
+    }
+
+    if (desc.length) return ' by ' + desc;
+    return '';
+  }
+
+  function failReason(data) {
+    switch (data.cause) {
+      case 'word_steal_shares_root':
+        return 'they share the common root ' + data.shared_roots.join(', ');
+
+      case 'word_steal_not_extended':
+        return "that would be stealing without extending";
+
+      case 'word_too_short':
+        return "it's too short";
+
+      case 'word_not_in_dict':
+        return "it's not in the dictionary";
+
+      case 'word_not_available':
+        return "it's not on the board";
+
+      default:
+        return data.cause;
+    }
+  }
+
   return {
     init: init,
-    heartbeat: heartbeat,
     hideInvites: hideInvites,
     showInvites: showInvites,
     setSize: setSize

@@ -25,25 +25,25 @@ class Game < ActiveRecord::Base
   end
 
   def self.end_old
-    end_game_ids = self.includes(:users)
-      .where('games.updated_at < ?', 4.hour.ago)
-      .where(:active => true)
-      .map {|g|g.id}
+    #end_game_ids = self.includes(:users)
+      #.where('games.updated_at < ?', 4.hour.ago)
+      #.where(:active => true)
+      #.map {|g|g.id}
 
-    return if end_game_ids.empty?
+    #return if end_game_ids.empty?
 
-    # end game -- updates user stats if game completed
-    end_game_ids.each do |gid|
-      gs = GameState.load gid
-      next unless gs
-      gs.load_player_users
-      gs.end_game
-      # no save because we're about to delete the GameState!
-    end
+    ## end game -- updates user stats if game completed
+    #end_game_ids.each do |gid|
+      #gs = GameState.load gid
+      #next unless gs
+      #gs.load_player_users
+      #gs.end_game
+      ## no save because we're about to delete the GameState!
+    #end
 
-    logger.info "Deleting old games #{end_game_ids}"
-    # let's keep the Game around, just delete the GameState
-    Game.update_all({:active => false}, {:id => end_game_ids})
-    GameState.delete_ids(end_game_ids)
+    #logger.info "Deleting old games #{end_game_ids}"
+    ## let's keep the Game around, just delete the GameState
+    #Game.update_all({:active => false}, {:id => end_game_ids})
+    #GameState.delete_ids(end_game_ids)
   end
 end

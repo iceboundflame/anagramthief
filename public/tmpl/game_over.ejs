@@ -1,0 +1,38 @@
+<% if (!results.completed) { %>
+  <p>This game was not completed, so it didn't count towards your total wins/games played. (To complete a game, flip all the tiles and leave no more than 15 tiles in the letter pool.)</p>
+<% } %>
+<% if (results.started) { %>
+  <ul class="scorelist">
+    <% _.each(results.ranks, function (p) { %>
+      <% var player = players[p.id]; %>
+      <li class="<% if (p.rank == 1) print('winner'); %> clearfix">
+        <img src="<%= escapeHtml(player.pf_pic_url) %>" width="40" height="40" class="score-pfpic" />
+        <strong>
+          <%= ((p.rank == 1) ? 'Winner!' : (p.rank + ' Place: ')) %>
+          <%= escapeHtml(player.name) %>
+        </strong>
+        <br />
+        <%= player.score %> letters
+      </li>
+    <% }); %>
+  </ul>
+
+  <% if (results.stats.longest_steals && results.stats.longest_steals.length) { %>
+    <h4>Longest Steals</h4>
+    <ul>
+      <% _.each(results.stats.longest_steals, function (info) { %>
+        <li><%= escapeHtml(players[info[0]].name) %> made <%= info[1] %>
+          by stealing <%= info[2].join(', ') %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+  <% if (results.stats.word_combines && results.stats.word_combines.length) { %>
+    <h4>Multi-Word Steals</h4>
+    <ul>
+      <% _.each(results.stats.word_combines, function (info) { %>
+        <li><%= escapeHtml(players[info[0]].name) %> made <%= info[1] %>
+          by stealing <%= info[2].join(', ') %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+<% } %>

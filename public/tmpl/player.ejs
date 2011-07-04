@@ -1,0 +1,21 @@
+<div id="player-info-<%= id %>"
+  class="player-info <%= is_active ? '' : 'in' %>active-player">
+<div class="clearfix">
+  <img src="<%= escapeHtml(pf_pic_url) %>" width="40" height="40" class="score-pfpic" />
+  <span class="username"><%= escapeHtml(name) %></span>
+  <% if (is_active) { %>(Inactive)<% } %>
+  &mdash;
+  <span class="score"><%= score %> letters</span>
+  <% if (voted_done) { %>
+    &mdash; <span class="voted-done">Voted to end the game</span>
+  <% } %>
+  <ul class="player-words">
+    <% _.each(words, function(word) { %>     <% /* FIXME need unique IDs*/ %>
+      <li id="word-<%= id %>"><%= tiles_template({tiles: word.split(''), num_unseen: 0}) %></li>
+    <% }); %>
+    <% if (words.length == 0) { %>
+      <li>No words.</li>
+    <% } %>
+  </ul>
+</div>
+</div>

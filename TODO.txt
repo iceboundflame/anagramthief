@@ -1,3 +1,8 @@
+APPSERVER TRANSITION
+  Put definition requests on a helper fiber so as not to block gameplay.
+
+
+
 ENHANCEMENTS 2
   Space out /play header buttons
   Tutorial/finish smart tooltips.

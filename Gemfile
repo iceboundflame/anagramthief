@@ -38,7 +38,6 @@ end
 gem 'mini_fb'
 gem 'json'
 gem 'redis'
-gem 'juggernaut'
 gem 'term-ansicolor'
 gem 'wordnik-ruby'
 

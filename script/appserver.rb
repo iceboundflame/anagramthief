@@ -39,12 +39,16 @@ class AppServer
       return !game_id.nil?
     end
 
-    def respond(status, data={})
-      ws.send({:status => status}.merge(data).to_json)
+    def respond(serial, ok, data={})
+      ws.send({
+          :_t => 'response',
+          :_s => serial,
+          :ok => ok
+        }.merge(data).to_json)
     end
 
     def send_message(type, data={})
-      ws.send({:type => type}.merge(data).to_json)
+      ws.send({:_t => type}.merge(data).to_json)
     end
   end
 
@@ -67,7 +71,7 @@ class AppServer
     end
 
     def get(game_id)
-      raise "#{game_id} not in store" unless @games.include? game_id
+      raise "Game #{game_id} not in store" unless @games.include? game_id
       @games[game_id]
     end
   end
@@ -83,7 +87,7 @@ class AppServer
 
   def pub(game_id, type, data={})
     @game_id_to_clients[game_id].each { |cid|
-      @clients[cid].ws.send({:type => type}.merge(data).to_json)
+      @clients[cid].ws.send({:_t => type}.merge(data).to_json)
     }
   end
 
@@ -98,13 +102,12 @@ class AppServer
   def update_data(game_id)
     game = @store.get(game_id)
 
-    players = game.players_order.map {|id| game.player(id)}
-
-    {
+    res = {
       :id => game_id,
       #:name => game.name,
-      :players => players.map {|p|
-          {
+      :players_order => game.players_order,
+      :players => game.players.inject({}) {|h,(id,p)|
+          h[id] = {
             :id => p.id,
             :name => p.user.name,
             :pf_pic_url => p.user.profile_pic,
@@ -113,17 +116,28 @@ class AppServer
             :is_active => p.is_active,
             :voted_done => p.voted_done,
           }
+          h
         },
       :pool => game.pool_seen,
-      :pool_remaining => game.num_unseen
+      :pool_remaining => game.num_unseen,
+      :is_game_over => game.is_game_over,
+      :players_voted_done => game.players_voted_done,
     }
+    res[:results] = {
+      :ranks => game.compute_ranks,
+      :started => game.started?,
+      :completed => game.completed?,
+      :stats => game.compute_stats,
+    } if game.is_game_over
+
+    res
   end
 
 
   ### Request handlers
 
   def handle_refresh(c, game, msg)
-    raise 'unimpl'
+    c.respond msg['_s'], true, {:update_data => update_data}
   end
 
   def handle_flip(c, game, msg)
@@ -138,14 +152,12 @@ class AppServer
 
       if char
         pub_update c.game_id
-        pub_action c.game_id, 'flip', c.user_id, {:letter => char}
+        pub_action c.game_id, 'flipped', c.user_id, {:letter => char}
       else
-        c.respond false,
-            {:message => "No more letters to flip."}
+        raise ApiInputError, 'No more letters to flip.'
       end
     else
-      c.respond false,
-          {:message => "Wait #{timeout} seconds between flips."}
+      raise ApiInputError, "Wait #{timeout} seconds between flips."
     end
   end
 
@@ -159,6 +171,7 @@ class AppServer
     case result
     when :ok
       new_word, words_stolen, pool_used = resultdata
+      pool_used = pool_used.to_a
 
       pub_update c.game_id
       pub_action c.game_id, 'claimed', c.user_id,
@@ -169,38 +182,37 @@ class AppServer
 
       # do this as late as possible so it doesn't matter if this API
       # hangs/takes a long time
-      lookup_and_publish_definitions(word)
+      lookup_and_publish_definitions c.game_id, word
 
-      c.respond true
+      c.respond msg['_s'], true
 
     when :word_steal_shares_root
       validity_info, words_stolen, pool_used = resultdata
       validity, roots_shared = validity_info
+      pool_used = pool_used.to_a
 
-      pub_action c.game_id, 'claim_fail', c.user_id,
+      pub_action c.game_id, 'claim_failed', c.user_id,
         {:word => word, :words_stolen => words_stolen, :pool_used => pool_used,
          :cause => result, :shared_roots => roots_shared}
-      c.respond false
+      c.respond msg['_s'], false
 
     when :word_steal_not_extended , :word_too_short ,
          :word_not_in_dict , :word_not_available
       validity_info, words_stolen, pool_used = resultdata
+      pool_used = pool_used.to_a
 
-      pub_action c.game_id, 'claim_fail', c.user_id,
+      pub_action c.game_id, 'claim_failed', c.user_id,
         {:word => word, :words_stolen => words_stolen,
          :cause => result}
-      c.respond false
+      c.respond msg['_s'], false
 
     end
   end
 
   def handle_vote_done(c, game, msg)
-    vote = (msg['vote'] != 'false')
+    vote = !!msg['vote']
 
-    if game.is_game_over
-      c.respond false
-      return
-    end
+    raise ApiStateError, "Game is over" if game.is_game_over
 
     game.vote_done c.user_id, vote
     num_voted = game.num_voted_done
@@ -221,37 +233,45 @@ class AppServer
     end
 
     pub_update c.game_id
-    pub_action c.game_id, 'vote_done', c.user_id,
+    pub_action c.game_id, 'voted_done', c.user_id,
       {:vote => vote, :num_voted => num_voted, :num_needed => num_needed,
        :game_ending => game_ending, :ranks => ranks}
-    c.respond true
+    c.respond msg['_s'], true
   end
 
   def handle_restart(c, game, msg)
-    if game.is_game_over
-      c.respond false
-      return
-    end
+    raise ApiStateError, "Game isn't over" unless game.is_game_over
 
     game.restart
 
     pub_update c.game_id
     pub_action c.game_id, 'restarted', c.user_id
-    c.respond true
+    c.respond msg['_s'], true
   end
 
   def handle_chat(c, game, msg)
-    pub_action c.game_id, 'chat', c.user_id, {:message => msg['message']}
-    c.respond true
+    utt = msg['message'][0..25] # limit length
+    pub_action c.game_id, 'chatted', c.user_id, {:message => utt}
+    c.respond msg['_s'], true
   end
+
+  ID_TOKEN_TIMEOUT = (5*60*60) # 5 hours
 
   def handle_identify(c, msg)
     raise ApiStateError, "Already identified" if c.identified?
 
-    c.game_id = msg['game_id']
-    c.user_id = msg['user_id']
-    # FIXME: security?
-    # FIXME: validation
+    uid, gid, timestamp, verf = msg['id_token'].split(':')
+
+    expected_verf = Digest::SHA1.hexdigest(
+      "#{uid}:#{gid}:#{timestamp}:#{Anathief::Application.config.secret_token}")
+
+    raise ApiError, "Bad id_token" if verf != expected_verf
+
+    raise ApiError, "Identification too old, try reloading the page" if
+      Time.at(timestamp.to_i) < Time.now - ID_TOKEN_TIMEOUT.second
+
+    c.game_id = gid
+    c.user_id = uid
 
     (@game_id_to_clients[c.game_id] ||= []) << c.conn_id
 
@@ -265,9 +285,10 @@ class AppServer
 
     game.player(c.user_id).is_active = true
 
+    c.respond msg['_s'], true
+
     pub_update c.game_id
-    pub_action c.game_id, 'join', c.user_id
-    c.respond true
+    pub_action c.game_id, 'joined', c.user_id
   end
 
 
@@ -279,7 +300,7 @@ class AppServer
     EventMachine.synchrony do
       EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8123) do |ws|
         ws.onopen do
-          $logger.info "Connection opened: #{ws.object_id}"
+          $logger.info "#{ws.object_id}: connected"
           @clients[ws.object_id] = Client.new(ws)
         end
 
@@ -287,39 +308,39 @@ class AppServer
           c = @clients[ws.object_id]
           raise "Unknown connection #{ws.object_id}" if c.nil?
 
-          $logger.debug "Message from #{c.conn_id}: #{msg_}"
+          $logger.debug "#{c.conn_id}: message: #{msg_}"
 
           begin
             msg = JSON.parse(msg_)
 
-            if msg['type'] == 'identify'
+            if msg['_t'] == 'identify'
               handle_identify c, msg
 
-            elsif ['chat', 'refresh','flip','claim','vote_done','restart'].include? msg['type']
+            elsif ['chat', 'refresh','flip','claim','vote_done','restart'].include? msg['_t']
 
               game = @store.get(c.game_id)
 
               # Call handle_XYZ
-              send "handle_#{msg['type']}", c, game, msg
+              send "handle_#{msg['_t']}", c, game, msg
 
             else
-              raise ApiError, "Unknown message type '#{msg['type']}'"
+              raise ApiError, "Unknown message type '#{msg['_t']}'"
 
             end
 
           rescue ApiError => e
-            $logger.warn "#{c.conn_id}: #{e.to_s}\n#{e.backtrace.join "\n"}"
-            c.respond false, {:message => e.to_s}
+            $logger.warn "#{c.conn_id}: (ApiError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            c.respond msg['_s'], false, {:message => e.to_s}
 
           rescue StandardError => e
-            $logger.warn "#{c.conn_id}: #{e.to_s}\n#{e.backtrace.join "\n"}"
-            c.respond false, {:message => "Internal error"}
+            $logger.error "#{c.conn_id}: (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            c.respond msg['_s'], false, {:message => "Internal error"}
 
           end
         end
 
         ws.onclose do
-          $logger.info "Disconnected: #{ws.object_id}"
+          $logger.info "#{ws.object_id}: disconnected"
 
           c = @clients.delete ws.object_id
 
@@ -340,14 +361,14 @@ class AppServer
                 #TODO: purge inactive players with no pieces
 
                 pub_update c.game_id
-                pub_action game_id, 'leave', user_id
+                pub_action game_id, 'left', user_id
               end
             end
           end
         end
 
         ws.onerror do |error|
-          $logger.error "ERROR: #{error}"
+          $logger.error "#{ws.object_id}: SOCKET ERROR: #{error}"
         end
       end
     end
@@ -361,17 +382,15 @@ class AppServer
 
 
 
-  def lookup_and_publish_definitions(word)
+  def lookup_and_publish_definitions(game_id, word)
     definitions = get_nice_defs word
     #$logger.debug green PP.pp definitions, ''
-    pub 'definitions', definitions
+    pub game_id, 'definitions', {:defs => definitions}
   end
 
   ### below code could be moved out
 
   def get_nice_defs(word)
-    return [] # XXX: remove me
-
     word.downcase!
 
     pos_map = {

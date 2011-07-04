@@ -1,4 +1,3 @@
-<% content_for :body_attr do %><% if @state.is_game_over %>game-over<% end %><% end %>
 <% content_for :header_area do %>
     <span class="sectionhead">Game Room: <%= @game.name %>.</span><br />
       <%= link_to 'Back to Lobby', games_list_url, :class => "button white medium" %><br />
@@ -14,19 +13,19 @@
 <div class="clearfix" style="display:none" id="instructions-section">
   <div id="instructions-text">
     <h4>Instructions</h4>
-<ul>
-<li><strong>Goal:</strong> Gather letters by making words from anagrams.</li>
+    <ul>
+    <li><strong>Goal:</strong> Gather letters by making words from anagrams.</li>
 
-<li>We start with letter tiles face down. Flip the tiles together with the other players.</li>
+    <li>We start with letter tiles face down. Flip the tiles together with the other players.</li>
 
-<li>If you see a word you can make with these letters, claim it by typing it in the "Claim a word" text box.</li>
+    <li>If you see a word you can make with these letters, claim it by typing it in the "Claim a word" text box.</li>
 
-<li>Steal existing words by making them longer and changing the root. You could steal <strong>AGO</strong> and add an <strong>L</strong> to make <strong>GOAL</strong>. But you can't steal <strong>GOAL</strong> and make it <strong>GOALS</strong>.</li>
+    <li>Steal existing words by making them longer and changing the root. You could steal <strong>AGO</strong> and add an <strong>L</strong> to make <strong>GOAL</strong>. But you can't steal <strong>GOAL</strong> and make it <strong>GOALS</strong>.</li>
 
-<li>Chat with your opponents in the right-side column. You can also invite your friends to join this game room directly, with the "Invite" link in the top-right.</li>
+    <li>Chat with your opponents in the right-side column. You can also invite your friends to join this game room directly, with the "Invite" link in the top-right.</li>
 
-<li><strong>Tip:</strong> When your claim textbox is empty, just press Enter to flip a tile.</li>
-</ul>
+    <li><strong>Tip:</strong> When your claim textbox is empty, just press Enter to flip a tile.</li>
+    </ul>
   </div>
   <hr />
 </div>
@@ -73,7 +72,7 @@
       <p class="large">The game is over. 
       <input type="button" id="restart-btn" value="Restart Game"
         class="conn-ui button black" /></p>
-      <div id="game-over-info"><%= render :partial => 'game_result' %></div>
+        <div id="game-over-area"></div>
     </div>
 
     <div class="game">
@@ -84,15 +83,11 @@
             <input type="button" value="Flip a letter!" id="flip-btn"
               class="conn-ui play-ui button black" />
           </div>
-          <div id="pool-info">
-            <%= render :partial => 'pool_info' %>
-          </div>
+          <div id="pool-area"></div>
         </div>
       </div>
 
-      <div id="player-info-area">
-        <%= render :partial => 'player', :collection => @players %>
-      </div>
+      <div id="player-area"></div>
     </div>
 
     <hr />
@@ -153,25 +148,24 @@
   <a href="#" id="hide-prompt-login" class="button black">No thanks</a></p>
 </div></div>
 
+<script id="tiles-tmpl" language="x/tmpl"><%= raw File.read('public/tmpl/tiles.ejs') %></script>
+<script id="player-tmpl" language="x/tmpl"><%= raw File.read('public/tmpl/player.ejs') %></script>
+<script id="game-over-tmpl" language="x/tmpl"><%= raw File.read('public/tmpl/game_over.ejs') %></script>
+<script id="definitions-tmpl" language="x/tmpl"><%= raw File.read('public/tmpl/definitions.ejs') %></script>
+
 <% content_for :after_scripts do %>
 <script type="text/javascript">
   $(document).ready(function() {
     Anathief.init({
-      me_id: '<%= escape_javascript @me_id %>',
-      jchan: '<%= escape_javascript jchan @game_id %>',
+      sio: 'http://anagramthief.com:8023',
+      userId: '<%= escape_javascript @me_id %>',
+      gameId: '<%= escape_javascript @game_id %>',
+      idToken: '<%= escape_javascript @id_token %>',
       urls: {
         canvas: '<%= escape_javascript Facebook::CANVAS_URL %>',
         fbPostImg: '<%= escape_javascript image_url "tiles-picture2.jpg" %>',
-        chat: '<%= escape_javascript play_chat_url %>',
-        claim: '<%= escape_javascript play_claim_url %>',
-        flipChar: '<%= escape_javascript play_flip_char_url %>',
-        voteDone: '<%= escape_javascript play_vote_done_url %>',
-        restart: '<%= escape_javascript play_restart_url %>',
-        heartbeat: '<%= escape_javascript play_heartbeat_url %>',
-        refresh: '<%= escape_javascript play_refresh_url %>'
       },
-      heartRate: <%= Rails.env == 'development' ? '0' : '7000' %>,
-      isGuest: <%= current_user.guest? ? 'true' : 'false' %>
+      isGuest: <%= current_user.guest? ? 'true' : 'false' %>,
     });
   });
 </script>

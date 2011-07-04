@@ -1,0 +1,20 @@
+<% _.each(defs, function (pos_to_defs, headword) { %>
+  <div>
+  <span class="defn-headword"><%= escapeHtml(headword) %></span>
+  <a href="http://www.wordnik.com/words/<%= escapeHtml(headword) %>" target="_blank">More definitions &raquo;</a>
+  </div>
+
+  <% if (!pos_to_defs) { %>
+    Don't know this one off the top of my head.
+    <a href="http://www.wordnik.com/words/<%= escapeHtml(headword) %>" target="_blank">Look harder?</a>
+  <% } %>
+
+  <% _.each(pos_to_defs, function(defs, pos) { %>
+    <div class="defn-pos">&ndash; <%= pos %></div>
+    <ol class="defn-list">
+    <% _.each(defs, function(dtext) { %>
+      <li><%= dtext %></li>
+    <% }); %>
+    </ol>
+  <% }); %>
+<% }); %>

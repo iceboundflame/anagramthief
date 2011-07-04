@@ -1,0 +1,6 @@
+<ul class="tiles"><%
+  _.each(tiles, function (letter) { %><li><%= letter %></li><% });
+  for (var i = 0; i < num_unseen; ++i) {
+    %><li class="unseen">&nbsp;</li><%
+  }
+%></ul>

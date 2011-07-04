@@ -634,14 +634,12 @@ ul.tiles li.unseen {
   padding-bottom: 2px;
   text-indent: -15px;
 }
-
-/* line 64, ../../app/stylesheets/game-play.scss */
-#messages li.failed {
+/* line 65, ../../app/stylesheets/game-play.scss */
+#messages li.claim_failed, #messages li.failed {
   color: #944;
   font-style: italic;
 }
-
-/* line 68, ../../app/stylesheets/game-play.scss */
+/* line 69, ../../app/stylesheets/game-play.scss */
 #messages li.claimed {
   color: #000;
   background-color: #efd;
@@ -651,9 +649,8 @@ ul.tiles li.unseen {
   background-image: -o-linear-gradient(#eeffdd, #bbeeaa);
   background-image: linear-gradient(#eeffdd, #bbeeaa);
 }
-
-/* line 73, ../../app/stylesheets/game-play.scss */
-#messages li.chat {
+/* line 74, ../../app/stylesheets/game-play.scss */
+#messages li.chatted {
   color: #000;
   background-color: #ffffac;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffac), color-stop(100%, #fff54d));
@@ -664,14 +661,14 @@ ul.tiles li.unseen {
 }
 
 /* PLAYERS */
-/* line 80, ../../app/stylesheets/game-play.scss */
+/* line 82, ../../app/stylesheets/game-play.scss */
 ul.player-words {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
 
-/* line 85, ../../app/stylesheets/game-play.scss */
+/* line 87, ../../app/stylesheets/game-play.scss */
 ul.player-words > li {
   display: inline-block;
   margin: 2px 8px;
@@ -679,17 +676,17 @@ ul.player-words > li {
   /*border: 1px solid #ccc;*/
 }
 
-/* line 91, ../../app/stylesheets/game-play.scss */
+/* line 93, ../../app/stylesheets/game-play.scss */
 .highlighted {
   background-color: #fc9;
 }
 
-/* line 94, ../../app/stylesheets/game-play.scss */
+/* line 96, ../../app/stylesheets/game-play.scss */
 .highlighted ul.tiles li {
   background-color: transparent;
 }
 
-/* line 97, ../../app/stylesheets/game-play.scss */
+/* line 99, ../../app/stylesheets/game-play.scss */
 #pool {
   width: 100%;
   -moz-box-sizing: border-box;
@@ -714,17 +711,17 @@ ul.player-words > li {
   border: 1px solid #393;
 }
 
-/* line 108, ../../app/stylesheets/game-play.scss */
+/* line 110, ../../app/stylesheets/game-play.scss */
 #pool > div {
   padding: 10px;
 }
 
-/* line 111, ../../app/stylesheets/game-play.scss */
+/* line 113, ../../app/stylesheets/game-play.scss */
 #pool #pool-info {
   margin: 10px 10px 0 10px;
 }
 
-/* line 114, ../../app/stylesheets/game-play.scss */
+/* line 116, ../../app/stylesheets/game-play.scss */
 .player-info {
   width: 100%;
   -moz-box-sizing: border-box;
@@ -742,12 +739,12 @@ ul.player-words > li {
   border-radius: 5px;
 }
 
-/* line 122, ../../app/stylesheets/game-play.scss */
+/* line 124, ../../app/stylesheets/game-play.scss */
 .player-info .username {
   font-weight: bold;
 }
 
-/* line 125, ../../app/stylesheets/game-play.scss */
+/* line 127, ../../app/stylesheets/game-play.scss */
 .active-player {
   background-color: #efc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eeffcc), color-stop(100%, #bbddbb));
@@ -758,18 +755,18 @@ ul.player-words > li {
   border: 1px solid #393;
 }
 
-/* line 130, ../../app/stylesheets/game-play.scss */
+/* line 132, ../../app/stylesheets/game-play.scss */
 .inactive-player {
   background-color: #ccc;
   border: 1px solid #333;
 }
 
-/* line 134, ../../app/stylesheets/game-play.scss */
+/* line 136, ../../app/stylesheets/game-play.scss */
 #me .player-info {
   background-color: #cef;
 }
 
-/* line 137, ../../app/stylesheets/game-play.scss */
+/* line 139, ../../app/stylesheets/game-play.scss */
 #chat {
   width: 100%;
   -moz-box-sizing: border-box;
@@ -781,12 +778,12 @@ ul.player-words > li {
 }
 
 /* GAME UI */
-/* line 145, ../../app/stylesheets/game-play.scss */
+/* line 147, ../../app/stylesheets/game-play.scss */
 #flip-btn {
   margin: 0 2em;
 }
 
-/* line 148, ../../app/stylesheets/game-play.scss */
+/* line 150, ../../app/stylesheets/game-play.scss */
 .fat-btn {
   padding: 0.5em 4em;
   /*width: 12em;*/
@@ -794,7 +791,7 @@ ul.player-words > li {
 }
 
 /* DEFINITIONS */
-/* line 155, ../../app/stylesheets/game-play.scss */
+/* line 157, ../../app/stylesheets/game-play.scss */
 #definition {
   overflow: auto;
   height: 200px;
@@ -805,51 +802,51 @@ ul.player-words > li {
   box-sizing: border-box;
 }
 
-/* line 161, ../../app/stylesheets/game-play.scss */
+/* line 163, ../../app/stylesheets/game-play.scss */
 #definition > div {
   margin: 5px;
   display: none;
 }
 
-/* line 165, ../../app/stylesheets/game-play.scss */
+/* line 167, ../../app/stylesheets/game-play.scss */
 #definition .active-defn {
   display: block;
 }
 
-/* line 168, ../../app/stylesheets/game-play.scss */
+/* line 170, ../../app/stylesheets/game-play.scss */
 .defn-headword {
   font-weight: bold;
   margin-right: 10px;
 }
 
-/* line 172, ../../app/stylesheets/game-play.scss */
+/* line 174, ../../app/stylesheets/game-play.scss */
 .defn-pos {
   font-style: italic;
 }
 
-/* line 175, ../../app/stylesheets/game-play.scss */
+/* line 177, ../../app/stylesheets/game-play.scss */
 .defn-list {
   margin-bottom: 0.5em;
 }
 
-/* line 178, ../../app/stylesheets/game-play.scss */
+/* line 180, ../../app/stylesheets/game-play.scss */
 #next-defn, #prev-defn {
   /*font-size: 1.5em;*/
 }
 
-/* line 181, ../../app/stylesheets/game-play.scss */
+/* line 183, ../../app/stylesheets/game-play.scss */
 .sectionhead {
   font-weight: bold;
   font-size: 1.2em;
 }
 
 /* INSTRUCTIONS, INVITE */
-/* line 187, ../../app/stylesheets/game-play.scss */
+/* line 189, ../../app/stylesheets/game-play.scss */
 #invite-url {
   width: 480px;
 }
 
-/* line 190, ../../app/stylesheets/game-play.scss */
+/* line 192, ../../app/stylesheets/game-play.scss */
 .score-pfpic {
   float: left;
   margin: 0 10px;
@@ -857,12 +854,12 @@ ul.player-words > li {
   border: 1px solid #666;
 }
 
-/* line 197, ../../app/stylesheets/game-play.scss */
+/* line 199, ../../app/stylesheets/game-play.scss */
 ul.scorelist {
   padding: 0;
 }
 
-/* line 200, ../../app/stylesheets/game-play.scss */
+/* line 202, ../../app/stylesheets/game-play.scss */
 ul.scorelist li {
   list-style-type: none;
   margin: 5px;
@@ -882,13 +879,13 @@ h2.rank {
   margin-bottom: 0;
 }
 .disclaimer {color:#666; font-size: .8em;}*/
-/* line 220, ../../app/stylesheets/game-play.scss */
+/* line 222, ../../app/stylesheets/game-play.scss */
 #prompt-login {
   position: absolute;
   top: 50%;
   left: 50%;
 }
-/* line 225, ../../app/stylesheets/game-play.scss */
+/* line 227, ../../app/stylesheets/game-play.scss */
 #prompt-login > div {
   position: relative;
   width: 400px;
