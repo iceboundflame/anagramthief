@@ -63,7 +63,7 @@ class AppServer
       if @games.include? game_id
         return @games[game_id]
       else
-        game = GameState.new @game_id
+        game = GameState.new game_id
         game.restart
         @games[game_id] = game
         return game
@@ -190,6 +190,7 @@ class AppServer
       validity_info, words_stolen, pool_used = resultdata
       validity, roots_shared = validity_info
       pool_used = pool_used.to_a
+      roots_shared.map! {|w| w.upcase}
 
       pub_action c.game_id, 'claim_failed', c.user_id,
         {:word => word, :words_stolen => words_stolen, :pool_used => pool_used,

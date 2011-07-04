@@ -7,19 +7,12 @@ io.sockets.on('connection', function (iosock) {
     var established = false;
 
     console.log("New connection!");
-    /*iosock.send('wait');*/
 
-    /*for (var i = 0; i < 10000000; ++i) {*/
-    /*var j = Math.sqrt(i);*/
-    /*}*/
-    console.log("Stall complete");
     var ws = new WebSocket('ws://localhost:8123');
 
     ws.onopen = function (event) {
       console.log("Tunnel established");
-      /*iosock.send('connected');*/
 
-      // TODO: test this
       established = true;
       prequeue.forEach(function (msg) {
         console.log("P>> "+ msg);
@@ -34,6 +27,9 @@ io.sockets.on('connection', function (iosock) {
     ws.onclose = function (event) {
       iosock.disconnect();
     };
+    ws.onerror = function (event) {
+      iosock.disconnect();
+    };
 
     iosock.on('message', function (data) {
       if (established) {
@@ -46,4 +42,7 @@ io.sockets.on('connection', function (iosock) {
     iosock.on('disconnect', function () {
       ws.close();
     });
-});
+    iosock.on('error', function () {
+      ws.close();
+    });
+  });

@@ -14,6 +14,11 @@ var Anathief = function() {
   var next_serial = 1;
   var msgResponseCallbacks = {};
 
+  var tiles_template;
+  var player_template;
+  var game_over_template;
+  var definitions_template;
+
   function log(x) {
     if (typeof console == "object")
       console.log(x);
@@ -33,6 +38,13 @@ var Anathief = function() {
 
   function init(_gd) {
     gd = _gd;
+
+    { // init templates
+      tiles_template = _.template($('#tiles-tmpl').html());
+      player_template = _.template($('#player-tmpl').html());
+      game_over_template = _.template($('#game-over-tmpl').html());
+      definitions_template = _.template($('#definitions-tmpl').html());
+    }
 
     initConn();
 
@@ -122,14 +134,14 @@ var Anathief = function() {
 
       case 'flipped':
         addMessage(data.from,
-            _.template('flipped <%= escapeHtml(letter) %>', data),
+            _.template('flipped <%= escapeHtml(letter) %>.', data),
             'flipped');
         break;
 
       case 'claimed':
         data.desc = describeMove(data);
         addMessage(data.from,
-            _.template('claimed <%= escapeHtml(word) %><%= desc %>', data),
+            _.template('claimed <%= escapeHtml(word) %><%= desc %>.', data),
             'claimed', true);
         break;
 
@@ -309,11 +321,6 @@ var Anathief = function() {
     FB.Canvas.setSize();
   }
 
-  var tiles_template = _.template($('#tiles-tmpl').html());
-  var player_template = _.template($('#player-tmpl').html());
-  var game_over_template = _.template($('#game-over-tmpl').html());
-  var definitions_template = _.template($('#definitions-tmpl').html());
-
   function updatePool(data) {
     $('#pool-area').html(
         tiles_template({tiles: data.pool, num_unseen: data.pool_remaining})
@@ -473,7 +480,7 @@ var Anathief = function() {
 
     if (data.pool_used && data.pool_used.length) {
       desc += (data.words_stolen.length ? ' +' : 'taking');
-      desc += ' '+data.pool_used;
+      desc += ' '+data.pool_used.join(', ');
     }
 
     if (desc.length) return ' by ' + desc;
