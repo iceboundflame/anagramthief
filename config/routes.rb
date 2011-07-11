@@ -7,6 +7,7 @@ Anathief::Application.routes.draw do
 
   match '/games/list', :to => 'games#list', :as => 'games_list'
   match '/games/create', :to => 'games#create', :as => 'games_create'
+  match '/games/get_token', :to => 'games#get_token', :as => 'games_get_token'
 
   match '/play/:id', :to => 'play#play', :as => 'play'
   match '/play/:id/chat', :to => 'play#chat', :as => 'play_chat'

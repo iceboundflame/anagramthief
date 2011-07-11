@@ -73,6 +73,12 @@ class GamesController < ApplicationController
     end
   end
 
+  def get_token
+    render :json => {:status => true,
+      :play_token => generate_play_token(current_user.id_s, params[:game_id])
+    }
+  end
+
   def create
     game = Game.new(
       :name => params['game-name'],

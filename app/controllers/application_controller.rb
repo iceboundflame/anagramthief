@@ -50,9 +50,16 @@ class ApplicationController < ActionController::Base
   def current_user
     if session[:user_id]
       @current_user ||= User.find(session[:user_id])
-    else
-      @current_user
+    elsif params[:login_token]
+      login_token = params[:login_token]
+      uid = verify_login_token(login_token)
+      if uid
+        logger.info "User has valid login token #{login_token}"
+        @current_user ||= User.find(uid)
+      end
     end
+
+    @current_user
   end
 
   def user_signed_in?
@@ -69,6 +76,37 @@ class ApplicationController < ActionController::Base
     end
     signed_in
   end
+
+  def generate_login_token(user_id)
+    login_token = "#{user_id}:#{Time.now.to_i}:"
+    login_token += Digest::SHA1.hexdigest(
+      login_token + Anathief::Application.config.secret_token)
+    login_token
+  end
+
+  def verify_login_token(login_token, timeout_secs=0)
+    uid, timestamp, verf = login_token.split(':')
+    expected_verf = Digest::SHA1.hexdigest(
+      "#{uid}:#{timestamp}:#{Anathief::Application.config.secret_token}")
+
+    if verf != expected_verf
+      logger.warn "invalid verf for login token #{login_token}"
+      return nil
+    end
+    if timeout_secs > 0 and Time.at(timestamp.to_i) < Time.now - timeout_secs.second
+      logger.warn "expired login token #{login_token}"
+      return nil
+    end
+
+    uid
+  end
+
+  def generate_play_token(user_id, game_id)
+    play_token = "#{user_id}:#{game_id}:#{Time.now.to_i}:"
+    play_token += Digest::SHA1.hexdigest(play_token + Anathief::Application.config.secret_token)
+    play_token
+  end
+
 
   def oauth_url
     MiniFB.oauth_url(Facebook::APP_ID, sessions_fb_callback_url, :scope => '')

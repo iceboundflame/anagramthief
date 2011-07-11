@@ -8,8 +8,7 @@ class PlayController < ApplicationController
   def play
     # Render template, show state
     # 
-    @id_token = "#{@me_id}:#{@game_id}:#{Time.now.to_i}:"
-    @id_token += Digest::SHA1.hexdigest(@id_token + Anathief::Application.config.secret_token)
+    @id_token = generate_play_token(@me_id, @game_id)
   end
 
   def invite_form
