@@ -85,11 +85,24 @@ class GamesController < ApplicationController
       #:is_private => params['game-private'],
       :creator => current_user,
     )
-    if game.save
-      redirect_to play_url(game.id)
-    else
-      flash[:create_errors] = game.errors.full_messages
-      redirect_to games_list_url
+
+    respond_to do |f|
+      f.json {
+        if game.save
+          render :json => {:status => true, :game_id => game.id,
+            :play_token => generate_play_token(current_user.id_s, game.id)}
+        else
+          render :json => {:status => false, :errors => game.errors.full_messages}
+        end
+      }
+      f.html {
+        if game.save
+          redirect_to play_url(game.id)
+        else
+          flash[:create_errors] = game.errors.full_messages
+          redirect_to games_list_url
+        end
+      }
     end
   end
 
