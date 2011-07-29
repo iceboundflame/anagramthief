@@ -141,7 +141,8 @@ class AppServer
   end
 
   def handle_flip(c, game, msg)
-    timeout = 1
+    timeout = 0
+    #timeout = 1
 
     raise ApiStateError, "Game is over" if game.is_game_over
 

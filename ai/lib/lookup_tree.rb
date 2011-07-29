@@ -1,6 +1,4 @@
-def normalize_word(word)
-  return word.downcase.gsub(/[^a-z]/, '').chars.to_a.sort.join('')
-end
+require 'word_utils'
 
 # Possible improvement: decrease branching factor by changing order of letters
 # to use least-varying letters first.
@@ -24,23 +22,12 @@ class LookupTree
   FIND_SUBSET_DBG = false
   FIND_DBG = false
 
-  def word_to_vec(word)
-    word = normalize_word word
-    vec = []
-    a_ord = "a"[0].ord
-    (0..25).each {|idx|
-      letter = (a_ord + idx).chr
-      vec[idx] = word.count(letter)
-    }
-    return vec
-  end
-
   def initialize
     @root = []
   end
 
   def find(word, insert=false)
-    vec = word_to_vec word
+    vec = WordUtils.word_to_vec word
 
     puts word +" => "+ vec.to_s if FIND_DBG
 
@@ -61,12 +48,7 @@ class LookupTree
   end
 
   def find_superset_str(subset_str)
-    cost = [0]
-    res = find_superset(word_to_vec(subset_str), 0, @root, cost)
-
-    puts "Cost: #{cost[0]}"
-    @accumulated_cost += cost[0]
-    return res
+    find_superset WordUtils.word_to_vec(subset_str)
   end
 
   # TODO: Optimization
@@ -76,36 +58,62 @@ class LookupTree
   # TODO: Optimization
   # Constrain maximal count of each character to the number left in the
   # pool/words available.
-  def find_superset(subset_vec, i = 0, node = @root, cost = [0])
+  #
+  # Returns: [result, cost]
+  #   result: array of string words that are superset of subset_vec, or nil if
+  #           none were found.
+  #   cost: integer number of tree branches traversed
+  def find_superset(subset_vec)
+    _find_superset subset_vec
+  end
+
+  def _find_superset(subset_vec, i = 0, node = @root)
     puts "Finding #{subset_vec}" if i == 0 if FIND_SUBSET_DBG
-    cost[0] += 1
+    @accumulated_cost += 1
+    my_cost = 1
 
     lv = i+1
     puts '| '*lv + "Finding lvl #{i}" if FIND_SUBSET_DBG
 
     if i == 26
-      raise "Hmmm?" if node.empty?
+      # node should be an array of strings (words that are supersets of
+      # subset_vec)
+
+      raise "Empty leaf node in LookupTree; it should never have been inserted in the first place" if node.nil? or node.empty?
+
       puts '| '*lv + "Supersets: #{node}" if FIND_SUBSET_DBG
-      return node
+      return node, my_cost
     end
 
-    return false if subset_vec[i] > node.length
+    # TODO remove this
+    #return nil, my_cost if subset_vec[i] > node.length
 
     (subset_vec[i] .. node.length-1).each {|possible_ct|
       puts '| '*lv+"#{('a'.ord+i).chr}: #{possible_ct}" if FIND_SUBSET_DBG
       next_node = node[possible_ct]
       next if next_node.nil?
-      res = find_superset(subset_vec, i+1, next_node, cost)
-      if res
+      res, sub_cost = _find_superset subset_vec, i+1, next_node
+      my_cost += sub_cost
+
+      if res and _has_long_enough(res)
         puts '| '*lv+"OK" if FIND_SUBSET_DBG
-        return res
+        return res, my_cost
       end
     }
+
     puts '| '*lv+"no" if FIND_SUBSET_DBG
-    return false
+    return nil, my_cost
   end
 
-  def dump(node = @root, i = 0)
+  def _has_long_enough(words)
+    words[0].length >= 3
+  end
+
+  def dump
+    _dump
+  end
+
+  def _dump(node = @root, i = 0)
     lv = i+1
     if i == 26
       puts '| '*lv + node.to_s
