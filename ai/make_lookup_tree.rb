@@ -1,12 +1,17 @@
-load 'lookup_tree.rb'
+require 'word_utils'
+require 'active_support/inflector'
 
-def normalize_word(word)
-  return word.downcase.gsub(/[^a-z]/, '').chars.to_a.sort.join('')
+if ARGV.length < 2
+  puts "Usage: #{$0} [tree-type] [input]"
+  exit 1
 end
 
-@anagrams = Hash.new {|hash, key| hash[key] = []}
+type, infile = ARGV
 
-ltr = LookupTree.new
+unless require "lookup_tree/#{type}"
+  puts "Invalid tree type #{type}: No such file lookup_tree/#{type}.rb"
+  exit 1
+end
 
 if false
   #words = ['doog']
@@ -17,15 +22,15 @@ if false
 
   words.each {|x|
     puts "\nADDING: #{x}"
-    ltr.find(x, true)
+    lookup_tree.find(x, true)
     puts "\nRESULT:"
-    ltr.print
+    lookup_tree.print
   }
 
   while true
     print "\n SUBSET >"
     subset = gets
-    if ltr.find_with_subset_str(subset)
+    if lookup_tree.find_with_subset_str(subset)
       puts "FOUND"
     else
       puts "no"
@@ -33,28 +38,27 @@ if false
   end
 end
 
-begin
-  file = ARGV[0]
-  i = 0
-  IO.foreach(file) { |line|
-    i += 1
-    line.chomp!
-    ltr.find(line.downcase, true)
+lookup_tree = "LookupTree::#{type.camelize}".constantize.new
 
-    if i % 100 == 0
-      puts "[n=#{i}] #{line}"
-    end
-  }
+puts "Slurping file..."
+words = []
+IO.foreach(infile) {|line|
+  word = line.chomp
+  word.downcase!
+  words << word
+}
+
+begin
+  #lookup_tree.build words, {:progress => true}
+  lookup_tree.build words, {:progress => true, :alpha_order => true}
 rescue Interrupt
 end
 
 puts "Dumping"
-outf = ARGV[0] + ".t2"
-of = File.new outf, 'w'
-Marshal.dump ltr, of
-of.close
+outfile = "#{infile}.#{lookup_tree.describe}.t2"
+File.open(outfile, 'w') { |of| Marshal.dump lookup_tree, of }
 
+puts "Letter order: #{lookup_tree.get_letter_order}"
+puts "Node count: #{lookup_tree.count_nodes}"
 #dump_tree (tree)
 #tree_stat(tree)
-
-#puts MyMultiset.from_letters("helloworldthere").to_letters
