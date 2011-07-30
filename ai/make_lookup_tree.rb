@@ -49,16 +49,16 @@ IO.foreach(infile) {|line|
 }
 
 begin
-  #lookup_tree.build words, {:progress => true}
-  lookup_tree.build words, {:progress => true, :alpha_order => true}
+  lookup_tree.build words, {:progress => true}
+  #lookup_tree.build words, {:progress => true, :alpha_order => true}
 rescue Interrupt
 end
 
 puts "Dumping"
-outfile = "#{infile}.#{lookup_tree.describe}.t2"
+outfile = "#{infile}.lookuptree-#{lookup_tree.describe}"
 File.open(outfile, 'w') { |of| Marshal.dump lookup_tree, of }
 
-puts "Letter order: #{lookup_tree.get_letter_order}"
+#puts "Letter order: #{lookup_tree.get_letter_order}"
 puts "Node count: #{lookup_tree.count_nodes}"
 #dump_tree (tree)
 #tree_stat(tree)

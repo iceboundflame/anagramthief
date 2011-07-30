@@ -1,16 +1,21 @@
-require 'lookup_tree'
 require 'steal_engine'
 
-tree_file = ARGV[0]
-unless tree_file
-  puts "Usage: #{$0} lookup-tree.t2"
-  exit
+if ARGV.length < 2
+  puts "Usage: #{$0} [tree-type] [tree-file]"
+  exit 1
 end
 
-puts "Loading #{tree_file} tree"
-of = File.new tree_file, 'r'
-lookup_tree = Marshal.load of
-of.close
+type, infile = ARGV
+
+unless require "lookup_tree/#{type}"
+  puts "Invalid tree type #{type}: No such file lookup_tree/#{type}.rb"
+  exit 1
+end
+
+puts "Loading #{infile}"
+lookup_tree = nil
+File.open(infile, 'r') {|fh| lookup_tree = Marshal.load fh}
+
 
 #pool_avail = 's'.chars.to_a
 ##words_avail = ['tile', 'tango', 'turn', 'faeries'] #, 'rifer', 'spile', 'wile']#, 'cameo']

@@ -1,9 +1,8 @@
-require 'lookup_tree'
 require 'word_utils'
 
 module StealEngine
   # TODO: use Logger
-  STEAL_DBG = false
+  STEAL_DBG = true
   STEAL_PERF_SUMMARY = true
 
   def self.search(lookup_tree, pool_avail, words_avail)
@@ -19,7 +18,7 @@ module StealEngine
     current_chars = pool_used.join('') + words_stolen.join('')
     candidates, my_cost = lookup_tree.find_superset_str(current_chars)
 
-    puts "Cost #{cost}" if STEAL_DBG
+    puts "Cost #{my_cost}" if STEAL_DBG
     return nil, my_cost unless candidates
 
     puts '| '*lv+ "           : OK! Remain #{words_avail} + #{pool_avail}" if STEAL_DBG

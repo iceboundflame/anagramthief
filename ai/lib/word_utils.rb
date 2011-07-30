@@ -1,13 +1,17 @@
 module WordUtils
   def self.word_to_vec(word)
-    word = normalize_word word
-    vec = []
+    word = normalize_word_chars word
+    vec = [0]*26
+
     a_ord = "a"[0].ord
-    (0..25).each {|idx|
-      letter = (a_ord + idx).chr
-      vec[idx] = word.count(letter)
+    word.chars.each {|char|
+      vec[char.ord - a_ord] += 1
     }
     return vec
+  end
+
+  def self.normalize_word_chars(word)
+    return word.downcase.gsub(/[^a-z]/, '')
   end
 
   def self.normalize_word(word)

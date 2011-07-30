@@ -8,13 +8,12 @@ require 'word_utils'
 # http://blog.notdot.net/2007/10/Update-on-Anagram-Trees
 
 module LookupTree
-  class GlobalOrder
+  class SmartBranch
     attr_accessor :accumulated_cost
 
     def initialize
       clear_cost
       @root = []
-      @words = []
     end
 
     def clear_cost
@@ -24,59 +23,85 @@ module LookupTree
     FIND_SUBSET_DBG = false
     FIND_DBG = false
 
-    def build(words, opts={})
-      @words = words
+    @show_progress = false
 
-      if opts[:alpha_order]
-        @symbol_order = (0..25).to_a
-      else
-        puts "Computing best global symbol order..." if opts[:progress]
-        _compute_symbol_order words
+    def build(words, opts={})
+      @show_progress = !!opts[:progress]
+      puts "Vectorizing words..." if @show_progress
+
+      all_word_vecs = {}
+      words.each {|w| all_word_vecs[w] = WordUtils.word_to_vec(w)}
+
+      puts "Building tree..." if @show_progress
+      @root = _build(words, all_word_vecs, (0..25).to_a)
+    end
+    def _build(words_left, all_word_vecs, symbols_left, level = 1)
+      if symbols_left.empty?
+        return words_left
       end
 
-      puts "Building tree..." if opts[:progress]
-      i = 0
-      words.each { |w|
-        i += 1
-        find w, true
+      print_ok = @show_progress && words_left.size > 1000
 
-        puts "[n=#{i}] #{w}" if i % 10000 == 0 if opts[:progress]
+      puts "| "*level + "#{words_left.size} words left" if print_ok
+
+      symbol_idx, words_in_branches =
+        _branch_words_minimally(words_left, all_word_vecs, symbols_left)
+
+      puts "| "*level + "Branching on #{(symbol_idx+'a'.ord).chr}" if print_ok
+
+      children = []
+      words_in_branches.each_index {|ct|
+        puts "| "*level + "=== #{ct} #{(symbol_idx+'a'.ord).chr}'s" if print_ok
+        next if words_in_branches[ct].nil?
+
+        new_symbols_left = symbols_left.dup
+        new_symbols_left.delete symbol_idx
+        children[ct] = _build(words_in_branches[ct], all_word_vecs, new_symbols_left, level+1)
       }
+
+      return [symbol_idx, children]
     end
-    def _compute_symbol_order(words)
-      @symbol_counts = [0]*26
-      words.each { |w|
-        w_vec = WordUtils.word_to_vec(w)
+
+    # Find symbol with least number of unique frequencies among the words
+    # given. Then subdivides the words by these frequencies.
+    #
+    # Returns: [symbol_idx, words_in_branches]
+    # where words_in_branches[i] is an array of word strings that have i
+    # number of symbol symbol_idx
+    def _branch_words_minimally(words, all_word_vecs, candidate_symbols)
+      symbol_counts = [0]*26
+      words.each {|w|
+        w_vec = all_word_vecs[w]
         w_vec.each_index { |i|
-          @symbol_counts[i] = [@symbol_counts[i], w_vec[i]].max
+          symbol_counts[i] = [symbol_counts[i], w_vec[i]].max
         }
       }
 
-      # Least common symbols first
-      @symbol_order = (0..25).sort {|x,y|
-        @symbol_counts[x] <=> @symbol_counts[y]
+      # Least common symbol first
+      symbol_idx = candidate_symbols.min_by {|x| symbol_counts[x]}
+
+      branches = []
+      words.each {|w|
+        w_count = all_word_vecs[w][symbol_idx]
+        branches[w_count] ||= []
+        branches[w_count] << w
       }
+
+      return [symbol_idx, branches]
     end
 
-    def find(word, insert=false)
+    def find(word)
       vec = WordUtils.word_to_vec word
-
       puts word +" => "+ vec.to_s if FIND_DBG
 
       node = @root
-      @symbol_order.each {|idx|
-        puts "See that vec[#{idx}] is #{vec[idx]}" if FIND_DBG
-        if node[vec[idx]].nil?
-          if insert
-            puts "  START NEW" if FIND_DBG
-            node[vec[idx]] = []
-          else
-            return false
-          end
-        end
-        node = node[vec[idx]]
+      (0..25).each {|level|
+        symbol_idx, children = node
+        puts "See that vec[#{symbol_idx}] is #{vec[symbol_idx]}" if FIND_DBG
+
+        return false if node[vec[symbol_idx]].nil?
+        node = children[vec[symbol_idx]]
       }
-      node.push word if insert
       return true
     end
 
@@ -119,10 +144,10 @@ module LookupTree
       end
 
       # idx is number in 0..25 representing next letter
-      idx = @symbol_order[level]
-      (subset_vec[idx] .. node.length-1).each {|possible_ct|
+      idx, children = node
+      (subset_vec[idx] .. children.length-1).each {|possible_ct|
         puts '| '*lv+"#{('a'.ord+idx).chr}: #{possible_ct}" if FIND_SUBSET_DBG
-        next_node = node[possible_ct]
+        next_node = children[possible_ct]
         next if next_node.nil?
         res, sub_cost = _find_superset subset_vec, level+1, next_node, &word_filter
         my_cost += sub_cost
@@ -149,15 +174,12 @@ module LookupTree
         return
       end
 
-      (0 .. node.length-1).each {|possible_ct|
-        puts '| '*lv + ('a'.ord + @symbol_order[level]).chr + " : #{possible_ct}\n"
-        next if node[possible_ct].nil?
-        _printout node[possible_ct], level+1
+      idx, children = node
+      (0 .. children.length-1).each {|possible_ct|
+        puts '| '*lv + ('a'.ord + idx).chr + " : #{possible_ct}\n"
+        next if children[possible_ct].nil?
+        _printout children[possible_ct], level+1
       }
-    end
-
-    def get_letter_order
-      @symbol_order.map {|idx| ('a'.ord + idx).chr}
     end
 
     def count_nodes
@@ -168,16 +190,17 @@ module LookupTree
       return 1 if level == 26
 
       sum = 1
-      (0 .. node.length-1).each {|possible_ct|
-        next if node[possible_ct].nil?
-        sum += _count_nodes node[possible_ct], level+1
+      idx, children = node
+      (0 .. children.length-1).each {|possible_ct|
+        next if children[possible_ct].nil?
+        sum += _count_nodes children[possible_ct], level+1
       }
 
       return sum
     end
 
     def describe
-      return "global_order_#{get_letter_order.join}"
+      return "smart_branch"
     end
   end
 end

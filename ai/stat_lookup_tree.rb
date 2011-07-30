@@ -15,5 +15,5 @@ puts "Loading #{infile}"
 lookup_tree = nil
 File.open(infile, 'r') {|fh| lookup_tree = Marshal.load fh}
 
-puts "Letter order: #{lookup_tree.get_letter_order}"
+puts "Letter order: #{lookup_tree.get_letter_order}" if type == 'global_order'
 puts "Node count: #{lookup_tree.count_nodes}"
