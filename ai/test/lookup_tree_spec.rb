@@ -5,38 +5,45 @@ require 'lookup_tree/global_order'
 
 shared_examples "LookupTree" do
   before(:all) do
-    @lookup_tree = described_class.new
+    #@lookup_tree = described_class.new
 
     @dict = Set.new("When invoked with a block, yields all repeated combinations of length n of elements from ary and then returns ary itself. The implementation makes no guarantees about the order in which the repeated combinations are an yielded.".split.map! {|w| WordUtils.normalize_word_chars w})
 
-    puts "#{@dict.to_a}"
-
+    puts "Building lookup tree"
     lookup_tree.build @dict, build_opts
   end
 
   context "find" do
-
   end
 
-  context "find_superset_str", :if => false do
-    it "finds valid supersets exhaustive" do
-      tried = Set.new
-      @dict.each {|w|
-        (0..w.length).each {|len|
-          w.chars.to_a.combination(len) {|subset|
-            subset_str = subset.join ''
-            norm = WordUtils.normalize_word(subset_str)
-            next if tried.include? norm
-            tried.add norm
+  def for_all_partial_words(dict)
+    i = 0
+    tried = Set.new
+    dict.each {|w|
+      (0..w.length).each {|len|
+        w.chars.to_a.combination(len) {|subset|
+          subset_str = subset.join ''
+          norm = WordUtils.normalize_word(subset_str)
+          next if tried.include? norm
+          tried.add norm
 
-            res, cost = lookup_tree.find_superset_str(subset_str)
-            #puts "#{subset_str} => #{res} (#{cost})"
-            print "."
+          yield w, subset_str
 
-            assert_valid_supersets subset_str, res
-            cost.should be > 0
-          }
+          i += 1
+          print "." if i % 100 == 0
         }
+      }
+    }
+    puts ""
+  end
+
+  context "without a word filter" do
+    it "finds valid supersets (exhaustive)" do
+      for_all_partial_words(@dict) { |w, subset_str|
+        res, cost = lookup_tree.find_superset_str(subset_str)
+
+        assert_valid_supersets subset_str, res
+        cost.should be > 0
       }
     end
     it "does not find supersets where none exist" do
@@ -48,32 +55,20 @@ shared_examples "LookupTree" do
     end
   end
   context "with a word-length filter" do
-    it "finds valid supersets exhaustive" do
-      MIN_LEN = 3
-      filter = lambda { |words| words.select {|w| w.length >= MIN_LEN} }
+    it "finds valid supersets (exhaustive)" do
+      min_len = 3
+      filter = lambda { |words| words.select {|w| w.length >= min_len} }
 
-      tried = Set.new
-      @dict.each {|w|
-        (0..w.length).each {|len|
-          w.chars.to_a.combination(len) {|subset|
-            subset_str = subset.join ''
-            norm = WordUtils.normalize_word(subset_str)
-            next if tried.include? norm
-            tried.add norm
+      for_all_partial_words(@dict) { |w, subset_str|
+        res, cost = lookup_tree.find_superset_str(subset_str, &filter)
 
-            res, cost = lookup_tree.find_superset_str(subset_str, &filter)
-            #puts "#{norm} => #{res} (#{cost})"
-            print "."
-
-            if res.nil? or res.empty?
-              w.length.should be < MIN_LEN
-            else
-              filter.call(res).should =~ res
-              assert_valid_supersets subset_str, res
-            end
-            cost.should be > 0
-          }
-        }
+        if res.nil? or res.empty?
+          w.length.should be < min_len
+        else
+          filter.call(res).should =~ res
+          assert_valid_supersets subset_str, res
+        end
+        cost.should be > 0
       }
     end
   end
@@ -97,9 +92,17 @@ def assert_valid_supersets(from_chars, supersets)
 end
 
 describe LookupTree::GlobalOrder do
-  it_behaves_like "LookupTree" do
-    let(:lookup_tree) { subject }
-    let(:build_opts) { {:alpha_order => true} }
+  context "Alphabetic order" do
+    it_behaves_like "LookupTree" do
+      let(:lookup_tree) { subject }
+      let(:build_opts) { {:alpha_order => true} }
+    end
+  end
+  context "Global optimal order" do
+    it_behaves_like "LookupTree" do
+      let(:lookup_tree) { subject }
+      let(:build_opts) { {} }
+    end
   end
 end
 describe LookupTree::SmartBranch do
