@@ -1,4 +1,5 @@
 require 'word_utils'
+require 'my_multiset'
 
 module StealEngine
   # TODO: use Logger
@@ -6,13 +7,13 @@ module StealEngine
   STEAL_PERF_SUMMARY = true
 
   def self.search(lookup_tree, pool_avail, words_avail, max_steal_len, &word_filter)
-    _search lookup_tree, pool_avail, words_avail, max_steal_len, &word_filter
+    # We convert the pool to a multiset hash i.e. {'a' => 5}, so that if
+    # 1 A doesn't work then we don't continue to try 5 A's.
+    pool_avail_mshash = MyMultiset.from_array(pool_avail).to_hash
+    _search lookup_tree, pool_avail_mshash, words_avail, max_steal_len, &word_filter
   end
 
-  # TODO: optimization:
-  # Convert pool to a multiset, and don't try the same letter more than once.
-  # e.g. if 5 A's in pool, and one A fails, don't try another A.
-  def self._search(lookup_tree, pool_avail, words_avail, max_steal_len, pool_used=[], words_stolen=[], lv=1, &word_filter)
+  def self._search(lookup_tree, pool_avail_mshash, words_avail, max_steal_len, pool_used=[], words_stolen=[], lv=1, &word_filter)
     print '| '*lv+ "STEALENGINE: Trying #{words_stolen} + #{pool_used} : " if STEAL_DBG
 
     steal_length = words_stolen.map{|w| w.length}.inject(0, :+)
@@ -24,23 +25,26 @@ module StealEngine
     puts "Cost #{my_cost}" if STEAL_DBG
     return nil, my_cost unless candidates
 
-    puts '| '*lv+ "           : OK! Remain #{words_avail} + #{pool_avail}" if STEAL_DBG
+    puts '| '*lv+ "           : OK! Remain #{words_avail} + #{pool_avail_mshash}" if STEAL_DBG
     puts '| '*lv+ "           : Some candidates: "+candidates.join(', ') if STEAL_DBG
 
-    until pool_avail.empty?
-      add_pool = pool_avail.pop
+    until pool_avail_mshash.empty?
+      add_pool = pool_avail_mshash.keys.first
+      max_num = pool_avail_mshash.delete add_pool
       #add_pool = pool_avail.shift
 
-      res, cost = _search(lookup_tree,
-                          pool_avail.dup,
-                          words_avail.dup,
-                          max_steal_len,
-                          pool_used + [add_pool],
-                          words_stolen,
-                          lv + 1,
-                          &word_filter)
-      my_cost += cost
-      return res, my_cost if res
+      (1..max_num).each {|ct|
+        res, cost = _search(lookup_tree,
+                            pool_avail_mshash.dup,
+                            words_avail.dup,
+                            max_steal_len,
+                            pool_used + [add_pool]*ct,
+                            words_stolen,
+                            lv + 1,
+                            &word_filter)
+        my_cost += cost
+        return res, my_cost if res
+      }
     end
 
     until words_avail.empty?
@@ -48,7 +52,7 @@ module StealEngine
       #add_steal = words_avail.shift
 
       res, cost = _search(lookup_tree,
-                          pool_avail.dup,
+                          pool_avail_mshash.dup,
                           words_avail.dup,
                           max_steal_len,
                           pool_used,
