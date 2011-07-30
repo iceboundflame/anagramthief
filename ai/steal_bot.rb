@@ -13,6 +13,8 @@ $log = Logger.new STDERR
 HOST, PORT = 'localhost', '8123'
 ID_TOKEN = '82:32:1312013178:8903bb28b542417147921a7c9d39ed55430edad6'
 
+MIN_LEN = 3
+
 class StealBot
   def initialize(lookup_tree, ranks, max_rank, max_steal_len)
     @lookup_tree = lookup_tree
@@ -41,10 +43,7 @@ class StealBot
 
     puts "#{stealable} and #{pool}"
 
-    word_filter = nil
-    if @max_rank > 0
-      word_filter = lambda {|words| words.select {|w| @ranks.include? w and @ranks[w] <= @max_rank}}
-    end
+    word_filter = lambda {|words| words.select {|w| w.length >= MIN_LEN and (@max_rank == 0 or (@ranks.include? w and @ranks[w] <= @max_rank))}}
 
     @lookup_tree.clear_cost
     t = Time.now
