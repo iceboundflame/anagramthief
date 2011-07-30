@@ -1,9 +1,9 @@
-require 'lookup_tree'
+require 'lookup_tree/global_order'
+require 'lookup_tree/smart_branch'
 require 'steal_engine'
 
 require 'eventmachine'
 require 'em-synchrony'
-#require 'web_socket_client'
 require 'em-http-request'
 require 'logger'
 require 'json'
@@ -11,11 +11,15 @@ require 'json'
 $log = Logger.new STDERR
 
 HOST, PORT = 'localhost', '8123'
-ID_TOKEN = '81:31:1311834508:7dd6efaa10b4779fb2625507428b01d81a08d4d8'
+ID_TOKEN = '82:32:1312013178:8903bb28b542417147921a7c9d39ed55430edad6'
 
 class StealBot
-  def initialize(lookup_tree)
+  def initialize(lookup_tree, ranks, max_rank, max_steal_len)
     @lookup_tree = lookup_tree
+    @ranks = ranks
+    @max_rank = max_rank
+    @max_steal_len = max_steal_len
+
     @serial = 1
   end
 
@@ -37,9 +41,14 @@ class StealBot
 
     puts "#{stealable} and #{pool}"
 
+    word_filter = nil
+    if @max_rank > 0
+      word_filter = lambda {|words| words.select {|w| @ranks.include? w and @ranks[w] <= @max_rank}}
+    end
+
     @lookup_tree.clear_cost
     t = Time.now
-    res, cost = StealEngine.search @lookup_tree, pool, stealable
+    res, cost = StealEngine.search @lookup_tree, pool, stealable, @max_steal_len, &word_filter
     t = Time.now - t
 
     puts "Stealengine: #{res}"
@@ -79,7 +88,7 @@ class StealBot
       end
 
       @http.stream do |msg_|
-        puts "IN << #{msg_}"
+        #puts "IN << #{msg_}"
 
         begin
           msg = JSON.parse(msg_)
@@ -102,19 +111,24 @@ class StealBot
 end
 
 
-
-
-tree_file = ARGV[0]
-unless tree_file
-  puts "Usage: #{$0} lookup-tree.t2"
-  exit
+if ARGV.length < 2
+  puts "Usage: #{$0} [lookup-tree] [freq-list] [max-rank=30000] [max-steal-len=5]"
+  exit 1
 end
 
+tree_file, freq_file, max_rank, max_steal_len = ARGV
+max_rank ||= 30000
+max_rank = max_rank.to_i
+
+max_steal_len ||= 30000
+max_steal_len = max_steal_len.to_i
+
+lookup_tree = ranks = nil
+
 puts "Loading #{tree_file} tree"
-of = File.new tree_file, 'r'
-lookup_tree = Marshal.load of
-of.close
+File.open(tree_file, 'r') {|fh| lookup_tree = Marshal.load fh}
 
+puts "Loading #{freq_file} freqs"
+File.open(freq_file, 'r') {|fh| ranks = Marshal.load fh}
 
-
-StealBot.new(lookup_tree).run
+StealBot.new(lookup_tree, ranks, max_rank, max_steal_len).run

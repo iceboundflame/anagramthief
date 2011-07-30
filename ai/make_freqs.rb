@@ -29,12 +29,13 @@ IO.foreach(freqfile) {|line|
   next unless line =~ /^\d+\s+([-A-Za-z]{2,})/
   word = WordUtils.normalize_word_chars $1
   next unless valid.include? word
+  next if ranks.include? word
 
   ranks[word] = next_rank
   next_rank += 1
 }
 
-puts "Ranked #{ranks.size} words"
+puts "Ranked #{ranks.size} words (== #{next_rank-1})"
 puts "Dumping"
 outfile = "#{wordfile}.freqs-#{File.basename freqfile}"
 File.open(outfile, 'w') { |of| Marshal.dump ranks, of }
