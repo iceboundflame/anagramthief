@@ -140,14 +140,14 @@ class AppServer
     c.respond msg['_s'], true, {:update_data => update_data}
   end
 
-  def handle_flip(c, game, msg)
-    timeout = 0
-    #timeout = 1
+  TIME_BETWEEN_FLIPS = 0
+  #TIME_BETWEEN_FLIPS = 1
 
+  def handle_flip(c, game, msg)
     raise ApiStateError, "Game is over" if game.is_game_over
 
     last_flip = game.player(c.user_id).last_flip
-    if !last_flip || Time.now - last_flip > timeout.seconds
+    if !last_flip || Time.now - last_flip > TIME_BETWEEN_FLIPS.seconds
       char = game.flip_char
       game.player(c.user_id).record_flip
 
@@ -158,7 +158,7 @@ class AppServer
         raise ApiInputError, 'No more letters to flip.'
       end
     else
-      raise ApiInputError, "Wait #{timeout} seconds between flips."
+      raise ApiInputError, "Wait #{TIME_BETWEEN_FLIPS} seconds between flips."
     end
   end
 
@@ -178,12 +178,11 @@ class AppServer
       pub_action c.game_id, 'claimed', c.user_id,
         {:word => word, :words_stolen => words_stolen, :pool_used => pool_used}
 
-      #jpublish_update pool_update_json,
-        #players_update_json(:new_word_id => [@me_id, new_word.id])
-
-      # do this as late as possible so it doesn't matter if this API
-      # hangs/takes a long time
-      lookup_and_publish_definitions c.game_id, word
+      get_defs = proc { get_nice_defs word }
+      publish_defs = proc {|defs|
+        pub c.game_id, 'definitions', {:defs => defs}
+      }
+      EventMachine.defer get_defs, publish_defs
 
       c.respond msg['_s'], true
 
@@ -377,21 +376,7 @@ class AppServer
   end
 
 
-
-
-
-
-
-
-
-  def lookup_and_publish_definitions(game_id, word)
-    definitions = get_nice_defs word
-    #$logger.debug green PP.pp definitions, ''
-    pub game_id, 'definitions', {:defs => definitions}
-  end
-
-  ### below code could be moved out
-
+  # Runs asynchronously
   def get_nice_defs(word)
     word.downcase!
 
@@ -403,8 +388,6 @@ class AppServer
     result = Hash.new do |hash, key|
       hash[key] = Hash.new { |hash2, key2| hash2[key2] = [] }
     end
-
-    ### FIXME: do this asynchronously so as not to block all users
 
     raw = Wordnik::Word.find(word).definitions
     raw.each do |d|
