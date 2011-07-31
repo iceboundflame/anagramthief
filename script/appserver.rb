@@ -8,7 +8,7 @@ require 'em-synchrony'
 require 'logger'
 require 'json'
 
-$logger = Logger.new(STDERR)
+$log = Logger.new(STDERR)
 
 class ApiError < StandardError
 end
@@ -124,7 +124,7 @@ class AppServer
       :players_voted_done => game.players_voted_done,
     }
     res[:results] = {
-      :ranks => game.compute_ranks,
+      :ranks => game.compute_ranks.map {|p| {:id => p[:id], :rank => p[:rank]}},
       :started => game.started?,
       :completed => game.completed?,
       :stats => game.compute_stats,
@@ -296,12 +296,12 @@ class AppServer
   # EM
 
   def run
-    $logger.info "AppServer starting"
+    $log.info "AppServer starting"
 
     EventMachine.synchrony do
       EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8123) do |ws|
         ws.onopen do
-          $logger.info "#{ws.object_id}: connected"
+          $log.info "#{ws.object_id}: connected"
           @clients[ws.object_id] = Client.new(ws)
         end
 
@@ -309,7 +309,7 @@ class AppServer
           c = @clients[ws.object_id]
           raise "Unknown connection #{ws.object_id}" if c.nil?
 
-          $logger.debug "#{c.conn_id}: message: #{msg_}"
+          $log.debug "#{c.conn_id}: message: #{msg_}"
 
           begin
             msg = JSON.parse(msg_)
@@ -330,18 +330,18 @@ class AppServer
             end
 
           rescue ApiError => e
-            $logger.warn "#{c.conn_id}: (ApiError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            $log.warn "#{c.conn_id}: (ApiError) #{e.inspect}\n#{e.backtrace.join "\n"}"
             c.respond msg['_s'], false, {:message => e.to_s}
 
           rescue StandardError => e
-            $logger.error "#{c.conn_id}: (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            $log.error "#{c.conn_id}: (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"
             c.respond msg['_s'], false, {:message => "Internal error"}
 
           end
         end
 
         ws.onclose do
-          $logger.info "#{ws.object_id}: disconnected"
+          $log.info "#{ws.object_id}: disconnected"
 
           c = @clients.delete ws.object_id
 
@@ -369,7 +369,7 @@ class AppServer
         end
 
         ws.onerror do |error|
-          $logger.error "#{ws.object_id}: SOCKET ERROR: #{error}"
+          $log.error "#{ws.object_id}: SOCKET ERROR: #{error}"
         end
       end
     end
