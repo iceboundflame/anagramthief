@@ -1,0 +1,25 @@
+%ul.game-list
+  - game_list.each do |game|
+    %li{:id => "game-#{game.id}"}
+      %a.clearfix{:href => play_url(game.id)}
+        = image_tag game.creator.profile_pic,                      |
+          :width => 50, :height => 50, :class => 'game-list-pfpic' |
+        %span.game-name= game.name
+        - if game.is_private
+          %span.game-private-label (Private)
+        ,
+        created by
+        %span{:class => "creator-name #{'friend-name' if @friend_ids.include? game.creator.uid}"}= game.creator.name
+        %br/
+        People playing here:
+        - game_users = game.users.all
+        - first = true
+        - game_users.each do |u|
+          = ', ' unless first
+          %span{:class => "game-player #{'friend-name' if @friend_ids.include? u.uid}"}= u.name
+          - first = false
+        - if game_users.count == 0
+          (Nobody)
+        %br/
+        %span.quiet.small
+          Last activity: #{time_ago_in_words game.updated_at, true} ago

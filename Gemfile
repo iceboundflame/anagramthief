@@ -48,3 +48,5 @@ gem 'em-websocket'
 gem 'em-synchrony'
 gem 'em-mysqlplus'
   gem 'mysqlplus'
+
+gem 'haml'

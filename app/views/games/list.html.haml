@@ -1,0 +1,49 @@
+- content_for :header_area do
+  %span.sectionhead Game Lobby
+  %br/
+  Pick a room or create one to get started.
+= render :partial => 'shared/header'
+.clearfix
+  .left-col
+    - unless @my_games.empty?
+      %h3.newsec Rooms You Created
+      = render :partial => 'game_list', :object => @my_games
+    - unless @friend_games.empty?
+      %h3.newsec Rooms Your Friends are Playing In
+      = render :partial => 'game_list', :object => @friend_games
+    - top_shown = !@my_games.empty? || !@friend_games.empty?
+    %h3.newsec
+      = 'More ' if top_shown
+      Rooms
+    = render :partial => 'game_list', :object => @public_games
+  .right-col
+    = form_tag games_create_url do
+      %h3.newsec Create room
+      - if flash[:create_errors]
+        %p.error
+          %strong Error:
+          %br/
+          - flash[:create_errors].each do |error|
+            = error
+            %br/
+      %div
+        = label_tag 'game-name', 'Room name'
+        %br/
+        = text_field_tag 'game-name'
+      /
+        div>
+        <haml:loud> check_box_tag 'game-private' </haml:loud>
+        <haml:loud> label_tag 'game-private', 'Private (only allow friends)' </haml:loud>
+        </div
+      %div
+        = submit_tag 'Create room'
+    %h3.newsec Your Statistics
+    %ul
+      %li
+        Games Completed: #{current_user.games_completed}
+      %li
+        Games Won: #{current_user.wins}
+    %h3.newsec Your Recent Games
+    = render :partial => 'game_record_list', :object => @my_recent_records
+    %h3.newsec All Recent Games
+    = render :partial => 'game_record_list', :object => @recent_records

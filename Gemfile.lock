@@ -48,6 +48,7 @@ GEM
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
     fssm (0.2.7)
+    haml (3.1.2)
     hashie (1.0.0)
     httparty (0.7.7)
       crack (= 0.1.8)
@@ -109,6 +110,7 @@ DEPENDENCIES
   em-synchrony
   em-websocket
   eventmachine
+  haml
   json
   mini_fb
   mysql2 (< 0.3)

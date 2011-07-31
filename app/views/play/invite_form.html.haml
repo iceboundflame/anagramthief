@@ -1,0 +1,16 @@
+%p
+  You should see the invite box in a few moments below. Or
+  %a{:href => "javascript:parent.Anathief.hideInvites();"} cancel and close.
+%fb:serverfbml{:style => "width:100%"}
+  %script{:type => "text/fbml"}
+    <fb:request-form
+    action="<haml:loud> play_url </haml:loud>"
+    method="post"
+    type="Anagram Thief"
+    content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
+    
+    <fb:multi-friend-selector condensed="true"
+    actiontext="Invite your friends to play here!"
+    style="width:450px" />
+    <fb:request-form-submit />
+    </fb:request-form>

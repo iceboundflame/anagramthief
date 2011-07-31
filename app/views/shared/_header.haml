@@ -1,0 +1,19 @@
+.clearfix
+  .left-col
+    %h2.title Anagram Thief!
+    %h3.tagline a David Liu production
+    %iframe{:allowtransparency => "true", :frameborder => "0", :scrolling => "no", :src => "http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D#{Facebook::APP_ID}&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80", :style => "border:none; overflow:hidden; width:450px; height:80px;"}
+  .right-col
+    .clearfix
+      = image_tag current_user.profile_pic,            |
+        :width => 50, :height => 50, :class => 'right' |
+      Welcome,
+      = succeed "!" do
+        %strong= current_user.name
+    %p
+      - if current_user.guest?
+        %a{:href => oauth_url, :target => "_top"}
+          %img{:alt => "Sign in with Facebook", :src => "/images/loginbutton_sm.png"}/
+      %a{:href => sessions_logout_url} Logout
+    = yield :header_area
+%hr/

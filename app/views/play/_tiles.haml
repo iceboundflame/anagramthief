@@ -1,0 +1,6 @@
+%ul.tiles
+  - tiles.each do |letter|
+    %li= letter
+  - if local_assigns[:num_unseen]
+    - num_unseen.times do
+      %li.unseen &nbsp;

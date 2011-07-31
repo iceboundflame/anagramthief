@@ -1,0 +1,13 @@
+- definitions.each do |headword, pos_to_defs|
+  %div
+    %span.defn-headword= headword
+    = link_to "More definitions\u2026", define_word_url(headword), :target => '_blank'
+  - if pos_to_defs.empty?
+    Don't know this one off the top of my head.
+    \#{link_to 'Look harder?', define_word_url(headword), :target => '_blank'}
+  - pos_to_defs.each do |pos, defs|
+    .defn-pos
+      \&ndash; #{pos}
+    %ol.defn-list
+      - defs.each do |dtext|
+        %li= sanitize dtext

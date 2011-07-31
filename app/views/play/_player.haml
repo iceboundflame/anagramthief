@@ -1,0 +1,18 @@
+%div{:class => "player-info #{'in' unless player.is_active}active-player", :id => "player-info-#{player.id}"}
+  .clearfix
+    = image_tag player.user.profile_pic, width: 40, height: 40, class: 'score-pfpic'
+    %span.username= player.user.name
+    - unless player.is_active
+      (Inactive)
+    \&mdash;
+    %span.score
+      = player.num_letters
+      letters
+    - if player.voted_done
+      \&mdash;
+      %span.voted-done Voted to end the game
+    %ul.player-words
+      - player.words.each do |id,word|
+        %li{:id => "word-#{player.id}-#{id}"}= render :partial => 'tiles', :object => word.letters
+      - if player.words.size == 0
+        %li No words.
