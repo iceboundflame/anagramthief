@@ -84,18 +84,19 @@
           .clearfix
             %h3.left Letter Pool
             %input#flip-btn.conn-ui.play-ui.button.black{:type => "button", :value => "Flip a letter!"}/
+            %input#vote-done-btn.conn-ui.button.black{:type => "button", :value => "Vote to End Game"}/
           #pool-area
       #player-area
     %hr/
     %div
-      %input#vote-done-btn.conn-ui.button.black{:type => "button", :value => "Vote to End the Game?"}/
       %input#cancel-vote-btn.conn-ui.button.black{:style => "display:none", :type => "button", :value => "Cancel Vote"}/
       %input#refresh-btn.conn-ui.button.black{:type => "button", :value => "Refresh"}/
   .right-col
     .game
       %label.sectionhead{:for => "claimword"} Claim a word:
       %br/
-      %input#claimword.conn-ui.play-ui{:type => "text"}/
+      %input#claimword.conn-ui.play-ui{:type => "text"}
+      %input#claim-btn.conn-ui.play-ui{:type => "button", :value => "Claim"}
       %br/
       or just press enter to flip a new letter.
     %hr/
@@ -103,7 +104,7 @@
     #message-area
       %ul#messages
         %li Welcome to Anagram Thief.
-    %textarea#chat.conn-ui{:placeholder => "Type here and press enter to chat&hellip;"}
+    %textarea#chat.conn-ui{:placeholder => "Type here and press enter to chat\u2026"}
     #defn-nav
       %span.sectionhead Definitions
       .right

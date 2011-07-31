@@ -233,34 +233,33 @@ var Anathief = function() {
   /** Game Interface: Flip, Claim, Vote Restart **/
 
   function initGameInterface() {
-    $('#flip-btn').click(function() {
+    function submitClaim() {
+      var word = $('#claimword').val();
+      if (!word) {
         flipChar();
-        return false;
-      });
+        return;
+      }
+
+      ssend('claim', {word: word});
+
+      $('#claimword').val('');
+    }
+
+    $('#flip-btn').click(function() { flipChar(); return false; });
 
     $('#claimword').keydown(function(e) {
         if (e.keyCode == 32) { // spacebar
           $('#chat').focus();
           return false;
-
         } else if (e.keyCode == 27) { // escape
           $('#claimword').val('');
           return false;
-
         } else if (e.keyCode == 13) { // enter
-          var word = $('#claimword').val();
-          if (!word) {
-            flipChar();
-            return;
-          }
-
-          ssend('claim', {word: word});
-
-          $('#claimword').val('');
+          submitClaim();
           return false;
-
         }
       });
+    $('#claim-btn').click(function() { submitClaim(); return false; });
 
     function voteBtn(vote) {
       votedDone = vote;
