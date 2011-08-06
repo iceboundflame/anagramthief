@@ -57,18 +57,18 @@
   - else
     %p You should see the invite box in a few moments below.
     %fb:serverfbml{:style => "width:500px"}
-    %script{:type => "text/fbml"}
-      <fb:request-form
-      action="<haml:loud> play_in_canvas_url @game_id </haml:loud>"
-      method="post"
-      type="Anagram Thief"
-      content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
-      
-      <fb:multi-friend-selector condensed="true"
-      actiontext="Invite your friends to play here!"
-      style="width:500px" />
-      <fb:request-form-submit import_external_friends="false" />
-      </fb:request-form>
+      %script{:type => "text/fbml"}
+        <fb:request-form
+        action="<haml:loud> play_in_canvas_url @game_id </haml:loud>"
+        method="post"
+        type="Anagram Thief"
+        content="Come join my game of Anagram Thief, a word game where you try to steal letters from your friends and make the most words!">
+        
+        <fb:multi-friend-selector condensed="true"
+        actiontext="Invite your friends to play here!"
+        style="width:500px" />
+        <fb:request-form-submit import_external_friends="false" />
+        </fb:request-form>
   %a#close-invites-link{:href => "#", :style => "display:none"}
   %hr/
 .clearfix
@@ -129,10 +129,6 @@
         %img{:alt => "Sign in with Facebook", :src => "/images/loginbutton.png"}/
       %br/
       %a#hide-prompt-login.button.black{:href => "#"} No thanks
-%script#tiles-tmpl{:language => "x/tmpl"}= raw File.read('public/tmpl/tiles.ejs')
-%script#player-tmpl{:language => "x/tmpl"}= raw File.read('public/tmpl/player.ejs')
-%script#game-over-tmpl{:language => "x/tmpl"}= raw File.read('public/tmpl/game_over.ejs')
-%script#definitions-tmpl{:language => "x/tmpl"}= raw File.read('public/tmpl/definitions.ejs')
 - content_for :after_scripts do
   :javascript
     $(document).ready(function() {

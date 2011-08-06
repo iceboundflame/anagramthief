@@ -14,11 +14,6 @@ var Anathief = function() {
   var next_serial = 1;
   var msgResponseCallbacks = {};
 
-  var tiles_template;
-  var player_template;
-  var game_over_template;
-  var definitions_template;
-
   function log(x) {
     if (typeof console == "object")
       console.log(x);
@@ -38,13 +33,6 @@ var Anathief = function() {
 
   function init(_gd) {
     gd = _gd;
-
-    { // init templates
-      tiles_template = _.template($('#tiles-tmpl').html());
-      player_template = _.template($('#player-tmpl').html());
-      game_over_template = _.template($('#game-over-tmpl').html());
-      definitions_template = _.template($('#definitions-tmpl').html());
-    }
 
     initConn();
 
@@ -178,7 +166,7 @@ var Anathief = function() {
         break;
 
       case 'definitions':
-        newdef = $('<div class="active-defn" />').html(definitions_template(data));
+        newdef = $('<div class="active-defn" />').html(JST.definitions(data));
         $('#definition').children().removeClass('active-defn');
         $('#definition').append(newdef);
 
@@ -233,6 +221,23 @@ var Anathief = function() {
   /** Game Interface: Flip, Claim, Vote Restart **/
 
   function initGameInterface() {
+    function flipChar() {
+      $('#flip-btn').attr('disabled', 'disabled');
+
+      setTimeout(function () {
+        if (connected && !isGameOver)
+          $('#flip-btn').removeAttr('disabled');
+      }, 1000); // make sure this is in sync with the server side delay
+
+      ssend('flip', {}, function (data) {
+          if (data.message) {
+            addMessage(null, data.message);
+          }
+        });
+
+      $('#claimword').focus();
+    }
+
     function submitClaim() {
       var word = $('#claimword').val();
       if (!word) {
@@ -280,23 +285,6 @@ var Anathief = function() {
       });
   }
 
-  function flipChar() {
-    $('#flip-btn').attr('disabled', 'disabled');
-
-    setTimeout(function () {
-      if (connected && !isGameOver)
-        $('#flip-btn').removeAttr('disabled');
-    }, 1000); // make sure this is in sync with the server side delay
-
-    ssend('flip', {}, function (data) {
-        if (data.message) {
-          addMessage(null, data.message);
-        }
-      });
-
-    $('#claimword').focus();
-  }
-
   function updateDoneButton() {
     if (isGameOver) {
       $('#vote-done-btn').hide();
@@ -322,7 +310,7 @@ var Anathief = function() {
 
   function updatePool(data) {
     $('#pool-area').html(
-        tiles_template({tiles: data.pool, num_unseen: data.pool_remaining})
+        JST.tiles({tiles: data.pool, num_unseen: data.pool_remaining})
       );
   }
 
@@ -333,7 +321,7 @@ var Anathief = function() {
 
     _.each(data.players_order, function (pid) {
       $('#player-area').append(
-          player_template(_.extend({tiles_template: tiles_template}, players[pid]))
+          JST.player(_.extend({tiles_template: JST.tiles}, players[pid]))
         );
     });
 /*    if (data.added) {
@@ -357,7 +345,7 @@ var Anathief = function() {
     isGameOver = data.is_game_over;
     if (isGameOver) {
       disablePlayUi();
-      $('#game-over-area').html(game_over_template(data));
+      $('#game-over-area').html(JST.game_over(data));
     } else {
       enablePlayUi();
       $('#game-over-area').empty();

@@ -50,3 +50,6 @@ gem 'em-mysqlplus'
   gem 'mysqlplus'
 
 gem 'haml'
+gem 'jammit'
+
+gem 'log4r-color'

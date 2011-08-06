@@ -1,0 +1,25 @@
+embed_assets: on
+package_assets: always
+compress_assets: always
+
+#allow_debugging: off
+
+javascripts:
+  application:
+    - public/javascripts/socket.io/socket.io.js
+    - public/javascripts/underscore.js
+    - public/javascripts/jquery.placeholder.js
+    - public/javascripts/application.js
+  templates:
+    - public/tmpl/*.jst
+
+stylesheets:
+  screen:
+    - public/stylesheets/screen.css
+    - public/stylesheets/print.css
+  print:
+  ie:
+    - public/stylesheets/ie.css
+  
+
+template_function: _.template
