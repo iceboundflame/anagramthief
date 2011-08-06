@@ -2,7 +2,7 @@ function escapeHtml(text) {
   return text.replace(/[&<>"'`]/g, function (chr) {
       return '&#' + chr.charCodeAt(0) + ';';
     });
-};
+}
 
 var Anathief = function() {
   var gd;
@@ -507,5 +507,6 @@ var Anathief = function() {
 $(document).ready(function() {
   $('[placeholder]').placeholder();
 });
+
 if (top.location.href == window.location.href)
   $(document.body).addClass('standalone');

@@ -2,12 +2,12 @@ class SessionsController < ApplicationController
   def fb_callback
     if params[:error]
       flash[:notice] = "Oops, an error occurred: "+params[:error]+" because "+params[:error_reason]+". Try again?"
-      redirect_to(Facebook::CANVAS_URL)
+      redirect_to(Anathief::Facebook::CANVAS_URL)
       return
     end
 
     access_token_hash = MiniFB.oauth_access_token(
-      Facebook::APP_ID, sessions_fb_callback_url, Facebook::SECRET, params[:code]
+      Anathief::Facebook::APP_ID, sessions_fb_callback_url, Anathief::Facebook::SECRET, params[:code]
     )
 
     access_token = access_token_hash['access_token']
@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
     session[:user_id] = user.id
     session[:fb_tok] = access_token
 
-    redirect_to Facebook::CANVAS_URL
+    redirect_to Anathief::Facebook::CANVAS_URL
   end
 
   def guest_in

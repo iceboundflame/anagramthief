@@ -85,13 +85,14 @@
             %h3.left Letter Pool
             %input#flip-btn.conn-ui.play-ui.button.black{:type => "button", :value => "Flip a letter!"}/
             %input#vote-done-btn.conn-ui.button.black{:type => "button", :value => "Vote to End Game"}/
+            %input#cancel-vote-btn.conn-ui.button.black{:style => "display:none", :type => "button", :value => "Cancel Vote"}/
           #pool-area
       #player-area
     %hr/
     %div
-      %input#cancel-vote-btn.conn-ui.button.black{:style => "display:none", :type => "button", :value => "Cancel Vote"}/
       %input#refresh-btn.conn-ui.button.black{:type => "button", :value => "Refresh"}/
   .right-col
+      %input#bot-btn.conn-ui.button.black{:type => "button", :value => "Robots"}/
     .game
       %label.sectionhead{:for => "claimword"} Claim a word:
       %br/
@@ -133,12 +134,12 @@
   :javascript
     $(document).ready(function() {
       Anathief.init({
-        sio: 'http://anagramthief.com:8023',
+        sio: '#{escape_javascript Anathief::AppServer::SIOWS_URL}',
         userId: '#{escape_javascript @me_id}',
         gameId: '#{escape_javascript @game_id}',
         idToken: '#{escape_javascript @id_token}',
         urls: {
-          canvas: '#{escape_javascript Facebook::CANVAS_URL}',
+          canvas: '#{escape_javascript Anathief::Facebook::CANVAS_URL}',
           fbPostImg: '#{escape_javascript image_url "tiles-picture2.jpg"}',
         },
         isGuest: #{current_user.guest? ? 'true' : 'false'},

@@ -13,15 +13,15 @@ include Log4r
 
 class StealBot
   include Log4r
-ColorOutputter.new 'color', {:colors =>
-  {
-    :debug  => :dark_gray,
-    :info   => :light_blue,
-    :warn   => :yellow,
-    :error  => :pink,
-    :fatal  => {:color => :red, :background => :white}
+  ColorOutputter.new 'color', {:colors =>
+    {
+      :debug  => :dark_gray,
+      :info   => :light_blue,
+      :warn   => :yellow,
+      :error  => :pink,
+      :fatal  => {:color => :red, :background => :white}
+    }
   }
-}
   @@log = Logger.new('StealBot')
   @@log.add('color')
 
@@ -137,9 +137,12 @@ ColorOutputter.new 'color', {:colors =>
   end
 
   def run
-    @@log.info "#{@user_id}: StealBot starting..."
+    host = Anathief::AppServer::CONNECT_HOST
+    port = Anathief::AppServer::PORT
 
-    @http = EventMachine::HttpRequest.new("ws://#{GAME_HOST}:#{GAME_PORT}/websocket").get :timeout => 0
+    @@log.info "#{@user_id}: StealBot starting, connecting to ws://#{host}:#{port}..."
+
+    @http = EventMachine::HttpRequest.new("ws://#{host}:#{port}/websocket").get :timeout => 0
     @http.errback do |e|
       @@log.error "#{@user_id}: StealBot received error: #{e}"
     end

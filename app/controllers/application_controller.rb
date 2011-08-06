@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
 
   def process_signed_request
     if request.post? and params[:signed_request] and
-        MiniFB.verify_signed_request(Facebook::SECRET, params[:signed_request])
-      fbinfo = MiniFB.signed_request_params(Facebook::SECRET, params[:signed_request])
+        MiniFB.verify_signed_request(Anathief::Facebook::SECRET, params[:signed_request])
+      fbinfo = MiniFB.signed_request_params(Anathief::Facebook::SECRET, params[:signed_request])
 
       if fbinfo.has_key?('user_id')
         fb_uid = fbinfo['user_id']
@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
 
 
   def oauth_url
-    MiniFB.oauth_url(Facebook::APP_ID, sessions_fb_callback_url, :scope => '')
+    MiniFB.oauth_url(Anathief::Facebook::APP_ID, sessions_fb_callback_url, :scope => '')
   end
 
   def ordinalize(value)

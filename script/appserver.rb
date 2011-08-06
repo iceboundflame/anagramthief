@@ -5,10 +5,8 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'eventmachine'
 require 'em-websocket'
 require 'em-synchrony'
-require 'logger'
+require 'log4r-color'
 require 'json'
-
-$log = Logger.new(STDERR)
 
 class ApiError < StandardError
 end
@@ -18,6 +16,21 @@ class ApiInputError < ApiError
 end
 
 class AppServer
+  include Log4r
+
+  ColorOutputter.new 'color', {:colors =>
+    {
+      :debug  => :dark_gray,
+      :info   => :light_blue,
+      :warn   => :yellow,
+      :error  => :pink,
+      :fatal  => {:color => :red, :background => :white}
+    }
+  }
+
+  #@@log = Logger.new('app_server', INFO)
+  @@log = Logger.new('app_server', DEBUG)
+  @@log.add('color')
 
   class Client
     attr_accessor :ws, :game_id, :user_id
@@ -295,13 +308,11 @@ class AppServer
 
   # EM
 
-  def run
-    $log.info "AppServer starting"
-
+  def run(host, port)
     EventMachine.synchrony do
-      EventMachine::WebSocket.start(:host => '0.0.0.0', :port => 8123) do |ws|
+      EventMachine::WebSocket.start(:host => host, :port => port) do |ws|
         ws.onopen do
-          $log.info "#{ws.object_id}: connected"
+          @@log.info "#{ws.object_id}: connected"
           @clients[ws.object_id] = Client.new(ws)
         end
 
@@ -309,7 +320,7 @@ class AppServer
           c = @clients[ws.object_id]
           raise "Unknown connection #{ws.object_id}" if c.nil?
 
-          $log.debug "#{c.conn_id}: message: #{msg_}"
+          @@log.debug "#{c.conn_id}: message: #{msg_}"
 
           begin
             msg = JSON.parse(msg_)
@@ -330,18 +341,18 @@ class AppServer
             end
 
           rescue ApiError => e
-            $log.warn "#{c.conn_id}: (ApiError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            @@log.warn "#{c.conn_id}: (ApiError) #{e.inspect}\n#{e.backtrace.join "\n"}"
             c.respond msg['_s'], false, {:message => e.to_s}
 
           rescue StandardError => e
-            $log.error "#{c.conn_id}: (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"
+            @@log.error "#{c.conn_id}: (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"
             c.respond msg['_s'], false, {:message => "Internal error"}
 
           end
         end
 
         ws.onclose do
-          $log.info "#{ws.object_id}: disconnected"
+          @@log.info "#{ws.object_id}: disconnected"
 
           c = @clients.delete ws.object_id
 
@@ -369,9 +380,11 @@ class AppServer
         end
 
         ws.onerror do |error|
-          $log.error "#{ws.object_id}: SOCKET ERROR: #{error}"
+          @@log.error "#{ws.object_id}: SOCKET ERROR: #{error}"
         end
       end
+
+      @@log.info "AppServer started on #{host}:#{port}"
     end
   end
 
@@ -407,4 +420,5 @@ class AppServer
 
 end
 
-AppServer.new.run
+
+AppServer.new.run Anathief::AppServer::LISTEN_HOST, Anathief::AppServer::PORT

@@ -1,3 +1,7 @@
+
+ENV['RAILS_ENV'] = ARGV.first || ENV['RAILS_ENV'] || 'development'
+require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
+
 require 'log4r-color'
 
 require 'steal_bot_control_server'
@@ -21,12 +25,6 @@ ColorOutputter.new 'color', {:colors =>
 $log = Logger.new('steal_bot', DEBUG)
 $log.add('color')
 
-#CTRL_HOST, CTRL_PORT = '127.0.0.1', '19617'
-CTRL_HOST, CTRL_PORT = '0.0.0.0', '19617'
-
-GAME_HOST, GAME_PORT = 'localhost', '8123'
-
-
 if ARGV.length < 2
   puts "Usage: #{$0} [lookup-tree] [freq-list]"
   exit 1
@@ -36,10 +34,13 @@ tree_file, freq_file = ARGV
 
 lookup_tree = word_ranks = nil
 
-puts "Loading #{tree_file} tree"
+$log.info "Loading #{tree_file} tree"
 File.open(tree_file, 'r') {|fh| lookup_tree = Marshal.load fh}
 
-puts "Loading #{freq_file} freqs"
+$log.info "Loading #{freq_file} freqs"
 File.open(freq_file, 'r') {|fh| word_ranks = Marshal.load fh}
 
-StealBotControlServer.new(lookup_tree, word_ranks).run
+StealBotControlServer.new(lookup_tree, word_ranks).run(
+  Anathief::BotControl::LISTEN_HOST,
+  Anathief::BotControl::PORT,
+)

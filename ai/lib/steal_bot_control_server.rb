@@ -7,15 +7,15 @@ require 'json'
 
 class StealBotControlServer
   include Log4r
-ColorOutputter.new 'color', {:colors =>
-  {
-    :debug  => :dark_gray,
-    :info   => :light_blue,
-    :warn   => :yellow,
-    :error  => :pink,
-    :fatal  => {:color => :red, :background => :white}
+  ColorOutputter.new 'color', {:colors =>
+    {
+      :debug  => :dark_gray,
+      :info   => :light_blue,
+      :warn   => :yellow,
+      :error  => :pink,
+      :fatal  => {:color => :red, :background => :white}
+    }
   }
-}
   @@log = Logger.new('StealBotControlServer')
   @@log.add('color')
 
@@ -37,9 +37,9 @@ ColorOutputter.new 'color', {:colors =>
     "#{ws.object_id}: "
   end
 
-  def run
+  def run(host, port)
     EventMachine.synchrony do
-      EventMachine::WebSocket.start(:host => CTRL_HOST, :port => CTRL_PORT) do |ws|
+      EventMachine::WebSocket.start(:host => host, :port => port) do |ws|
         ws.onopen do
           @@log.info loghead(ws)+"connected"
         end
@@ -70,7 +70,7 @@ ColorOutputter.new 'color', {:colors =>
         end
       end
 
-      @@log.info "Started StealBotMaster"
+      @@log.info "Started StealBotMaster on #{host}:#{port}"
     end
   end
 

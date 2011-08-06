@@ -14,7 +14,7 @@
     #fb-root
     :javascript
       window.fbAsyncInit = function() {
-        FB.init({appId: '#{Facebook::APP_ID}',
+        FB.init({appId: '#{Anathief::Facebook::APP_ID}',
           //status: true, cookie: true,
           xfbml: true,
           channelUrl: '#{escape_javascript public_file_url("channel.html")}'

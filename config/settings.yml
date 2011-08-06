@@ -4,10 +4,15 @@ development:
     app_secret: a39e69a3a05c4faece4d67b2132e38b2
     # ENSURE canvas_url ends in slash! Or invites relying on URL-joining will not work.
     canvas_url: http://apps.facebook.com/anathief-dev/
-  redis:
-    kprefix: anathief-dev
-  juggernaut:
-    prefix: anathief-dev
+  app_server:
+    listen_host: 0.0.0.0
+    connect_host: anagramthief.com
+    port: 8123
+    siows_url: http://anagramthief.com:8023
+  bot_control:
+    listen_host: 127.0.0.1
+    connect_host: 127.0.0.1
+    port: 19617
   wordnik:
     api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07
 
@@ -17,9 +22,14 @@ production:
     app_secret: fb1ed0a7bca5572803f7fc48889beb50
     # ENSURE canvas_url ends in slash! Or invites relying on URL-joining will not work.
     canvas_url: http://apps.facebook.com/anagramthief/
-  redis:
-    kprefix: anagramthief
-  juggernaut:
-    prefix: anagramthief
+  app_server:
+    listen_host: 0.0.0.0
+    connect_host: anagramthief.com
+    port: 8124
+    siows_url: http://anagramthief.com:8024
+  bot_control:
+    listen_host: 127.0.0.1
+    connect_host: 127.0.0.1
+    port: 19618
   wordnik:
     api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07
