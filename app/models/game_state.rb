@@ -84,8 +84,6 @@ class GameState
     # TODO put back in pool_unseen?
   end
 
-  PLAYER_TIMEOUT = 15.seconds
-
   def purge_inactive_players
     to_remove = @players.keys.select do |id|
       !@players[id].is_active and @players[id].num_letters == 0

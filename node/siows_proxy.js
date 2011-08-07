@@ -1,6 +1,17 @@
-var io = require('socket.io').listen(8023);
+#!/usr/bin/env node
+
+var argv = require('optimist')
+  .usage('Usage; $0 -i [8023] -o [ws://localhost:8123]')
+  .demand(['i','o'])
+  .argv;
 
 var WebSocket = require('websocket-client').WebSocket;
+
+var io = require('socket.io').listen(argv.i);
+io.set('log level', 1);
+io.enable('browser client minification');  // send minified client
+io.enable('browser client etag');          // apply etag caching logic based on version number
+io.set('transports', ['websocket' , 'flashsocket' , 'htmlfile' , 'xhr-polling' , 'jsonp-polling']);
 
 io.sockets.on('connection', function (iosock) {
     var prequeue = [];
@@ -8,7 +19,7 @@ io.sockets.on('connection', function (iosock) {
 
     console.log("New connection!");
 
-    var ws = new WebSocket('ws://localhost:8123');
+    var ws = new WebSocket(argv.o);
 
     ws.onopen = function (event) {
       try {
