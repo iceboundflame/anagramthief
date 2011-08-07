@@ -210,13 +210,13 @@ class AppServer
          :cause => result, :shared_roots => roots_shared}
       c.respond msg['_s'], false
 
-    when :word_steal_not_extended , :word_too_short ,
-         :word_not_in_dict , :word_not_available
+    when :word_steal_not_extended, :word_too_short,
+         :word_not_in_dict, :word_not_available
       validity_info, words_stolen, pool_used = resultdata
       pool_used = pool_used.to_a
 
       pub_action c.game_id, 'claim_failed', c.user_id,
-        {:word => word, :words_stolen => words_stolen,
+        {:word => word, :words_stolen => words_stolen, :pool_used => pool_used,
          :cause => result}
       c.respond msg['_s'], false
 
