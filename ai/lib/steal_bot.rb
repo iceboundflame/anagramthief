@@ -106,13 +106,19 @@ class StealBot
 
       @@log.debug "#{@user_id}: Stealengine: #{res || 'nil'} -- took #{t*1000}ms, #{@lookup_tree.accumulated_cost} total cost (== #{cost})"
 
-      unconditional_delay_ms = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])
-      @@log.debug "#{@user_id}: Unconditional delay: #{unconditional_delay_ms}ms"
-      EventMachine::Synchrony.sleep(unconditional_delay_ms/1000.0 - (Time.now - start_time))
+      already_paid = @last_action_time.nil? ? 0 : (Time.now - @last_action_time)
 
-      cost_delay_ms = @settings[:delay_ms_per_kcost]*cost/1000.0
-      @@log.debug "#{@user_id}: Cost delay: #{cost_delay_ms}ms"
-      EventMachine::Synchrony.sleep cost_delay_ms/1000.0
+      unconditional_delay = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])/1000.0
+      cost_delay = @settings[:delay_ms_per_kcost]*cost/1000.0/1000.0
+
+      @@log.debug "#{@user_id}: Unconditional delay: #{unconditional_delay*1000}ms"
+      @@log.debug "#{@user_id}: Cost delay: #{cost_delay*1000}ms"
+
+      total_delay = unconditional_delay + cost_delay
+
+      if already_paid < total_delay
+        EventMachine::Synchrony.sleep total_delay - already_paid
+      end
 
       if res
         word = res[0]
@@ -124,8 +130,6 @@ class StealBot
         if msg['pool_remaining'] > 0
           @@log.info "#{@user_id}: Flipping char..."
 
-          #EventMachine::Synchrony.sleep 1
-
           ssend 'flip'
         else
           @@log.info "#{@user_id}: Ending game..."
@@ -133,6 +137,8 @@ class StealBot
           ssend 'vote_done', {:vote => true}
         end
       end
+
+      @last_action_time = Time.now
     }
     @fiber.resume
   end
