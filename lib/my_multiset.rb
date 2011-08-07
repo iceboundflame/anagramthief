@@ -17,7 +17,7 @@ class MyMultiset
 
   def from_letters(word)
     raise ArgumentError, 'need a String' unless word.kind_of?(String)
-    from_array word.chars.to_a
+    from_array word.upcase.chars.to_a
   end
   def from_array(array)
     raise ArgumentError, 'need an Array' unless array.kind_of?(Array)
