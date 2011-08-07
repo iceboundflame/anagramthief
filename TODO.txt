@@ -1,9 +1,10 @@
 APPSERVER TRANSITION
 / Put definition requests on a helper fiber so as not to block gameplay.
-  Last Activity, People playing here.
+/ Last Activity, People playing here.
 
 
 ENHANCEMENTS 2
+  Tutroial video
   Space out /play header buttons
   Tutorial/finish smart tooltips.
   Make invite links work after signing in.
@@ -39,7 +40,7 @@ ENHANCEMENTS
       Grand Theft Alphabet
       Heist Master
     Taking the last word
-  Flip rate limiting
+/ Flip rate limiting
   Private rooms
 / Guest mode
   Round table simulation for matching fairness

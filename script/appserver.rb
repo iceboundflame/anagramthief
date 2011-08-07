@@ -109,10 +109,10 @@ class AppServer
   end
 
   def pub_update(game_id)
-    pub game_id, 'update', update_data(game_id)
+    pub game_id, 'update', generate_update_data(game_id)
   end
 
-  def update_data(game_id)
+  def generate_update_data(game_id)
     game = @store.get(game_id)
 
     res = {
@@ -150,7 +150,7 @@ class AppServer
   ### Request handlers
 
   def handle_refresh(c, game, msg)
-    c.respond msg['_s'], true, {:update_data => update_data}
+    c.respond msg['_s'], true, {:update_data => generate_update_data}
   end
 
   TIME_BETWEEN_FLIPS = 0
@@ -336,7 +336,7 @@ class AppServer
               # Call handle_XYZ
               send "handle_#{msg['_t']}", c, game, msg
 
-              update_game_touchstamp c, game
+              update_game_touchstamp c.game_id
 
             else
               raise ApiError, "Unknown message type '#{msg['_t']}'"
@@ -373,11 +373,12 @@ class AppServer
                 game = @store.get(game_id)
                 game.player(user_id).is_active = false
 
+                # Ordering here is important. Publish 'player left' before
+                # purging players, since clients will forget their name
+                # otherwise.
                 pub_action game_id, 'left', user_id
 
-                #TODO: purge inactive players with no pieces
                 game.purge_inactive_players
-
                 pub_update c.game_id
               end
             end
@@ -423,10 +424,12 @@ class AppServer
     result
   end
 
-  def update_game_touchstamp(c, game)
-
+  def update_game_touchstamp(game_id)
+    EventMachine.defer {
+      @@log.info "Updating game timestamp #{game_id}"
+      Game.find(game_id).touch
+    }
   end
-
 end
 
 
