@@ -257,6 +257,7 @@ class AppServer
     raise ApiStateError, "Game isn't over" unless game.is_game_over
 
     game.restart
+    game.purge_inactive_players
 
     pub_update c.game_id
     pub_action c.game_id, 'restarted', c.user_id
@@ -335,6 +336,8 @@ class AppServer
               # Call handle_XYZ
               send "handle_#{msg['_t']}", c, game, msg
 
+              update_game_touchstamp c, game
+
             else
               raise ApiError, "Unknown message type '#{msg['_t']}'"
 
@@ -370,10 +373,12 @@ class AppServer
                 game = @store.get(game_id)
                 game.player(user_id).is_active = false
 
+                pub_action game_id, 'left', user_id
+
                 #TODO: purge inactive players with no pieces
+                game.purge_inactive_players
 
                 pub_update c.game_id
-                pub_action game_id, 'left', user_id
               end
             end
           end
@@ -416,6 +421,10 @@ class AppServer
     result[word] = [] if result.empty?
 
     result
+  end
+
+  def update_game_touchstamp(c, game)
+
   end
 
 end

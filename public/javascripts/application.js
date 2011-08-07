@@ -46,6 +46,8 @@ var Anathief = function() {
     initInviteInterface();
 
     initPromptLogin();
+
+    initBotControl();
   }
 
   /** Connectivity **/
@@ -154,11 +156,11 @@ var Anathief = function() {
         break;
 
       case 'joined':
-        addMessage(data.from, 'joined the game.', 'joined');
+        addMessage(data.from, 'joined the game.', 'player-joined');
         break;
 
       case 'left':
-        addMessage(data.from, 'left the game.', 'left');
+        addMessage(data.from, 'left the game.', 'player-left');
         break;
 
       case 'update':
@@ -447,6 +449,19 @@ var Anathief = function() {
   function initPromptLogin() {
     $('#hide-prompt-login').click(function() {
       $('#prompt-login').hide();
+      return false;
+    });
+  }
+
+  function initBotControl() {
+    $('#bot-btn').click(function() {
+      //
+      $.post(gd.urls.addBot, {game_id: gd.gameId});
+      return false;
+    });
+    $('#nobot-btn').click(function() {
+      //
+      $.post(gd.urls.removeBot, {game_id: gd.gameId});
       return false;
     });
   }

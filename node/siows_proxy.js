@@ -11,38 +11,66 @@ io.sockets.on('connection', function (iosock) {
     var ws = new WebSocket('ws://localhost:8123');
 
     ws.onopen = function (event) {
-      console.log("Tunnel established");
+      try {
+        console.log("Tunnel established");
 
-      established = true;
-      prequeue.forEach(function (msg) {
-        console.log("P>> "+ msg);
-        ws.send(msg);
-      });
-      prequeue = null;
+        established = true;
+        prequeue.forEach(function (msg) {
+          console.log("P>> "+ msg);
+          ws.send(msg);
+        });
+        prequeue = null;
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     };
     ws.onmessage = function (event) {
-      console.log("<< " + event.data);
-      iosock.send(event.data);
+      try {
+        console.log("<< " + event.data);
+        iosock.send(event.data);
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     };
     ws.onclose = function (event) {
-      iosock.disconnect();
+      try {
+        iosock.disconnect();
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     };
     ws.onerror = function (event) {
-      iosock.disconnect();
+      try {
+        iosock.disconnect();
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     };
 
     iosock.on('message', function (data) {
-      if (established) {
-        console.log(">> " + data);
-        ws.send(data);
-      } else {
-        prequeue.push(data);
+      try {
+        if (established) {
+          console.log(">> " + data);
+          ws.send(data);
+        } else {
+          prequeue.push(data);
+        }
+      } catch (err) {
+        console.log("ERROR: "+err);
       }
     });
     iosock.on('disconnect', function () {
-      ws.close();
+      try {
+        ws.close();
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     });
     iosock.on('error', function () {
-      ws.close();
+      try {
+        ws.close();
+      } catch (err) {
+        console.log("ERROR: "+err);
+      }
     });
   });

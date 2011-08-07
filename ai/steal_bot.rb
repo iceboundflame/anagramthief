@@ -1,6 +1,8 @@
 
-ENV['RAILS_ENV'] = ARGV.first || ENV['RAILS_ENV'] || 'development'
-require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
+ENV['RAILS_ENV'] = ENV['RAILS_ENV'] || 'development'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+$:.push File.dirname(__FILE__)+"/lib"
 
 require 'log4r-color'
 
@@ -10,6 +12,7 @@ require 'lookup_tree/global_order'
 require 'lookup_tree/smart_branch'
 
 include Log4r
+Logger = Log4r::Logger
 
 ColorOutputter.new 'color', {:colors =>
   {

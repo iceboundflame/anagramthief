@@ -45,6 +45,7 @@ gem "compass", ">= 0.11.1"
 
 gem 'eventmachine'
 gem 'em-websocket'
+gem 'em-http-request'
 gem 'em-synchrony'
 gem 'em-mysqlplus'
   gem 'mysqlplus'

@@ -10,16 +10,12 @@ Anathief::Application.routes.draw do
   match '/games/get_token', :to => 'games#get_token', :as => 'games_get_token'
 
   match '/play/:id', :to => 'play#play', :as => 'play'
-  match '/play/:id/chat', :to => 'play#chat', :as => 'play_chat'
-  match '/play/:id/flip_char', :to => 'play#flip_char', :as => 'play_flip_char'
-  match '/play/:id/claim', :to => 'play#claim', :as => 'play_claim'
-  match '/play/:id/vote_done', :to => 'play#vote_done', :as => 'play_vote_done'
-  match '/play/:id/restart', :to => 'play#restart', :as => 'play_restart'
-  match '/play/:id/heartbeat', :to => 'play#heartbeat', :as => 'play_heartbeat'
-  match '/play/:id/refresh', :to => 'play#refresh', :as => 'play_refresh'
-  match '/play/:id/refresh_data', :to => 'play#refresh_data', :as => 'play_refresh_data'
-
   match '/play/:id/invite_form', :to => 'play#invite_form', :as => 'play_invite_form'
+
+  match '/bots/add', :to => 'bots#add', :as => 'bots_add'
+  match '/bots/list', :to => 'bots#list', :as => 'bots_list'
+  match '/bots/remove', :to => 'bots#remove', :as => 'bots_remove'
+  match '/bots/change', :to => 'bots#change', :as => 'bots_change'
 
   #resources :games, :module => 'admin', :path => '/admin/games'
   #namespace 'admin' do

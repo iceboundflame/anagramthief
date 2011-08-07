@@ -91,8 +91,9 @@
     %hr/
     %div
       %input#refresh-btn.conn-ui.button.black{:type => "button", :value => "Refresh"}/
-  .right-col
       %input#bot-btn.conn-ui.button.black{:type => "button", :value => "Robots"}/
+      %input#nobot-btn.conn-ui.button.black{:type => "button", :value => "Nobots"}/
+  .right-col
     .game
       %label.sectionhead{:for => "claimword"} Claim a word:
       %br/
@@ -141,6 +142,10 @@
         urls: {
           canvas: '#{escape_javascript Anathief::Facebook::CANVAS_URL}',
           fbPostImg: '#{escape_javascript image_url "tiles-picture2.jpg"}',
+          addBot: '#{escape_javascript bots_add_url}',
+          removeBot: '#{escape_javascript bots_remove_url}',
+          listBots: '#{escape_javascript bots_list_url}',
+          changeBot: '#{escape_javascript bots_change_url}',
         },
         isGuest: #{current_user.guest? ? 'true' : 'false'},
       });

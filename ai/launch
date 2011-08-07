@@ -1,0 +1,1 @@
+ruby steal_bot.rb data/TWL06.txt.lookuptree-smart_branch data/TWL06.txt.freqs-500k_wordlist_coca_orig.txt 

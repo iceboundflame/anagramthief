@@ -9,10 +9,10 @@ require 'steal_engine'
 require 'word_matcher'
 require 'random_dists'
 
-include Log4r
-
 class StealBot
   include Log4r
+  Logger = Log4r::Logger
+
   ColorOutputter.new 'color', {:colors =>
     {
       :debug  => :dark_gray,
@@ -77,8 +77,9 @@ class StealBot
           next false if w.length > @settings[:max_word_len]
         end
 
-        if @settings[:max_rank] > 0 and @word_ranks.include? w
-          next false if @word_ranks[w] > @settings[:max_rank]
+        if @settings[:max_rank] > 0
+          next false unless @word_ranks.include? w and
+                            @word_ranks[w] <= @settings[:max_rank]
         end
 
         # Too expensive.
