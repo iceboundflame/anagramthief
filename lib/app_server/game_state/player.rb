@@ -1,4 +1,4 @@
-class GameState::Player
+class AppServer::GameState::Player
   attr_accessor :id, :words, :voted_done, :next_word_id,
     :is_active, :last_heartbeat, :claims, :last_flip
   attr_accessor :user
@@ -40,7 +40,7 @@ class GameState::Player
   end
 
   def add_word(word)
-    w = GameState::Word.new(@next_word_id, word)
+    w = AppServer::GameState::Word.new(@next_word_id, word)
     @words[@next_word_id] = w
     @next_word_id += 1
     w

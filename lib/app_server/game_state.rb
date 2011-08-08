@@ -1,23 +1,14 @@
 require 'word_matcher'
 require 'my_multiset'
 
-class GameState
-  attr_accessor :game_id, :is_game_over
-  attr_accessor :players, :players_order, :pool_unseen, :pool_seen
-  attr_accessor :record
-  attr_accessor :is_saved #FIXME this doesn't work yet, need to have children report
+class AppServer::GameState
+  require 'app_server/game_state/player'
+  require 'app_server/game_state/word'
 
-  #def self.redis_key(game_id)
-    #"#{Anathief::REDIS_KPREFIX}/game_state/#{game_id}"
-  #end
-  #def redis_key
-    #self.class.redis_key(@game_id)
-  #end
-
-  #def self.delete_ids(game_ids)
-    #redis_keys = game_ids.map{|id| redis_key id}
-    #redis.del *redis_keys
-  #end
+  attr_reader :game_id, :is_game_over
+  attr_reader :players, :players_order, :pool_unseen, :pool_seen
+  attr_reader :is_saved #FIXME this doesn't work yet, need to have children report
+  attr_reader :rank_info
 
   def initialize(game_id=nil)
     @game_id = game_id
@@ -31,6 +22,7 @@ class GameState
 
   def restart
     @is_game_over = false
+    @rank_info = nil
     @players.each {|id, p| p.restart}
     @pool_unseen = MyMultiset.from_hash self.class.default_letters
     @pool_seen = []
@@ -38,26 +30,6 @@ class GameState
 
     flip_char; flip_char; flip_char; flip_char; flip_char; flip_char;
   end
-
-  #def self.load(game_id)
-    #key = redis_key game_id
-    #game_json = redis[key]
-    #return nil unless game_json
-    ##puts "DBG**** gamestate.load: #{game_json}"
-    #g = GameState.new.from_json game_json
-    #g.is_saved = true
-    #g
-  #end
-
-  #def save
-    #redis[redis_key] = to_json
-    #@is_saved = true
-  #end
-
-  #def delete
-    #redis.del redis_key
-    #@is_saved = false
-  #end
 
   def player(user_id)
     @players[user_id.to_s]
@@ -98,13 +70,6 @@ class GameState
 
     to_remove.each {|id| remove_player id}
     to_remove
-  end
-
-  def load_player_users
-    player_ids = @players.map {|id,p| id}
-    User.find(player_ids).each do |user|
-      @players[user.id_s].user = user
-    end
   end
 
   def flip_char
@@ -172,48 +137,31 @@ class GameState
     @players.keys.select {|id| @players[id].voted_done}
   end
 
-  def compute_ranks(force_recompute=false)
-    return @ranks if !force_recompute and @ranks
+  # Returns:
+  # { id => rank }
+  def id_to_rank_map
+    return nil unless @rank_info
 
-    sorted = @players.map do |id, p|
-      {:id => id, :score => p.num_letters, :player => p}
-    end.sort {|p1,p2| p2[:score] <=> p1[:score]}
-    rank = 1
-    sorted.each_with_index do |p, idx|
-      if idx > 0 && sorted[idx-1][:score] != p[:score]
-        rank = idx + 1
-      end
-      p[:rank] = rank
-    end
-
-    return @ranks = sorted
-  end
-
-  def winner_ids
-    return nil unless is_game_over
-    return [] unless started?
-    compute_ranks.select{|p| p[:rank] == 1}.map{|p| p[:id]}
+    return Hash[@rank_info.map {|info|
+      [result[info[:id]], info[:rank]]
+    }]
   end
 
   def completed?
     return false unless started?
 #return true ## FIXME remove this - testing only
-    pool_unseen.empty? and pool_seen.size < 15
+    return @pool_unseen.empty? && @pool_seen.size < 15
   end
 
   def started?
-    pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
+    @pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
   end
 
   def end_game(should_update_records = true)
     unless @is_game_over
       @is_game_over = true
 
-      if should_update_records
-        compute_ranks true
-        record_user_stats if completed?
-        record_game
-      end
+      compute_rank_info
     end
   end
 
@@ -244,83 +192,49 @@ class GameState
     }
   end
 
-  def record_game
-    r = GameRecord.create(
-      :gameroom_id => @game_id,
-      :data => compute_stats.to_json,
+  def game_record_data
+    {
+      :game_id => @game_id,
+      :stats_data => compute_stats.to_json,
       :completed => completed?,
-    )
-    compute_ranks.each do |pinfo|
-      p = pinfo[:player]
-      UserGameRecord.create(
-        :game_record => r,
-        :user => p.user,
-        :num_letters => p.num_letters,
-        :data => {:claims => p.claims},
-        :rank => pinfo[:rank],
-      )
-    end
-  end
-
-  def record_user_stats
-    winner_ids.each do |id|
-      @players[id].user.wins += 1
-    end
-
-    @players.values.each do |p|
-      u = p.user
-      u.games_completed += 1
-      u.save
-    end
-  end
-
-
-
-  ### SERIALIZATION ###
-
-  def from_json(json)
-    from_data(JSON.parse json)
-    self
-  end
-
-  def to_json
-    to_data.to_json
-  end
-
-  def to_data
-    { 'game_id' => @game_id,
-      'is_game_over' => @is_game_over,
-      'players' => @players.map {|id,p| p.to_data},
-      'players_order' => @players_order,
-      'pool_unseen' => @pool_unseen.to_data,
-      'pool_seen' => @pool_seen,
+      :rank_data => @rank_info.to_json,
+      :player_data => Hash[
+          @players.map {|id,p|
+            [id,
+              {
+                :score => p.num_letters,
+                :claims => p.claims,
+              }]
+          }
+        ],
     }
   end
-  def self.from_data(x); new.from_data(x); end
-  def from_data(data)
-    @game_id = data['game_id']
-    @is_game_over = data['is_game_over']
-    @players = {}
-    data['players'].each do |pdata|
-      p = Player.from_data pdata
-      @players[p.id] = p
-    end
-    @players_order = data['players_order']
-    @pool_unseen = MyMultiset.from_data data['pool_unseen']
-    @pool_seen = data['pool_seen']
 
-    self
-  end
 
 
   protected
 
-  #def self.redis
-    #@@r ||= Redis.new
-  #end
-  #def redis
-    #@@r ||= Redis.new
-  #end
+  # Returns:
+  # [
+  #   {:id => id, :score => score, :player => p, :rank => rank},
+  #    ...
+  # ]
+  def compute_rank_info
+    rank_data = @players.map do |id, p|
+      {:id => id, :score => p.num_letters, :player => p}
+    end.sort {|p1,p2| p2[:score] <=> p1[:score]}
+
+    rank = 1
+    rank_data.each_with_index do |info, idx|
+      if idx > 0 and rank_data[idx-1][:score] != info[:score]
+        rank = idx + 1
+      end
+      info[:rank] = rank
+    end
+
+    return @rank_info = rank_data
+  end
+
 
   ### UTILITY METHODS ###
 
@@ -355,3 +269,74 @@ class GameState
     }
   end
 end
+
+
+  #def self.redis_key(game_id)
+    #"#{Anathief::REDIS_KPREFIX}/game_state/#{game_id}"
+  #end
+  #def redis_key
+    #self.class.redis_key(@game_id)
+  #end
+
+  #def self.delete_ids(game_ids)
+    #redis_keys = game_ids.map{|id| redis_key id}
+    #redis.del *redis_keys
+  #end
+
+  #def self.load(game_id)
+    #key = redis_key game_id
+    #game_json = redis[key]
+    #return nil unless game_json
+    ##puts "DBG**** gamestate.load: #{game_json}"
+    #g = GameState.new.from_json game_json
+    #g.is_saved = true
+    #g
+  #end
+
+  #def save
+    #redis[redis_key] = to_json
+    #@is_saved = true
+  #end
+
+  #def delete
+    #redis.del redis_key
+    #@is_saved = false
+  #end
+#
+
+
+  ### SERIALIZATION ###
+
+  #def from_json(json)
+    #from_data(JSON.parse json)
+    #self
+  #end
+
+  #def to_json
+    #to_data.to_json
+  #end
+
+  #def to_data
+    #{ 'game_id' => @game_id,
+      #'is_game_over' => @is_game_over,
+      #'players' => @players.map {|id,p| p.to_data},
+      #'players_order' => @players_order,
+      #'pool_unseen' => @pool_unseen.to_data,
+      #'pool_seen' => @pool_seen,
+    #}
+  #end
+  #def self.from_data(x); new.from_data(x); end
+  #def from_data(data)
+    #@game_id = data['game_id']
+    #@is_game_over = data['is_game_over']
+    #@players = {}
+    #data['players'].each do |pdata|
+      #p = Player.from_data pdata
+      #@players[p.id] = p
+    #end
+    #@players_order = data['players_order']
+    #@pool_unseen = MyMultiset.from_data data['pool_unseen']
+    #@pool_seen = data['pool_seen']
+
+    #self
+  #end

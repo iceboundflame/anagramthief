@@ -131,6 +131,7 @@ class StealBot
       already_paid = Time.now - start_time
 
       unconditional_delay = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])/1000.0
+      unconditional_delay = 0 if unconditional_delay < 0
       cost_delay = @settings[:delay_ms_per_kcost]*cost/1000.0/1000.0
 
       @@log.debug "#{@user_id}: Unconditional delay: #{unconditional_delay*1000}ms"

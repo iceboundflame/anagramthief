@@ -17,6 +17,8 @@ Anathief::Application.routes.draw do
   match '/bots/remove', :to => 'bots#remove', :as => 'bots_remove'
   match '/bots/change', :to => 'bots#change', :as => 'bots_change'
 
+  match '/internal', :to => 'internal#endpoint', :as => 'internal_endpoint'
+
   #resources :games, :module => 'admin', :path => '/admin/games'
   #namespace 'admin' do
     #resources :games

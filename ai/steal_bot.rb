@@ -1,5 +1,6 @@
 
-RAILS_ENV = ENV['RAILS_ENV'] = ENV['RAILS_ENV'] || 'development'
+ENV['RAILS_ENV'] ||= 'development'
+RAILS_ENV = ENV['RAILS_ENV']
 
 $:.push File.dirname(__FILE__)+"/lib"
 $:.push File.dirname(__FILE__)+"/../lib"

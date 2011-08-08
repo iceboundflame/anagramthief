@@ -24,5 +24,12 @@ module Anathief
     PORT = SETTINGS['bot_control']['port']
   end
 
+  module Internal
+    ALLOWED_HOSTS = SETTINGS['internal']['allowed_hosts']
+    ENDPOINT = SETTINGS['internal']['endpoint']
+  end
+
   WORDNIK_KEY = SETTINGS['wordnik']['api_key']
+
+  TOKEN_SECRET = SETTINGS['token_secret']
 end

@@ -1,8 +1,4 @@
 class PlayController < ApplicationController
-  #require 'term/ansicolor'
-  #require 'pp'
-  #include Term::ANSIColor
-  
   before_filter :get_ids
 
   def play

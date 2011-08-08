@@ -1,4 +1,4 @@
-class GameState::Word
+class AppServer::GameState::Word
   attr_accessor :id, :word
 
   def initialize(id=nil, word=nil)

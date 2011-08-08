@@ -149,6 +149,31 @@ var Anathief = function() {
               + '<br /><%= num_voted %> votes / <%= num_needed %> needed'
               + '<% if (game_ending) { %><br /><strong>Game Over!</strong><% } %>', data),
             'voted_done');
+
+        if (data.game_ending && data.completed) {
+          // TODO FIXME
+/*      props = Hash.new {|hash, key| hash[key] = []}
+      @state.compute_ranks.each do |p|
+        player = @state.player(p[:id])
+        props[ordinalize p[:rank]] << "#{player.user.name}, with #{player.num_letters} letters"
+      end
+      props.each do |k,v|
+        props[k] = v.join '; '
+      end
+      extra_data[:just_finished] = true
+
+      if @state.completed?
+        extra_data[:publish_fb] = {
+          :title_line => "I just played a game of Anagram Thief!",
+          :properties => props,
+        }
+      end*/
+
+          publishGame({
+            title_line: "I just played a game of Anagram Thief!",
+            properties: props
+          });
+        }
         break;
 
       case 'restarted':
