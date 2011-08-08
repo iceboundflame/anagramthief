@@ -68,65 +68,66 @@ class StealBot
 
     pool = msg['pool']
 
-    if @fiber
-      if @planned_action
-        match_result = WordMatcher.word_match pool, stealable, @planned_action[0]
-        @@log.info "#{@user_id}: planned action #{@planned_action}: #{match_result}"
-        if match_result and match_result[0][0] == :ok
-          @@log.info "#{@user_id}: planned action #{@planned_action} still valid, continue wait"
+    if @fiber and @planned_action and @planned_action != :reject
+      match_result = WordMatcher.word_match pool, stealable, @planned_action[0]
+      @@log.info "#{@user_id}: planned action #{@planned_action}: #{match_result}"
+      if match_result and match_result[0][0] == :ok
+        @@log.info "#{@user_id}: planned action #{@planned_action} still valid, continue wait"
 
-          return # exit early, ignoring this update
-        else
-          @@log.info "#{@user_id}: planned action #{@planned_action} invalidated!"
-        end
+        return # exit early, ignoring this update
+      else
+        @@log.info "#{@user_id}: planned action #{@planned_action} invalidated!"
+      end
+    end
+
+    word_filter = lambda {|words| words.select {|w|
+      next false if w.length < MIN_LEN
+
+      if @settings[:max_word_len] > 0
+        next false if w.length > @settings[:max_word_len]
       end
 
-      # otherwise, start a new plan
-      @fiber.cancel
+      if @settings[:max_rank] > 0
+        next false unless @word_ranks.include? w and
+                          @word_ranks[w] <= @settings[:max_rank]
+      end
+
+      # Too expensive.
+      #t = Time.now
+      #match_result = WordMatcher.word_match(pool, stealable, w)
+      #t = Time.now - t
+      #@@log.error "WM #{w} took #{t}ms"
+      #next false unless match_result and match_result[0][0] == :ok
+
+      next true
+    }}
+
+    start_time = Time.now
+
+    @lookup_tree.clear_cost
+    res, cost = StealEngine.search(
+      @lookup_tree,
+      pool.shuffle,
+      stealable.shuffle,
+      @settings[:max_steal_len],
+      &word_filter
+    )
+    t = Time.now - start_time
+
+    if res.nil? and @fiber and @planned_action == :reject
+      # exit early, let the waiting fiber do it
+      return
     end
+
+    @planned_action = res || :reject
+
+    @@log.debug "#{@user_id}: Stealengine: #{res || 'nil'} -- took #{t*1000}ms, #{@lookup_tree.accumulated_cost} total cost (== #{cost})"
+
+    @fiber.cancel if @fiber
 
     @fiber = CancelableFiber.new {
       @@log.info "#{@user_id}: #{stealable} and #{pool}"
 
-      word_filter = lambda {|words| words.select {|w|
-        next false if w.length < MIN_LEN
-
-        if @settings[:max_word_len] > 0
-          next false if w.length > @settings[:max_word_len]
-        end
-
-        if @settings[:max_rank] > 0
-          next false unless @word_ranks.include? w and
-                            @word_ranks[w] <= @settings[:max_rank]
-        end
-
-        # Too expensive.
-        #t = Time.now
-        #match_result = WordMatcher.word_match(pool, stealable, w)
-        #t = Time.now - t
-        #@@log.error "WM #{w} took #{t}ms"
-        #next false unless match_result and match_result[0][0] == :ok
-
-        next true
-      }}
-
-      start_time = Time.now
-
-      @lookup_tree.clear_cost
-      res, cost = StealEngine.search(
-        @lookup_tree,
-        pool.shuffle,
-        stealable.shuffle,
-        @settings[:max_steal_len],
-        &word_filter
-      )
-      t = Time.now - start_time
-
-      @planned_action = res
-
-      @@log.debug "#{@user_id}: Stealengine: #{res || 'nil'} -- took #{t*1000}ms, #{@lookup_tree.accumulated_cost} total cost (== #{cost})"
-
-      #already_paid = @last_action_time ? (Time.now - @last_action_time) : 0
       already_paid = Time.now - start_time
 
       unconditional_delay = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])/1000.0
@@ -160,7 +161,8 @@ class StealBot
         end
       end
 
-      #@last_action_time = Time.now
+      @fiber = nil
+      @planned_action = nil
     }
     @fiber.resume
   end

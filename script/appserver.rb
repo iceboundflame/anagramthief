@@ -260,8 +260,10 @@ class AppServer
     game.restart
     game.purge_inactive_players
 
-    pub_update c.game_id
+    # Ordered so that bots will see 'restarted' before the first update of the
+    # game.
     pub_action c.game_id, 'restarted', c.user_id
+    pub_update c.game_id
     c.respond msg['_s'], true
   end
 
