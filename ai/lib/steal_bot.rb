@@ -205,7 +205,7 @@ class StealBot
   def stop
     @@log.info "Stopping bot #{@play_token}"
     if @http
-      @fiber.cancel
+      @fiber.cancel if @fiber
       @http.close_connection
       @http = nil
     end

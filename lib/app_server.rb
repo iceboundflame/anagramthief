@@ -6,6 +6,7 @@ require 'log4r-color'
 require 'json'
 require 'active_support/core_ext/numeric/time'
 require 'signed_data'
+require 'ordinalize'
 
 class ApiError < StandardError
 end
@@ -42,6 +43,8 @@ class AppServer
     @clients = {} # {wsid => {:ws => ws, :game_id => game_id, :user_id => user_id}, ...}
     @game_id_to_clients = {} # {game_id => [client_id, client_id, client_id], ...}
     @store = AppServer::GameStore.new
+
+    @last_touched = {} # {game_id => Time}
   end
 
   def pub(game_id, type, data={})
@@ -188,7 +191,11 @@ class AppServer
       # Compute ranks
       props = Hash.new {|hash, key| hash[key] = []}
 
-      ranks = game.rank_info.map {|p| {:id => p[:id], :rank => p[:rank]}}
+      ranks = game.rank_info.map {|p| 
+        {:id => p[:id], :rank => p[:rank],
+          :ordinal => Ordinalize.ordinalize(p[:rank]),
+          :name => p[:player].name,
+          :score => p[:player].num_letters}}
     end
 
     pub_update c.game_id
@@ -377,15 +384,32 @@ class AppServer
     result
   end
 
+  TOUCH_EVERY = 20 #seconds
   def update_game_touchstamp(game_id)
-    EventMachine::HttpRequest.new(Anathief::Internal::ENDPOINT).post({
-      :query => { :cmd => 'touch_game', :game_id => game_id }
+    return if @last_touched.include? game_id and
+        Time.now - @last_touched[game_id] < TOUCH_EVERY.seconds
+    @last_touched[game_id] = Time.now
+
+    http = EventMachine::HttpRequest.new(Anathief::Internal::ENDPOINT).post({
+      :body => { :cmd => 'touch_game', :game_id => game_id }
     })
+    http.callback {
+      @@log.info "Touched #{game_id} timestamp"
+    }
+    http.errback {|e|
+      @@log.error "Error touching #{game_id} timestamp: #{e}"
+    }
   end
 
   def record_game(data)
-    EventMachine::HttpRequest.new(Anathief::Internal::ENDPOINT).post({
-      :query => { :cmd => 'touch_game' }.merge(data)
+    http = EventMachine::HttpRequest.new(Anathief::Internal::ENDPOINT).post({
+      :body => { :cmd => 'record_game' }.merge(data)
     })
+    http.callback {
+      @@log.info "Recorded game data with #{data.to_json}"
+    }
+    http.errback {|e|
+      @@log.error "Error recording game data #{data.to_json}: #{e}"
+    }
   end
 end

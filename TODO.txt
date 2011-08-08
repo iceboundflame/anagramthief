@@ -1,6 +1,7 @@
 RAILS DECOUPLING
 / Show player names
-  Facebook publish prompt
+/ Record user win/loss stats
+/ Facebook publish prompt
 
 ROBOTS
 / Add bot with diff levels
@@ -15,7 +16,7 @@ APPSERVER TRANSITION
 
 
 ENHANCEMENTS 2
-  Tutroial video
+  Tutorial video
   Space out /play header buttons
   Tutorial/finish smart tooltips.
   Make invite links work after signing in.

@@ -6,14 +6,17 @@ class InternalController < ApplicationController
   def endpoint
     case params[:cmd]
     when 'touch_game'
+      game_id = params[:game_id]
       logger.info "Updating game timestamp #{game_id}"
-      Game.find(params[:game_id]).touch
+      Game.find(game_id).touch
       render :json => {:status => true}
 
-    when 'create_game_record'
+    when 'record_game'
+      # from GameState.game_record_data
+      # passed thru AppServer.record_game
       game_id = params[:game_id]
-      stats_data = params[:stats_data]
-      completed = params[:completed]
+      completed = (params[:completed] != 'false')
+      stats_data = JSON.parse(params[:stats_data])
       rank_data = JSON.parse(params[:rank_data])
       player_data = JSON.parse(params[:player_data])
 
@@ -22,31 +25,31 @@ class InternalController < ApplicationController
         :data => stats_data,
         :completed => completed,
       )
+
+      users = Hash[ User.find(rank_data.map {|info| info['id']}).map {|user|
+        [user.id.to_s, user]
+      }]
       rank_data.each do |info|
-        p = player_data[info['id']
+        p = player_data[info['id']]
+        user = users[info['id']]
         UserGameRecord.create(
           :game_record => r,
-          :user => info['id']
+          :user => user,
           :num_letters => p['score'],
           :data => {
             :claims => p['claims'],
           }.to_json,
           :rank => info['rank'],
         )
+
+        if completed
+          user.wins += 1 if info['rank'] == 1
+          user.games_completed += 1
+          user.save
+        end
       end
 
-      # RECORD USER STATS
-      #winner_ids.each do |id|
-        #@players[id].user.wins += 1
-      #end
-
-      #@players.values.each do |p|
-        #u = p.user
-        #u.games_completed += 1
-        #u.save
-      #end
-
-
+      render :json => {:status => true}
     else
       raise "Unknown command"
     end
@@ -54,7 +57,8 @@ class InternalController < ApplicationController
 
   protected
   def verify_internal
-    unless Anathief::Internal.ALLOWED_HOSTS.include? request.remote_ip
+    unless Anathief::Internal::ALLOWED_HOSTS.include? request.remote_ip
+      logger.error "Stopped an attempted /internal access from #{request.remote_ip}"
       raise ActionController::RoutingError.new('Not Found')
     end
     return true

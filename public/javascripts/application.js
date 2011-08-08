@@ -150,7 +150,8 @@ var Anathief = function() {
               + '<% if (game_ending) { %><br /><strong>Game Over!</strong><% } %>', data),
             'voted_done');
 
-        if (data.game_ending && data.completed) {
+        /*if (data.game_ending && data.completed) {*/
+        if (data.game_ending) {
           // TODO FIXME
 /*      props = Hash.new {|hash, key| hash[key] = []}
       @state.compute_ranks.each do |p|
@@ -160,14 +161,18 @@ var Anathief = function() {
       props.each do |k,v|
         props[k] = v.join '; '
       end
-      extra_data[:just_finished] = true
+*/
+          var props = {};
+          _.each(data.ranks, function(r) {
+              var ordinal = r.ordinal;
+              if (!(ordinal in props))
+                props[ordinal] = [];
+              props[ordinal].push(r.name + ", with " + r.score + " letters");
+            });
 
-      if @state.completed?
-        extra_data[:publish_fb] = {
-          :title_line => "I just played a game of Anagram Thief!",
-          :properties => props,
-        }
-      end*/
+          for (var ord in props) {
+            props[ord] = props[ord].join('; ');
+          }
 
           publishGame({
             title_line: "I just played a game of Anagram Thief!",

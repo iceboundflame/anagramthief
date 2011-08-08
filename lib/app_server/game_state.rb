@@ -137,16 +137,6 @@ class AppServer::GameState
     @players.keys.select {|id| @players[id].voted_done}
   end
 
-  # Returns:
-  # { id => rank }
-  def id_to_rank_map
-    return nil unless @rank_info
-
-    return Hash[@rank_info.map {|info|
-      [result[info[:id]], info[:rank]]
-    }]
-  end
-
   def completed?
     return false unless started?
 #return true ## FIXME remove this - testing only
@@ -157,7 +147,7 @@ class AppServer::GameState
     @pool_unseen.size < MyMultiset.from_hash(self.class.default_letters).size
   end
 
-  def end_game(should_update_records = true)
+  def end_game
     unless @is_game_over
       @is_game_over = true
 
@@ -195,8 +185,8 @@ class AppServer::GameState
   def game_record_data
     {
       :game_id => @game_id,
-      :stats_data => compute_stats.to_json,
       :completed => completed?,
+      :stats_data => compute_stats.to_json,
       :rank_data => @rank_info.to_json,
       :player_data => Hash[
           @players.map {|id,p|
@@ -206,7 +196,7 @@ class AppServer::GameState
                 :claims => p.claims,
               }]
           }
-        ],
+        ].to_json,
     }
   end
 

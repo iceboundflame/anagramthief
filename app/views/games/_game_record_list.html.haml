@@ -10,6 +10,6 @@
             = ordinalize u_r.rank
             \:
             = succeed "," do
-              %span.game-player= u_r.user.name
+              %span.game-player= u_r.user ? u_r.user.name : '(nil)'
             = u_r.num_letters
             letters

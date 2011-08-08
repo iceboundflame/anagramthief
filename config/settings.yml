@@ -16,6 +16,7 @@ development:
   internal:
     allowed_hosts:
       - 127.0.0.1
+      - 74.207.243.178
     endpoint: http://anagramthief.com:3000/internal
   wordnik:
     api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07
@@ -39,6 +40,7 @@ production:
   internal:
     allowed_hosts:
       - 127.0.0.1
+      - 74.207.243.178
     endpoint: http://anagramthief.com/internal
   wordnik:
     api_key: 27961890eaa589134952f98774c03c1212d7ab4f947cf5b07
