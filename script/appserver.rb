@@ -127,6 +127,7 @@ class AppServer
             :words => p.words.values.map {|x| x.word}, ## FIXME: sort by ID?
             :score => p.num_letters,
             :is_active => p.is_active,
+            :is_robot => p.is_robot,
             :voted_done => p.voted_done,
           }
           h
@@ -271,6 +272,7 @@ class AppServer
   end
 
   ID_TOKEN_TIMEOUT = (5*60*60) # 5 hours
+  MAX_ROBOTS_PER_GAME = 4
 
   def handle_identify(c, msg)
     raise ApiStateError, "Already identified" if c.identified?
@@ -288,9 +290,13 @@ class AppServer
     c.game_id = gid
     c.user_id = uid
 
-    (@game_id_to_clients[c.game_id] ||= []) << c.conn_id
-
     game = @store.find_or_create_game c.game_id
+
+    if msg['is_robot'] and game.num_active_robots >= MAX_ROBOTS_PER_GAME
+      raise ApiError, "Too many robots in this game"
+    end
+
+    (@game_id_to_clients[c.game_id] ||= []) << c.conn_id
 
     unless game.players.include? c.user_id
       game.add_player c.user_id
@@ -298,7 +304,9 @@ class AppServer
       game.load_player_users
     end
 
-    game.player(c.user_id).is_active = true
+    player = game.player c.user_id
+    player.is_active = true
+    player.is_robot = true if msg['is_robot']
 
     c.respond msg['_s'], true
 

@@ -119,7 +119,7 @@ class CtrlConnection < EventMachine::Connection
   end
 
   def handle_add_bot(msg)
-    user_id = msg['user_id']
+    user_id = msg['user_id'].to_s
     play_token = msg['play_token']
     settings = msg['settings']
 
@@ -133,7 +133,7 @@ class CtrlConnection < EventMachine::Connection
   end
 
   def handle_set_bot(msg)
-    user_id = msg['user_id']
+    user_id = msg['user_id'].to_s
     settings = msg['settings']
 
     bot = @ctrl.get_bot user_id
@@ -144,7 +144,7 @@ class CtrlConnection < EventMachine::Connection
   end
 
   def handle_remove_bot(msg)
-    user_id = msg['user_id']
+    user_id = msg['user_id'].to_s
 
     bot = @ctrl.bots.delete user_id
     respond false, "No bot #{user_id}" unless bot

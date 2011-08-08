@@ -456,7 +456,7 @@ var Anathief = function() {
   function initBotControl() {
     $('#bot-btn').click(function() {
       //
-      $.post(gd.urls.addBot, {game_id: gd.gameId});
+      $.post(gd.urls.addBot, {game_id: gd.gameId, level: $('#robot-level').val()});
       return false;
     });
     $('#nobot-btn').click(function() {
@@ -464,6 +464,10 @@ var Anathief = function() {
       $.post(gd.urls.removeBot, {game_id: gd.gameId});
       return false;
     });
+  }
+  function removeBot(id) {
+    $.post(gd.urls.removeBot, {game_id: gd.gameId, bot_id: id});
+    return false;
   }
 
   function setSize() {
@@ -515,7 +519,8 @@ var Anathief = function() {
     init: init,
     hideInvites: hideInvites,
     showInvites: showInvites,
-    setSize: setSize
+    setSize: setSize,
+    removeBot: removeBot,
   };
 }();
 

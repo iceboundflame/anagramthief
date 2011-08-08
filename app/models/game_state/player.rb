@@ -2,6 +2,7 @@ class GameState::Player
   attr_accessor :id, :words, :voted_done, :next_word_id,
     :is_active, :last_heartbeat, :claims, :last_flip
   attr_accessor :user
+  attr_accessor :is_robot
 
   def initialize(id=nil)
     @id = id
@@ -9,6 +10,7 @@ class GameState::Player
     @voted_done = false
     @next_word_id = 1
     @is_active = false
+    @is_robot = false
     @last_heartbeat = nil
     @claims = []
     @user = nil

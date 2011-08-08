@@ -69,6 +69,12 @@ class GameState
     count
   end
 
+  def num_active_robots
+    count = 0
+    @players.each {|id, p| count += 1 if p.is_active and p.is_robot}
+    count
+  end
+
   def add_player(user_id)
     user_id = user_id.to_s
     return if @players.include? user_id

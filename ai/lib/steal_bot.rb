@@ -32,6 +32,7 @@ class StealBot
     @lookup_tree = lookup_tree
     @word_ranks = word_ranks
     @play_token = play_token
+    @done = false
     self.settings = settings
 
     @serial = 1
@@ -58,6 +59,8 @@ class StealBot
   end
 
   def got_update(msg)
+    return if @done
+
     stealable = []
     msg['players_order'].each do |p_id|
       stealable += msg['players'][p_id]['words']
@@ -153,6 +156,7 @@ class StealBot
           @@log.info "#{@user_id}: Ending game..."
 
           ssend 'vote_done', {:vote => true}
+          @done = true
         end
       end
 
@@ -173,7 +177,7 @@ class StealBot
     end
     @http.callback do
       @@log.info "#{@user_id}: Logging in..."
-      ssend 'identify', {:id_token => @play_token}
+      ssend 'identify', {:id_token => @play_token, :is_robot => true}
     end
     @http.stream do |msg_|
       @@log.debug "#{@user_id}: IN << #{msg_}"
@@ -183,6 +187,8 @@ class StealBot
 
         if msg['_t'] == 'update'
           got_update msg
+        elsif msg['_t'] == 'restarted'
+          @done = false
         end
       rescue StandardError => e
         @@log.error ": (StandardError) #{e.inspect}\n#{e.backtrace.join "\n"}"

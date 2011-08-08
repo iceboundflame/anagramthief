@@ -1,3 +1,9 @@
+ROBOTS
+  Add bot with diff levels
+  Remove bot
+  Limit bots
+
+
 APPSERVER TRANSITION
 / Put definition requests on a helper fiber so as not to block gameplay.
 / Last Activity, People playing here.

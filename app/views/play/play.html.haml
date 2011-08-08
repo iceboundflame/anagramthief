@@ -11,7 +11,9 @@
   %br/
   %a#show-invites-link.button.white.medium{:href => "#"} Invite friends
   %a#hide-invites-link.button.white.medium{:href => "#", :style => "display:none"} Hide invitations
+
 = render :partial => 'shared/header'
+
 #instructions-section.clearfix{:style => "display:none"}
   #instructions-text
     %h4 Instructions
@@ -39,6 +41,7 @@
         %strong Tip:
         When your claim textbox is empty, just press Enter to flip a tile.
   %hr/
+
 #invites-section.clearfix{:style => "display:none"}
   %h4 Option 1: Direct Link
   %p
@@ -71,6 +74,8 @@
         </fb:request-form>
   %a#close-invites-link{:href => "#", :style => "display:none"}
   %hr/
+
+
 .clearfix
   .left-col
     .when-game-over.notice
@@ -88,11 +93,18 @@
             %input#cancel-vote-btn.conn-ui.button.black{:style => "display:none", :type => "button", :value => "Cancel Vote"}/
           #pool-area
       #player-area
+      #create-robot-area
+        %span.sectionhead No one to play with?
+        %label{:for => "robot-level"} Create a robot: Level
+        %select#robot-level
+          %option 0
+          %option 1
+          %option 2
+        %input#bot-btn.conn-ui.button.black{:type => "button", :value => "Create"}/
     %hr/
     %div
       %input#refresh-btn.conn-ui.button.black{:type => "button", :value => "Refresh"}/
-      %input#bot-btn.conn-ui.button.black{:type => "button", :value => "Robots"}/
-      %input#nobot-btn.conn-ui.button.black{:type => "button", :value => "Nobots"}/
+
   .right-col
     .game
       %label.sectionhead{:for => "claimword"} Claim a word:
@@ -114,6 +126,8 @@
         |
         %a#next-defn{:href => "#"} Next &raquo;
     #definition
+
+
 #prompt-login{:style => "display: none"}
   %div
     %p.sectionhead Have you considered logging in with Facebook?
@@ -131,6 +145,7 @@
         %img{:alt => "Sign in with Facebook", :src => "/images/loginbutton.png"}/
       %br/
       %a#hide-prompt-login.button.black{:href => "#"} No thanks
+
 - content_for :after_scripts do
   :javascript
     $(document).ready(function() {

@@ -9,6 +9,12 @@
   <% if (voted_done) { %>
     &mdash; <span class="voted-done">Voted to end the game</span>
   <% } %>
+
+  <% if (is_active && is_robot) { %>
+    <br />
+    <input type="button" value="Shut down" onclick="return Anathief.removeBot(<%= id %>);" />
+  <% } %>
+
   <ul class="player-words">
     <% _.each(words, function(word) { %>     <% /* FIXME need unique IDs*/ %>
       <li id="word-<%= id %>"><%= tiles_template({tiles: word.split(''), num_unseen: 0}) %></li>

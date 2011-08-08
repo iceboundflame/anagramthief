@@ -3,12 +3,13 @@ require 'set'
 
 MIN_LEN = 3
 
-if ARGV.length < 2
-  puts "Usage: #{$0} [word-list] [freq-list]"
+if ARGV.length < 3
+  puts "Usage: #{$0} [word-list] [freq-list] [max-rank]"
   exit 1
 end
 
-wordfile, freqfile = ARGV[0], ARGV[1]
+wordfile, freqfile, maxrank = ARGV[0], ARGV[1], ARGV[2]
+maxrank = maxrank.to_i
 
 valid = Set.new
 
@@ -31,12 +32,12 @@ IO.foreach(freqfile) {|line|
   valid.delete word
 
   ranked_word_list << word
+
+  break if ranked_word_list.length >= maxrank
 }
 
-puts "Ranked #{ranked_word_list.size} words"
-puts "Appending #{valid.size} unranked words"
-ranked_word_list.push *valid.to_a
+puts "Got #{ranked_word_list.size} words"
 
 puts "Dumping"
-outfile = "#{wordfile}.ranked-#{File.basename freqfile}"
-File.open(outfile, 'w') { |of| Marshal.dump ranked_word_list, of }
+outfile = "#{wordfile}-#{maxrank}-#{File.basename freqfile}"
+File.open(outfile, 'w') { |of| ranked_word_list.each {|w| of.puts w} }

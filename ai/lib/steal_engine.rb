@@ -17,7 +17,7 @@ module StealEngine
     print '| '*lv+ "STEALENGINE: Trying #{words_stolen} + #{pool_used} : " if STEAL_DBG
 
     steal_length = words_stolen.map{|w| w.length}.inject(0, :+)
-    return nil, 0 if steal_length > max_steal_len
+    return nil, 0 if max_steal_len > 0 and steal_length > max_steal_len
 
     current_chars = pool_used.join('') + words_stolen.join('')
     candidates, my_cost = lookup_tree.find_superset_str(current_chars, &word_filter)
