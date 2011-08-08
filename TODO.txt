@@ -13,6 +13,7 @@ ROBOTS
 APPSERVER TRANSITION
 / Put definition requests on a helper fiber so as not to block gameplay.
 / Last Activity, People playing here.
+  Semantics of ending old games
 
 
 ENHANCEMENTS 2
