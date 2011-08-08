@@ -147,7 +147,7 @@ class CtrlConnection < EventMachine::Connection
     user_id = msg['user_id'].to_s
 
     bot = @ctrl.bots.delete user_id
-    respond false, "No bot #{user_id}" unless bot
+    respond false, {:error => "No bot #{user_id}"} unless bot
     bot.stop
 
     respond true

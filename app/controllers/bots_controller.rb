@@ -57,7 +57,7 @@ class BotsController < ApplicationController
       :first_name => name,
       :last_name => suffix
 
-    play_token = generate_play_token botuser.id, @game_id
+    play_token = generate_play_token botuser.id, @game_id, :is_robot => true
     logger.info "Created robot user: #{botuser.name}"
 
     resp = BotControlConnection.instance.request('add_bot', {

@@ -1,7 +1,12 @@
+RAILS DECOUPLING
+/ Show player names
+  Facebook publish prompt
+
 ROBOTS
-  Add bot with diff levels
-  Remove bot
-  Limit bots
+/ Add bot with diff levels
+/ Remove bot
+/ Limit bots
+  Error message for robots limited
 
 
 APPSERVER TRANSITION

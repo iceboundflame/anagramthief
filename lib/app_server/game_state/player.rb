@@ -4,6 +4,8 @@ class AppServer::GameState::Player
   attr_accessor :user
   attr_accessor :is_robot
 
+  attr_accessor :name, :profile_pic
+
   def initialize(id=nil)
     @id = id
     @words = {}
@@ -14,6 +16,9 @@ class AppServer::GameState::Player
     @last_heartbeat = nil
     @claims = []
     @user = nil
+
+    @name = nil
+    @profile_pic = nil
   end
 
   def restart

@@ -5,6 +5,7 @@ require 'em-synchrony'
 require 'log4r-color'
 require 'json'
 require 'active_support/core_ext/numeric/time'
+require 'signed_data'
 
 class ApiError < StandardError
 end
@@ -67,11 +68,8 @@ class AppServer
       :players => Hash[ game.players.map {|id,p|
           [id, {
             :id => p.id,
-            #:name => p.user.name,
-            #:pf_pic_url => p.user.profile_pic,
-            :name => '(player)',
-            :pf_pic_url => '',
-
+            :name => p.name,
+            :pf_pic_url => p.profile_pic,
             :words => p.words.values.map {|x| x.word}, ## FIXME: sort by ID?
             :score => p.num_letters,
             :is_active => p.is_active,
@@ -225,22 +223,19 @@ class AppServer
   def handle_identify(c, msg)
     raise ApiStateError, "Already identified" if c.identified?
 
-    uid, gid, timestamp, verf = msg['id_token'].split(':')
+    signed_data = SignedData.decode msg['id_token']
 
-    expected_verf = Digest::SHA1.hexdigest(
-      "#{uid}:#{gid}:#{timestamp}:#{Anathief::TOKEN_SECRET}")
-
-    raise ApiError, "Bad id_token" if verf != expected_verf
+    raise ApiError, "Bad signed_data" unless signed_data
 
     raise ApiError, "Identification too old, try reloading the page" if
-      Time.at(timestamp.to_i) < Time.now - ID_TOKEN_TIMEOUT.second
+      Time.at(signed_data['timestamp']) < Time.now - ID_TOKEN_TIMEOUT.second
 
-    c.game_id = gid
-    c.user_id = uid
+    c.game_id = signed_data['game_id']
+    c.user_id = signed_data['user_id']
 
     game = @store.find_or_create_game c.game_id
 
-    if msg['is_robot'] and game.num_active_robots >= MAX_ROBOTS_PER_GAME
+    if signed_data['is_robot'] and game.num_active_robots >= MAX_ROBOTS_PER_GAME
       raise ApiError, "Too many robots in this game"
     end
 
@@ -254,7 +249,9 @@ class AppServer
 
     player = game.player c.user_id
     player.is_active = true
-    player.is_robot = true if msg['is_robot']
+    player.is_robot = true if signed_data['is_robot']
+    player.name = signed_data['name']
+    player.profile_pic = signed_data['profile_pic']
 
     c.respond msg['_s'], true
 

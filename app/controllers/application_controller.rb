@@ -78,31 +78,37 @@ class ApplicationController < ActionController::Base
   end
 
   def generate_login_token(user_id)
-    login_token = "#{user_id}:#{Time.now.to_i}:"
-    login_token += Digest::SHA1.hexdigest(login_token + Anathief::TOKEN_SECRET)
-    login_token
+    return SignedData.encode({
+      :user_id => user_id,
+      :timestamp => Time.now.to_i,
+    })
   end
 
   def verify_login_token(login_token, timeout_secs=0)
-    uid, timestamp, verf = login_token.split(':')
-    expected_verf = Digest::SHA1.hexdigest("#{uid}:#{timestamp}:#{Anathief::TOKEN_SECRET}")
-
-    if verf != expected_verf
-      logger.warn "invalid verf for login token #{login_token}"
+    signed_data = SignedData.decode login_token
+    unless signed_data
+      logger.warn "invalid login token #{login_token}"
       return nil
     end
-    if timeout_secs > 0 and Time.at(timestamp.to_i) < Time.now - timeout_secs.second
+    if timeout_secs > 0 and
+        Time.at(signed_data['timestamp']) < Time.now - timeout_secs.second
+
       logger.warn "expired login token #{login_token}"
       return nil
     end
 
-    uid
+    return signed_data['user_id']
   end
 
-  def generate_play_token(user_id, game_id)
-    play_token = "#{user_id}:#{game_id}:#{Time.now.to_i}:"
-    play_token += Digest::SHA1.hexdigest(play_token + Anathief::TOKEN_SECRET)
-    play_token
+  def generate_play_token(user_id, game_id, extra_data={})
+    user = User.find(user_id)
+    return SignedData.encode({
+      :user_id => user_id,
+      :game_id => game_id,
+      :timestamp => Time.now.to_i,
+      :name => user.name,
+      :profile_pic => user.profile_pic,
+    }.merge(extra_data))
   end
 
 
