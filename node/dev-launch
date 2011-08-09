@@ -1,1 +1,1 @@
-./siows_proxy.js -i 8023 -o ws://localhost:8123
+./siows_proxy.js -i 8023 -o ws://localhost:8123 2>&1 | tee ../log/siows_proxy_development.log

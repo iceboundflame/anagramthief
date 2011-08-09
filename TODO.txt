@@ -8,6 +8,7 @@ ROBOTS
 / Remove bot
 / Limit bots
   Error message for robots limited
+  Shut down when all humans leave
 
 
 APPSERVER TRANSITION

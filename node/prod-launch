@@ -1,1 +1,1 @@
-./siows_proxy.js -i 8024 -o ws://localhost:8124
+nohup ./siows_proxy.js -i 8024 -o ws://localhost:8124 2>&1 | tee ../log/siows_proxy_production.log
