@@ -125,7 +125,7 @@ class AppServer
   end
 
   def handle_claim(c, game, msg)
-    word = msg['word'].upcase.gsub(/[^A-Z]/, '')[0..50] # limit length
+    word = msg['word'].upcase.gsub(/[^A-Z]/, '')[0..31] # limit length
     
     raise ApiStateError, "Game is over" if game.is_game_over
 
@@ -219,7 +219,7 @@ class AppServer
   end
 
   def handle_chat(c, game, msg)
-    utt = msg['message'][0..25] # limit length
+    utt = msg['message'][0..511] # limit length
     pub_action c.game_id, 'chatted', c.user_id, {:message => utt}
     c.respond msg['_s'], true
   end
