@@ -27,6 +27,9 @@ class StealBot
 
   MIN_LEN = 3
 
+  # a reject should take as long as a word of this many chars
+  REJECT_EFFECTIVE_CHARS = 9
+
   def initialize(user_id, lookup_tree, word_ranks, play_token, settings)
     @user_id = user_id
     @lookup_tree = lookup_tree
@@ -40,13 +43,13 @@ class StealBot
 
   def settings=(settings)
     @settings = {
-      :max_rank => settings['max_rank'] || 30000,
-      :max_steal_len => settings['max_steal_len'] || 5,
+      :max_rank => settings['max_rank'] || 0,
+      :max_steal_len => settings['max_steal_len'] || 0,
       :max_word_len => settings['max_word_len'] || 0,
-      :delay_ms_mean => settings['delay_ms_mean'] || 1000,
+      :delay_ms_mean => settings['delay_ms_mean'] || 2000,
       :delay_ms_stdev => settings['delay_ms_stdev'] || 0,
+      :delay_ms_per_char => settings['delay_ms_per_char'] || 0,
       :delay_ms_per_kcost => settings['delay_ms_per_kcost'] || 0,
-      :delay_ms_per_word_considered => settings['delay_ms_per_word_considered'] || 0,
     }
   end
 
@@ -131,13 +134,15 @@ class StealBot
       already_paid = Time.now - start_time
 
       unconditional_delay = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])/1000.0
-      unconditional_delay = 0 if unconditional_delay < 0
+      effective_len = res ? res.length : REJECT_EFFECTIVE_CHARS
+      char_delay = @settings[:delay_ms_per_char]*effective_len/1000.0
       cost_delay = @settings[:delay_ms_per_kcost]*cost/1000.0/1000.0
 
-      @@log.debug "#{@user_id}: Unconditional delay: #{unconditional_delay*1000}ms"
-      @@log.debug "#{@user_id}: Cost delay: #{cost_delay*1000}ms"
+      total_delay = unconditional_delay + char_delay + cost_delay
+      total_delay = 0 if total_delay < 0
 
-      total_delay = unconditional_delay + cost_delay
+      @@log.info "#{@user_id}: Delays: #{unconditional_delay}s(uncond) + "+
+        "#{char_delay}s(char) + #{cost_delay}s(cost) = #{total_delay}s(total)"
 
       if already_paid < total_delay
         EventMachine::Synchrony.sleep total_delay - already_paid

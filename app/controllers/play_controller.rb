@@ -5,6 +5,8 @@ class PlayController < ApplicationController
     # Render template, show state
     # 
     @id_token = generate_play_token(@me_id, @game_id)
+
+    @robot_titles = BotPersonalities.instance.all_titles
   end
 
   def invite_form

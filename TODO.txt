@@ -2,6 +2,7 @@ RAILS DECOUPLING
 / Show player names
 / Record user win/loss stats
 / Facebook publish prompt
+  When missing player is in the rank data, template fails to render.
 
 ROBOTS
 / Add bot with diff levels

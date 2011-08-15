@@ -95,11 +95,11 @@
       #player-area
       #create-robot-area
         %span.sectionhead No one to play with?
-        %label{:for => "robot-level"} Create a robot: Level
+        Create a robot.
+        %br/
         %select#robot-level
-          %option 0
-          %option 1
-          %option 2
+          - @robot_titles.each_with_index do |title, level|
+            %option{:value => level} Level #{level}: #{title}
         %input#bot-btn.conn-ui.button.black{:type => "button", :value => "Create"}/
     %hr/
     %div

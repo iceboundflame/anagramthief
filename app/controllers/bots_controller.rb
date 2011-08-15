@@ -3,54 +3,16 @@ require 'name_generator'
 class BotsController < ApplicationController
   before_filter :get_ids
 
-  PERSONALITIES = [
-    {
-      :title => 'Baby',
-      :settings => {
-          :max_rank => 10000,
-          :max_steal_len => 3,
-          :max_word_len => 0,
-          :delay_ms_mean => 9500,
-          :delay_ms_stdev => 3000,
-          :delay_ms_per_kcost => 50,
-          :delay_ms_per_word_considered => 0,
-      },
-    },
-    {
-      :title => '',
-      :settings => {
-          :max_rank => 30000,
-          :max_steal_len => 5,
-          :max_word_len => 0,
-          :delay_ms_mean => 7500,
-          :delay_ms_stdev => 2000,
-          :delay_ms_per_kcost => 30,
-          :delay_ms_per_word_considered => 0,
-      },
-    },
-    {
-      :title => 'Master',
-      :settings => {
-          :max_rank => 0,
-          :max_steal_len => 0,
-          :max_word_len => 0,
-          :delay_ms_mean => 2500,
-          :delay_ms_stdev => 3000,
-          :delay_ms_per_kcost => 10,
-          :delay_ms_per_word_considered => 0,
-      },
-    },
-  ]
-
   def add
     level = params[:level] || 0
     level = level.to_i
 
-    level = 0 if !level or level < 0 or level >= PERSONALITIES.length
+    personality_names = BotPersonalities.instance.all_titles
+    level = 0 if !level or level < 0 or level >= personality_names.length
 
-    personality = PERSONALITIES[level]
+    personality = BotPersonalities.instance.get level
     name = "#{personality[:title]} #{NameGenerator.random_name}"
-    suffix = "(Bot, Lv.#{level})"
+    suffix = "(Lv.#{level} Bot)"
 
     botuser = User.create :uid => nil,
       :name => "#{name} #{suffix}",
