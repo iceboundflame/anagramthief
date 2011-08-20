@@ -150,18 +150,7 @@ var Anathief = function() {
               + '<% if (game_ending) { %><br /><strong>Game Over!</strong><% } %>', data),
             'voted_done');
 
-        /*if (data.game_ending && data.completed) {*/
         if (data.game_ending) {
-          // TODO FIXME
-/*      props = Hash.new {|hash, key| hash[key] = []}
-      @state.compute_ranks.each do |p|
-        player = @state.player(p[:id])
-        props[ordinalize p[:rank]] << "#{player.user.name}, with #{player.num_letters} letters"
-      end
-      props.each do |k,v|
-        props[k] = v.join '; '
-      end
-*/
           var props = {};
           _.each(data.ranks, function(r) {
               var ordinal = r.ordinal;
