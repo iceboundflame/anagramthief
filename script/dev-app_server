@@ -1,0 +1,1 @@
+ruby ./app_server.rb 2>&1 | tee ../log/app_server_development.log

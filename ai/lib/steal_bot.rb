@@ -22,9 +22,9 @@ class StealBot
       :fatal  => {:color => :red, :background => :white}
     }
   }
-  @@log = Logger.new('StealBot')
+  #@@log = Logger.new('StealBot', DEBUG)
+  @@log = Logger.new('StealBot', INFO)
   @@log.add('color')
-  @@log.level = Log4r::INFO
 
   MIN_LEN = 3
 

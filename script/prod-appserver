@@ -1,1 +1,0 @@
-RAILS_ENV=production ruby ./appserver.rb 2>&1 | tee ../log/appserver_production.log

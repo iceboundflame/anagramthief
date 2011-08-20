@@ -32,8 +32,8 @@ class AppServer
     }
   }
 
-  #@@log = Logger.new('app_server', INFO)
-  @@log = Logger.new('app_server', DEBUG)
+  #@@log = Logger.new('app_server', DEBUG)
+  @@log = Logger.new('app_server', INFO)
   @@log.add('color')
 
 

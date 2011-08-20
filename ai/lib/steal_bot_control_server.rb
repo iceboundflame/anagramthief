@@ -18,7 +18,8 @@ class StealBotControlServer
       :fatal  => {:color => :red, :background => :white}
     }
   }
-  @@log = Logger.new('StealBotControlServer')
+  #@@log = Logger.new('StealBotControlServer')
+  @@log = Logger.new('StealBotControlServer', INFO)
   @@log.add('color')
 
   def initialize(lookup_tree, word_ranks)
@@ -69,7 +70,8 @@ class CtrlConnection < EventMachine::Connection
       :fatal  => {:color => :red, :background => :white}
     }
   }
-  @@log = Logger.new('CtrlConnection')
+  #@@log = Logger.new('CtrlConnection')
+  @@log = Logger.new('CtrlConnection', INFO)
   @@log.add('color')
   include EM::Protocols::LineText2
 
