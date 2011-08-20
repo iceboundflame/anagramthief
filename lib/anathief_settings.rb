@@ -33,3 +33,9 @@ module Anathief
 
   TOKEN_SECRET = SETTINGS['token_secret']
 end
+
+require 'wordnik-ruby'
+puts "Initializing Wordnik..."
+# strangest interface...
+Wordnik::Wordnik.new :api_key => Anathief::WORDNIK_KEY
+Wordnik::Wordnik.default_timeout 2

@@ -355,7 +355,7 @@ class AppServer
   end
 
 
-  # Runs asynchronously
+  # Called from an asynchronous worker thread
   def get_nice_defs(word)
     word.downcase!
 
