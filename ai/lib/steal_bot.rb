@@ -24,6 +24,7 @@ class StealBot
   }
   @@log = Logger.new('StealBot')
   @@log.add('color')
+  @@log.level = Log4r::INFO
 
   MIN_LEN = 3
 
@@ -83,38 +84,52 @@ class StealBot
       end
     end
 
-    word_filter = lambda {|words| words.select {|w|
-      next false if w.length < MIN_LEN
-
-      if @settings[:max_word_len] > 0
-        next false if w.length > @settings[:max_word_len]
-      end
-
-      if @settings[:max_rank] > 0
-        next false unless @word_ranks.include? w and
-                          @word_ranks[w] <= @settings[:max_rank]
-      end
-
-      # Too expensive.
-      #t = Time.now
-      #match_result = WordMatcher.word_match(pool, stealable, w)
-      #t = Time.now - t
-      #@@log.error "WM #{w} took #{t}ms"
-      #next false unless match_result and match_result[0][0] == :ok
-
-      next true
-    }}
-
+    res, cost = nil, 0
     start_time = Time.now
-
     @lookup_tree.clear_cost
-    res, cost = StealEngine.search(
-      @lookup_tree,
-      pool.shuffle,
-      stealable.shuffle,
-      @settings[:max_steal_len],
-      &word_filter
-    )
+    blacklist = Set.new
+    while true
+      word_filter = lambda {|words| words.select {|w|
+        next false if w.length < MIN_LEN
+
+        if @settings[:max_word_len] > 0
+          next false if w.length > @settings[:max_word_len]
+        end
+
+        if @settings[:max_rank] > 0
+          next false unless @word_ranks.include? w and
+                            @word_ranks[w] <= @settings[:max_rank]
+        end
+
+        # Too expensive.
+        #t = Time.now
+        #match_result = WordMatcher.word_match(pool, stealable, w)
+        #t = Time.now - t
+        #@@log.error "WM #{w} took #{t}ms"
+        #next false unless match_result and match_result[0][0] == :ok
+        next false if blacklist.include? w
+
+        next true
+      }}
+
+      res, cost = StealEngine.search(
+        @lookup_tree,
+        pool.shuffle,
+        stealable.shuffle,
+        @settings[:max_steal_len],
+        &word_filter
+      )
+
+      break if res.nil?
+
+      match_result = WordMatcher.word_match(pool, stealable, res[0])
+      break if match_result[0][0] == :ok
+
+      @@log.debug "StealEngine result #{res} invalid: blacklisting #{res[0]} and trying again"
+      blacklist << res[0]
+      # loop again
+    end
+
     t = Time.now - start_time
 
     if res.nil? and @fiber and @planned_action == :reject
@@ -134,7 +149,7 @@ class StealBot
       already_paid = Time.now - start_time
 
       unconditional_delay = RandomDists.gaussian(@settings[:delay_ms_mean], @settings[:delay_ms_stdev])/1000.0
-      effective_len = res ? res.length : REJECT_EFFECTIVE_CHARS
+      effective_len = res ? res[0].length : REJECT_EFFECTIVE_CHARS
       char_delay = @settings[:delay_ms_per_char]*effective_len/1000.0
       cost_delay = @settings[:delay_ms_per_kcost]*cost/1000.0/1000.0
 
