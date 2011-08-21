@@ -74,7 +74,7 @@ class StealBot
 
     if @fiber and @planned_action and @planned_action != :reject
       match_result = WordMatcher.word_match pool, stealable, @planned_action[0]
-      @@log.info "#{@user_id}: planned action #{@planned_action}: #{match_result}"
+      @@log.debug "#{@user_id}: planned action #{@planned_action}: #{match_result}"
       if match_result and match_result[0][0] == :ok
         @@log.info "#{@user_id}: planned action #{@planned_action} still valid, continue wait"
 
@@ -139,7 +139,7 @@ class StealBot
 
     @planned_action = res || :reject
 
-    @@log.debug "#{@user_id}: Stealengine: #{res || 'nil'} -- took #{t*1000}ms, #{@lookup_tree.accumulated_cost} total cost (== #{cost})"
+    @@log.info "#{@user_id}: Stealengine: #{res || 'nil'} -- took #{t*1000}ms, #{@lookup_tree.accumulated_cost} total cost (== #{cost})"
 
     @fiber.cancel if @fiber
 

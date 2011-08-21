@@ -4,6 +4,7 @@ require 'my_multiset'
 module StealEngine
   # TODO: use Logger
   STEAL_DBG = false
+  #STEAL_DBG = true
   STEAL_PERF_SUMMARY = true
 
   def self.search(lookup_tree, pool_avail, words_avail, max_steal_len, &word_filter)
@@ -28,10 +29,18 @@ module StealEngine
     puts '| '*lv+ "           : OK! Remain #{words_avail} + #{pool_avail_mshash}" if STEAL_DBG
     puts '| '*lv+ "           : Some candidates: "+candidates.join(', ') if STEAL_DBG
 
+    # Check if we already have a winner
+    if (words_stolen.size > 1 or !pool_used.empty?) and
+        (WordUtils.normalize_word(current_chars) ==
+         WordUtils.normalize_word(candidates[0]))
+
+      puts '| '*lv+"######################################## RESULT FOUND EARLY! "+candidates[0] if STEAL_DBG
+      return [candidates[0], words_stolen, pool_used], my_cost
+    end
+
     until pool_avail_mshash.empty?
       add_pool = pool_avail_mshash.keys.first
       max_num = pool_avail_mshash.delete add_pool
-      #add_pool = pool_avail.shift
 
       (1..max_num).each {|ct|
         res, cost = _search(lookup_tree,
@@ -49,7 +58,6 @@ module StealEngine
 
     until words_avail.empty?
       add_steal = words_avail.pop
-      #add_steal = words_avail.shift
 
       res, cost = _search(lookup_tree,
                           pool_avail_mshash.dup,
@@ -64,15 +72,6 @@ module StealEngine
     end
 
     puts '| '*lv+"End of branch" if STEAL_DBG
-
-    #if (!pool_used.empty?) and # to simulate bug in the old brains
-    if (words_stolen.size > 1 or !pool_used.empty?) and
-        (WordUtils.normalize_word(current_chars) ==
-         WordUtils.normalize_word(candidates[0]))
-
-      puts '| '*lv+"RESULT FOUND! "+candidates[0] if STEAL_DBG
-      return [candidates[0], words_stolen, pool_used], my_cost
-    end
 
     puts '| '*(lv-1) if STEAL_DBG
 
