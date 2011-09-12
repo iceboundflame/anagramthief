@@ -39,7 +39,7 @@ gem 'mini_fb'
 gem 'json'
 gem 'redis'
 gem 'term-ansicolor'
-gem 'wordnik-ruby'
+gem 'wordnik'
 
 gem "compass", ">= 0.11.1"
 

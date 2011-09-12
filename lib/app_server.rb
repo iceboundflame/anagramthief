@@ -368,7 +368,7 @@ class AppServer
       hash[key] = Hash.new { |hash2, key2| hash2[key2] = [] }
     end
 
-    raw = Wordnik::Word.find(word).definitions
+    raw = Wordnik.word.get_definitions(word)
     raw.each do |d|
       next unless d.text
       pos = d.part_of_speech

@@ -41,7 +41,6 @@ GEM
       chunky_png (~> 1.1)
       fssm (>= 0.2.7)
       sass (~> 3.1)
-    crack (0.1.8)
     em-http-request (0.3.0)
       addressable (>= 2.0.0)
       escape_utils
@@ -60,8 +59,7 @@ GEM
     fssm (0.2.7)
     haml (3.1.2)
     hashie (1.0.0)
-    httparty (0.7.7)
-      crack (= 0.1.8)
+    htmlentities (4.3.0)
     i18n (0.5.0)
     jammit (0.6.3)
       yui-compressor (>= 0.9.3)
@@ -80,6 +78,7 @@ GEM
       rest-client
     mysql2 (0.2.6)
     mysqlplus (0.1.2)
+    nokogiri (1.5.0)
     open4 (1.1.0)
     polyglot (0.3.1)
     rack (1.2.1)
@@ -118,10 +117,17 @@ GEM
       thrift (~> 0.6.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
+    typhoeus (0.2.4)
+      mime-types
+      mime-types
     tzinfo (0.3.27)
-    wordnik-ruby (0.3.4)
-      httparty
-      json
+    wordnik (4.06.08)
+      activemodel (>= 3.0.3)
+      addressable (>= 2.2.4)
+      htmlentities (>= 4.2.4)
+      json (>= 1.4.6)
+      nokogiri (>= 1.4.4)
+      typhoeus (>= 0.2.1)
     yui-compressor (0.9.6)
       POpen4 (>= 0.1.4)
 
@@ -146,4 +152,4 @@ DEPENDENCIES
   redis
   sqlite3-ruby
   term-ansicolor
-  wordnik-ruby
+  wordnik
