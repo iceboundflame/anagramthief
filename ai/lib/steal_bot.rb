@@ -62,6 +62,8 @@ class StealBot
     @http.send msg
   end
 
+  MAX_WORD_LEN_START, MAX_WORD_LEN_STEP, MAX_WORD_LEN_DEFAULT_LIMIT = 4, 2, 15
+  MAX_STEAL_LEN_START, MAX_STEAL_LEN_STEP, MAX_STEAL_LEN_DEFAULT_LIMIT = 4, 2, 15
   def got_update(msg)
     return if @done
 
@@ -88,12 +90,18 @@ class StealBot
     start_time = Time.now
     @lookup_tree.clear_cost
     blacklist = Set.new
+    max_word_len = MAX_WORD_LEN_START
+    max_steal_len = MAX_STEAL_LEN_START
+    max_word_len_limit =
+      (@settings[:max_word_len] == 0) ? MAX_WORD_LEN_DEFAULT_LIMIT : @settings[:max_word_len]
+    max_steal_len_limit =
+      (@settings[:max_steal_len] == 0) ? MAX_STEAL_LEN_DEFAULT_LIMIT : @settings[:max_steal_len]
     while true
       word_filter = lambda {|words| words.select {|w|
         next false if w.length < MIN_LEN
 
-        if @settings[:max_word_len] > 0
-          next false if w.length > @settings[:max_word_len]
+        if max_word_len > 0
+          next false if w.length > max_word_len
         end
 
         if @settings[:max_rank] > 0
@@ -120,7 +128,23 @@ class StealBot
         &word_filter
       )
 
-      break if res.nil?
+      if res.nil?
+        keep_going = false
+        if max_word_len < max_word_len_limit
+          max_word_len += MAX_WORD_LEN_STEP
+          keep_going = true
+        end
+        if max_steal_len < max_steal_len_limit
+          max_steal_len += MAX_STEAL_LEN_STEP
+          keep_going = true
+        end
+
+        if keep_going
+          next
+        else
+          break
+        end
+      end
 
       match_result = WordMatcher.word_match(pool, stealable, res[0])
       break if match_result[0][0] == :ok
